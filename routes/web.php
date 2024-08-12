@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Exam;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,3 +20,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+Route::get('/exam',[ExamController::class,'index'])->name('exam');
