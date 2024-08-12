@@ -21,9 +21,9 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+        <a class="nav-link" data-toggle="collapse" href="{{ route('employee_view') }}" aria-expanded="false" aria-controls="form-elements">
           <i class="icon-columns menu-icon"></i>
-          <span class="menu-title">Form elements</span>
+          <span class="menu-title">Employees</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="form-elements">
