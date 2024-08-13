@@ -12,4 +12,10 @@ class Employee extends Model
     {
         return $this->belongsTo(Designation::class);
     }
+    public function class(){
+        return $this->hasMany(Classe::class);
+    }
+    public function section(){
+        return $this->hasMany(Section::class);
+    }
 }

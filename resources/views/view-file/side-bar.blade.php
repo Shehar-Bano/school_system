@@ -25,7 +25,7 @@
         <a class="nav-link" href="{{ route('employee_view') }}" >
           <i class="fas fa-users menu-icon"></i>
           <span class="menu-title">Employees</span>
-         
+
         </a>
         <div class="collapse" id="form-elements">
           <ul class="nav flex-column sub-menu">
@@ -47,13 +47,17 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-          <i class="icon-bar-graph menu-icon"></i>
-          <span class="menu-title">Charts</span>
+          <i class="fas fa-school menu-icon"></i>
+          <span class="menu-title">Academic</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="charts">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('class-list')}}">Class</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Section</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Subject</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Syllabus</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Assignment</a></li>
           </ul>
         </div>
       </li>

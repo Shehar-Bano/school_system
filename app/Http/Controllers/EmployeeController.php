@@ -96,7 +96,7 @@ public function updateEmployee(UpdateEmployeeRequest $request,$id){
         $imagePath=$image->store('images','public');
         $employee->image=$imagePath;
     }
-  
+
      $employee->save();
     return redirect()->back()->with('message','Employee Updated successfully');
 
