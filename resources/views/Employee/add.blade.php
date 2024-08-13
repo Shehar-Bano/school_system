@@ -62,13 +62,16 @@
                   @csrf
 
                   <div class="form-group">
+                    @error('name')
+                    <div class="error text-danger">{{ $message }}</div>
+                @enderror
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <input type="text" class="form-control" id="name" name="name" value={{ old('name') }}>
                   </div>
 
                   <div class="form-group">
                     <label for="designation">Designation</label>
-                    <select class="form-control" id="designation" name="designation" required>
+                    <select class="form-control" id="designation" name="designation" >
                       <option value="Teacher">Teacher</option>
                       <option value="Librarian">Librarian</option>
                       <option value="Moderator">Moderator</option>
@@ -80,13 +83,13 @@
 
                   <div class="form-group">
                     <label for="dob">Date of Birth</label>
-                    <input type="date" class="form-control" id="dob" name="dob" required>
+                    <input type="date" class="form-control" id="dob" name="dob" >
                   </div>
 
                   <div class="form-group">
                     <label>Gender</label>
                     <div class="form-check ml-5">
-                      <input class="form-check-input" type="radio" name="gender" id="genderMale" value="Male" required>
+                      <input class="form-check-input" type="radio" name="gender" id="genderMale" value="Male" >
                       <label class="form-check-label" for="genderMale">Male</label>
                     </div>
                     <div class="form-check ml-5">
@@ -97,7 +100,7 @@
 
                   <div class="form-group ">
                     <label for="religion">Religion</label>
-                    <select class="form-control" id="religion" name="religion" required>
+                    <select class="form-control" id="religion" name="religion" >
                       <option value="Christianity">Christianity</option>
                       <option value="Islam">Islam</option>
                       <option value="Hinduism">Hinduism</option>
@@ -108,27 +111,27 @@
 
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" >
                   </div>
 
                   <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="text" class="form-control" id="phone" name="phone" required>
+                    <input type="text" class="form-control" id="phone" name="phone" >
                   </div>
 
                   <div class="form-group">
                     <label for="address">Address</label>
-                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    <textarea class="form-control" id="address" name="address" rows="2" ></textarea>
                   </div>
 
                   <div class="form-group">
                     <label for="joining_date">Joining Date</label>
-                    <input type="date" class="form-control" id="joining_date" name="joining_date" required>
+                    <input type="date" class="form-control" id="joining_date" name="joining_date" >
                   </div>
 
                   <div class="form-group">
                     <label for="image">Image</label>
-                    <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*" >
                   </div>
 
                   <button type="submit" class="btn btn-primary">Save</button>

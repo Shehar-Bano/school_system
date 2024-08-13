@@ -21,8 +21,20 @@ class addEmployeeRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        
+            return [
+                'name' => 'required|string|max:255',
+                'designation' => 'required|string|max:255',
+                'date_of_birth' => 'required|date|before:today',
+                'gender' => 'required|string',
+                'religion' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email|max:255',
+                'phone' => 'required|string|unique:users,phone|max:20',
+                'address' => 'required|string|max:255',
+                'image' => 'nullable|image|max:2048',
+                'joining_date' => 'required|date|before_or_equal:today',
+                'status' => 'nullable|string|in:active,inactive,suspended',
+            ];
+    
     }
 }

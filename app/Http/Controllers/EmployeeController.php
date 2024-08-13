@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\addEmployeeRequest;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class EmployeeController extends Controller
         return view('employee.add');
     }
 
-    public function storeEmployee(Request $request)
+    public function storeEmployee(addEmployeeRequest $request)
 {
    $employee=new Employee();
    $employee->name=$request->name;
