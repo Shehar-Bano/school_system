@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('teacher');
-            $table->foreign('teacher')->references('id')->on('teachers')->cascadeOnDelete();
+            $table->unsignedBigInteger('employ');
+            $table->foreign('id')->references('id')->on('employees')->cascadeOnDelete();
             $table->string('note');
-        
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classes');
+        //
     }
 };
