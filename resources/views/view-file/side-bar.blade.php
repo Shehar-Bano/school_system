@@ -22,7 +22,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ route('employee_view') }}" >
-          <i class="fas fa-user menu-icon"></i>
+          <i class="fas fa-users menu-icon"></i>
           <span class="menu-title">Employees</span>
          
         </a>
