@@ -17,28 +17,49 @@
             <div class="mb-4">
               <a href="{{ route('employees_create') }}" class="btn btn-primary">Add New Employee</a>
             </div>
-              <div class="mb-3">
-                <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-                <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-               </div>
+          <!-- Filter Inputs -->
+<div class="mb-3 row">
+  <div class="col-6">
+    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
+    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
+    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
+    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
+  </div>
+  <div class="col-md-2">
+    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary" placeholder="Filter by Name">
+    <!-- Hidden Suggestion List -->
+    <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
+      <!-- Suggestions will be populated here dynamically -->
+    </ul>
+  </div>
+  <div class="col-md-2">
+    <input type="text" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Role"> 
+    <!-- Hidden Suggestion List -->
+    <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
+      <!-- Suggestions will be populated here dynamically -->
+    </ul>
+  </div>
+  <div class="col-md-2">
+    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
+  </div>
+</div>
             <!-- Employees Table -->
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Employees List</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center">
+                  <table class="table table-striped table-bordered text-center" id="examsTable">
                     <thead>
                       <tr>
                         <th>#</th>
+                        <th>Jioning</th>
                         <th>Photo</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
                         <th>Status</th>
                        
-                                    <th><i class="fa fa-ellipsis-h"></i></th>
+                        <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -49,11 +70,12 @@
                       @foreach ($employees as $employee)
                       <tr>
                         <td>{{ ++$count }}</td>
-                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 100px; height: 100px;">
+                        <td>{{ $employee->joining_date }}</td>
+                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 75px; height: auto;">
                         </td>
                         <td>{{$employee->name  }}</td>
                         <td>{{$employee->email }}</td>
-                        <td>{{$employee->designation  }}</td>
+                        <td>{{$employee->designation->name  }}</td>
                         <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>
                       
                         <td>
@@ -113,64 +135,99 @@
 
  
   </script>
+ <!-- Filter and Suggestion Script -->
+<script>
+  // Filter by Name with Suggestions
+  const filterNameInput = document.getElementById('filterName');
+  const nameSuggestionList = document.getElementById('nameSuggestionList');
+
+  filterNameInput.addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#examsTable tbody tr');
+    nameSuggestionList.innerHTML = ''; // Clear previous suggestions
+    let hasSuggestions = false;
+
+    rows.forEach(row => {
+      const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
+      if (name.includes(filter)) {
+        row.style.display = '';
+        // Add suggestion to the list
+        const suggestionItem = document.createElement('li');
+        suggestionItem.className = 'list-group-item list-group-item-action';
+        suggestionItem.textContent = name;
+        suggestionItem.addEventListener('click', function() {
+          filterNameInput.value = name;
+          nameSuggestionList.style.display = 'none';
+          // Hide non-matching rows
+          rows.forEach(r => {
+            const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            r.style.display = n === name ? '' : 'none';
+          });
+        });
+        nameSuggestionList.appendChild(suggestionItem);
+        hasSuggestions = true;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
+  });
+
+  // Hide suggestion list when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!filterNameInput.contains(event.target)) {
+      nameSuggestionList.style.display = 'none';
+    }
+  });
+
+  // Filter by Designation with Suggestions
+  const filterDesignationInput = document.getElementById('filterDesignation');
+  const designationSuggestionList = document.getElementById('designationSuggestionList');
+
+  filterDesignationInput.addEventListener('keyup', function() {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#examsTable tbody tr');
+    designationSuggestionList.innerHTML = ''; // Clear previous suggestions
+    let hasSuggestions = false;
+
+    rows.forEach(row => {
+      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
+      if (designation.includes(filter)) {
+        row.style.display = '';
+        // Add suggestion to the list
+        const suggestionItem = document.createElement('li');
+        suggestionItem.className = 'list-group-item list-group-item-action';
+        suggestionItem.textContent = designation;
+        suggestionItem.addEventListener('click', function() {
+          filterDesignationInput.value = designation;
+          designationSuggestionList.style.display = 'none';
+          // Hide non-matching rows
+          rows.forEach(r => {
+            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
+            r.style.display = d === designation ? '' : 'none';
+          });
+        });
+        designationSuggestionList.appendChild(suggestionItem);
+        hasSuggestions = true;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
+  });
+
+  // Hide suggestion list when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!filterDesignationInput.contains(event.target)) {
+      designationSuggestionList.style.display = 'none';
+    }
+  });
+</script>
     <script>
       // Filter by ID
-      document.getElementById('filterId').addEventListener('keyup', function() {
-        const filter = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#examsTable tbody tr');
-        rows.forEach(row => {
-          const id = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-          if (id.includes(filter)) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
-      });
-  
-      // Filter by Name with Suggestions
-      const filterNameInput = document.getElementById('filterName');
-      const suggestionList = document.getElementById('suggestionList');
-  
-      filterNameInput.addEventListener('keyup', function() {
-        const filter = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#examsTable tbody tr');
-        suggestionList.innerHTML = ''; // Clear previous suggestions
-        let hasSuggestions = false;
-  
-        rows.forEach(row => {
-          const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-          if (name.includes(filter)) {
-            row.style.display = '';
-            // Add suggestion to the list
-            const suggestionItem = document.createElement('li');
-            suggestionItem.className = 'list-group-item list-group-item-action';
-            suggestionItem.textContent = name;
-            suggestionItem.addEventListener('click', function() {
-              filterNameInput.value = name;
-              suggestionList.style.display = 'none';
-              // Hide non-matching rows
-              rows.forEach(r => {
-                const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                r.style.display = n === name ? '' : 'none';
-              });
-            });
-            suggestionList.appendChild(suggestionItem);
-            hasSuggestions = true;
-          } else {
-            row.style.display = 'none';
-          }
-        });
-  
-        suggestionList.style.display = hasSuggestions ? 'block' : 'none';
-      });
-  
-      // Hide suggestion list when clicking outside
-      document.addEventListener('click', function(event) {
-        if (!filterNameInput.contains(event.target)) {
-          suggestionList.style.display = 'none';
-        }
-      });
+   
   
       document.addEventListener('DOMContentLoaded', function() {
       const copyButton = document.getElementById('copyButton');

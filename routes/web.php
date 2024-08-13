@@ -21,6 +21,10 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+///////designation
+Route::get('/designation', [EmployeeController::class, 'designationView'])->name('designation_view');
+Route::post('/designation', [EmployeeController::class, 'designationStore'])->name('designations_store');
+Route::delete('/designation/{id}', [EmployeeController::class, 'designationDelete'])->name('designation_delete');
 //////Employee
 Route::get('employee/view',[EmployeeController::class,'viewEmployee'])->name('employee_view');
 Route::get('employee/create',[EmployeeController::class,'createEmployee'])->name('employees_create');
