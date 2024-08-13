@@ -14,7 +14,7 @@
         </a>
         <div class="collapse" id="ui-basic">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{route('exam')}}">Exam</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('exam-list')}}">Exam</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Exam Schedule</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Grade</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Exam Attendance</a></li>
