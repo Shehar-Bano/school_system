@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('image')->nullable();
             $table->date('joining_date');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

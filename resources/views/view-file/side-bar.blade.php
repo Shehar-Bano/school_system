@@ -21,16 +21,12 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="{{ route('employee_view') }}" aria-expanded="false" aria-controls="form-elements">
-          <i class="icon-columns menu-icon"></i>
+        <a class="nav-link" href="{{ route('employee_view') }}" >
+          <i class="fas fa-user menu-icon"></i>
           <span class="menu-title">Employees</span>
-          <i class="menu-arrow"></i>
+         
         </a>
-        <div class="collapse" id="form-elements">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-          </ul>
-        </div>
+     
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
