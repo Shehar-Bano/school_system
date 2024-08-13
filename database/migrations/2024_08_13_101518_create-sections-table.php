@@ -17,14 +17,14 @@ return new class extends Migration
             $table->string('capacity');
 
             // Define the foreign key columns
-            $table->unsignedBigInteger('employ');
-            $table->foreign('employ')  // Correctly reference the 'employ' column
+            $table->unsignedBigInteger('employee_id');
+            $table->foreign('employee_id')  // Correctly reference the 'employ' column
                   ->references('id')
                   ->on('employees')
                   ->cascadeOnDelete();
 
-            $table->unsignedBigInteger('class');
-            $table->foreign('class')  // Correctly reference the 'class' column
+            $table->unsignedBigInteger('classe_id');
+            $table->foreign('classe_id')  // Correctly reference the 'class' column
                   ->references('id')
                   ->on('classes')
                   ->cascadeOnDelete();
@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('note')->nullable();
             $table->timestamps();
         });
+
+
     }
 
     /**

@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory;
+    public function class(){
+        return $this->hasMany(Classe::class);
+    }
+    public function section(){
+        return $this->hasMany(Section::class);
+    }
 }

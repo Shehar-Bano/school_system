@@ -21,7 +21,7 @@ class EmployeeController extends Controller
         return view('employee.add');
     }
 
-    public function storeEmployee(addEmployeeRequest $request)
+    public function storeEmployee(Request $request)
 {
    $employee=new Employee();
    $employee->name=$request->name;
@@ -65,7 +65,7 @@ public function updateEmployee(Request $request,$id){
         $imagePath=$image->store('images','public');
         $employee->image=$imagePath;
     }
-  
+
      $employee->save();
     return redirect()->back()->with('message','Employee Updated successfully');
 
