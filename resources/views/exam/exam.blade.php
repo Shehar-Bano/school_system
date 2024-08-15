@@ -50,7 +50,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{route('exam')}}">Exam</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('exam-list')}}">Exam</a></li>
                         <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam</li>
                     </ol>
                 </nav>

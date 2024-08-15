@@ -50,7 +50,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{route('exam')}}">Exam</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('exam-list')}}">Exam</a></li>
                         <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">update Exam</li>
                     </ol>
                 </nav>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
-                    <textarea class="form-control" id="examNote" rows="3" name="note" value="{{$exams->note}}" placeholder="Enter any notes"></textarea>
+                    <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes">{{$exams->note}}</textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Exam</button>
             </form>

@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{route('dashboard')}}">
           <i class="icon-grid menu-icon"></i>
           <span class="menu-title">Dashboard</span>
         </a>
@@ -25,33 +25,22 @@
         <a class="nav-link" href="{{ route('employee_view') }}" >
           <i class="fas fa-users menu-icon"></i>
           <span class="menu-title">Employees</span>
-
         </a>
-
-        <div class="collapse" id="form-elements">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-          </ul>
-        </div>
       </li>
       <li class="nav-item">
-        
         <a class="nav-link" href="{{url('/student/list')}}" >
             <i class="fas fa-briefcase menu-icon"></i>
             <span class="menu-title">Student</span>
-
           </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('designation_view') }}" >
           <i class="fas fa-briefcase menu-icon"></i>
           <span class="menu-title">Designation</span>
-
         </a>
-        <div class="collapse" id="form-elements">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-          </ul>
-        </div>
       </li>
+
+
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
           <i class="fas fa-school menu-icon"></i>

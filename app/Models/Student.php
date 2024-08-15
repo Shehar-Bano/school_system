@@ -14,7 +14,7 @@ class Student extends Model
         'registration', 'username', 'password', 'image', 'note'
     ];
 
-    public function classe(){
+    public function class(){
         return $this->belongsTo(Classe::class);
     }
     public function section(){
