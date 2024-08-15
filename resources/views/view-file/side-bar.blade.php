@@ -55,8 +55,8 @@
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{route('class-list')}}">Class</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Section</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Subject</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Syllabus</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('subject_show')}}">Subject</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('syllabus_show')}}">Syllabus</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">Assignment</a></li>
           </ul>
         </div>

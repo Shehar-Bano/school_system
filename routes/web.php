@@ -5,6 +5,8 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SyllabusController;
 use App\Models\Exam;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,24 @@ Route::get('employee/show/{id}',[EmployeeController::class,'showEmployee'])->nam
 Route::get('employee/edit/{id}',[EmployeeController::class,'editEmployee'])->name('employees_edit');
 Route::post('employee/update/{id}',[EmployeeController::class,'updateEmployee'])->name('employees_update');
 Route::delete('employee/delete{id}',[EmployeeController::class,'deleteEmployee'])->name('employees_delete');
+////////////subjact
+Route::get('/subject/view', [SubjectController::class, 'subjectView'])->name('subject_show');
+Route::get('/subject/add', [SubjectController::class, 'addSubjectView'])->name('add_subject');
+Route::post('/subject/store', [SubjectController::class, 'subjectStore'])->name('subject_store');
+Route::get('/subject/edit/{id}', [SubjectController::class, 'editSubjectView'])->name('edit_subject');
+Route::post('/subject/update/{id}', [SubjectController::class, 'subjectUpdate'])->name('subject_update');
+Route::delete('/subject/delete/{id}', [SubjectController::class, 'subjectDelete'])->name('subject_delete');
+///////////syllabus
+Route::get('/syllabus/view', [SyllabusController::class, 'syllabusView'])->name('syllabus_show');
+Route::get('/syllabus/add', [SyllabusController::class, 'addSyllabusView'])->name('add_syllabus');
+Route::post('/syllabus/store', [SyllabusController::class, 'syllabusStore'])->name('syllabus_store');
+Route::get('/syllabus/edit/{id}', [SyllabusController::class, 'editsyllabusView'])->name('edit_syllabus');
+Route::post('/syllabus/update/{id}', [SyllabusController::class, 'syllabusUpdate'])->name('syllabus_update');
+Route::delete('/syllabus/delete/{id}', [SyllabusController::class, 'syllabusDelete'])->name('syllabus_delete');
+Route::get('/download/{file}', [SyllabusController::class, 'download'])->name('file_download');
+
+
+
 ////////////exam
 Route::get('/exam',[ExamController::class,'index'])->name('exam');
 Route::post('/exam',[ExamController::class,'store'])->name('store');

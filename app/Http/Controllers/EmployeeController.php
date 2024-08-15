@@ -27,7 +27,7 @@ class EmployeeController extends Controller
                
                 
                 ]); 
-                return redirect()->back()->with('success','Designation Added Successfully');
+                return redirect()->back()->with('message','Designation Added Successfully');
     }
     public function designationDelete($id){
         $id=Designation::findOrFail($id);
