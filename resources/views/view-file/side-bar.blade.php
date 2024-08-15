@@ -35,11 +35,12 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="{{route('student-list')}}" aria-expanded="false" aria-controls="tables">
-            <i class="fas fa-users menu-icon"></i>
-          <span class="menu-title">Student</span>
+        
+        <a class="nav-link" href="{{url('/student/list')}}" >
+            <i class="fas fa-briefcase menu-icon"></i>
+            <span class="menu-title">Student</span>
 
-        </a>
+          </a>
         <a class="nav-link" href="{{ route('designation_view') }}" >
           <i class="fas fa-briefcase menu-icon"></i>
           <span class="menu-title">Designation</span>

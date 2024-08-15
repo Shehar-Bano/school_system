@@ -20,7 +20,6 @@ class ClasseController extends Controller
      public function store(Request $request){
         $class = new Classe();
         $class->name = $request->name;
-        $class->employee_id = $request->employ;
         $class->note = $request->note;
         $class->save();
         return redirect()->back()->with('message', 'class successfully added!');
@@ -38,9 +37,7 @@ class ClasseController extends Controller
      public function update(Request $request,$id){
         $class = Classe::findOrFail($id);
         $class->name = $request->name;
-        $class->employee_id = $request->employ;
         $class->note = $request->note;
-       
         $class->save();
         return redirect()->back()->with('message', 'Exam successfully updated!');
 
