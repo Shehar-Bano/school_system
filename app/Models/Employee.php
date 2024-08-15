@@ -14,4 +14,5 @@ class Employee extends Model
     public function section(){
         return $this->hasMany(Section::class);
     }
+    
 }
