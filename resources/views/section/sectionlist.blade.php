@@ -14,7 +14,7 @@
           <div class="container">
             <!-- Add New Exam Button -->
             <div class="mb-4">
-              <a href="{{ route('class') }}" class="btn btn-primary">Add New Class</a>
+              <a href="{{ route('section') }}" class="btn btn-primary">Add New section</a>
             </div>
 
             <!-- Filter Inputs -->
@@ -42,31 +42,35 @@
             <!-- Exams Table -->
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Class List</h4>
+                <h4 class="card-title">Section List</h4>
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered" id="examsTable">
                     <thead>
                       <tr>
                         <th>ID</th>
-                        <th>Class Name</th>
+                        <th>Section Name</th>
+                        <th>Capacity</th>
                         <th>Teacher</th>
+                        <th>Class</th>
                         <th>Note</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                        @foreach ($classes as $class)
+                        @foreach ($sections as $section)
                         <tr>
-                            <td>{{ $class->id }}</td>
-                            <td>{{ $class->name }}</td>
-                            <td>{{ $class->employee ? $class->employee->name : 'No employee assigned' }}</td>
-                            <td>{{ $class->note }}</td>
+                            <td>{{ $section->id }}</td>
+                            <td>{{ $section->name }}</td>
+                            <td>{{ $section->capacity }}</td>
+                            <td>{{ $section->employee ? $section->employee->name : 'No employee assigned' }}</td>
+                            <td>{{ $section->classe ? $section->classe->name : 'No class assigned' }}</td>
+                            <td>{{ $section->note }}</td>
                             <td>
                                 <!-- Edit Button -->
-                                <a href="{{ route('edit', ['id' => $class->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                                <a href="{{ route('edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('class_delete', ['id' => $class->id]) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('class_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" title="Delete">

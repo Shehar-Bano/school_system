@@ -15,7 +15,7 @@
           <div class="container">
             <!-- Add New Employee Button -->
             <div class="mb-4">
-              <a href="{{ route('add_syllabus') }}" class="btn btn-primary">Add New Assignment</a>
+              <a href="{{ route('add_assignment') }}" class="btn btn-primary">Add New Assignment</a>
             </div>
           <!-- Filter Inputs -->
 <div class="mb-3 row">

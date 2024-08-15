@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SyllabusController;
 use App\Models\Exam;
@@ -84,3 +85,10 @@ Route::get('/section/list',[SectionController::class,'list'])->name('section-lis
 Route::delete('/section/del/{id}',[SectionController::class,'del'])->name('section_delete');
 Route::get('/section/edit/{id}',[SectionController::class,'edit'])->name('edit');
 Route::post('/section/update/{id}',[SectionController::class,'update'])->name('update');
+/////////////////////student
+Route::get('/student',[StudentController::class,'index'])->name('student');
+Route::post('/student',[StudentController::class,'store'])->name('store');
+Route::get('/student/list',[StudentController::class,'list'])->name('student-list');
+Route::delete('/student/del/{id}',[StudentController::class,'del'])->name('section_delete');
+Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('edit');
+Route::post('/student/update/{id}',[StudentController::class,'update'])->name('update');

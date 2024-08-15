@@ -46,22 +46,26 @@
       <div class="container mt-5">
         <div class="form-container">
             <div class="header">
-                <h4><i class="fas fa-pencil-alt"></i>Class</h4>
+                <h4><i class="fas fa-pencil-alt"></i>Section</h4>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                         <li class="breadcrumb-item">Academic</li>
-                        <li class="breadcrumb-item"><a href="{{route('class')}}">Class</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Class</li>
+                        <li class="breadcrumb-item"><a href="{{route('section')}}">Section</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Section</li>
                     </ol>
                 </nav>
             </div>
 
-            <form class="mt-4" action="{{url('/class')}}" method="POST" >
+            <form class="mt-4" action="{{url('/section')}}" method="POST" >
                 @csrf
                 <div class="mb-3">
-                    <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="examName" name="name" placeholder="Enter exam name" required>
+                    <label for="examName" class="form-label">Section Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="examName" name="name" placeholder="Enter section name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="capacity" class="form-label">Capacity <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="capacity" name="capacity" placeholder="Enter capacity" required>
                 </div>
                 <div class="mb-3">
 
@@ -80,10 +84,24 @@
 
                 </div>
                 <div class="mb-3">
+
+                    <label for="classeSelect" class="form-label">Class <span class="text-danger">*</span></label>
+
+                    <select class="form-control" name="class" id="class" required>
+
+                        <option value="" disabled selected>Select a class</option>
+                        @foreach ($class as $clas)
+                            <option value="{{$clas->id}}">{{$clas->name}}</option>
+                        @endforeach
+                    </select>
+
+
+                </div>
+                <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Add class</button>
+                <button type="submit" class="btn btn-primary">Add section</button>
             </form>
         </div>
     </div>
