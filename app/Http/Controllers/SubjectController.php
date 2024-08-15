@@ -22,9 +22,7 @@ class SubjectController extends Controller
     public function subjectStore(Request $request) {
         $request->validate([
             'subject_name' => 'required',
-            'class_id' => 'required',
-            'teacher_id' => 'required',
-            'final_marks' => 'required|integer',
+                        'final_marks' => 'required|integer',
             'pass_marks' => 'required|integer',
             'sub_code' => 'required',
             'type' => 'required',
@@ -32,8 +30,7 @@ class SubjectController extends Controller
     
         $subject = new Subject();
         $subject->subject_name = $request->subject_name;
-        $subject->class_id = $request->class_id;
-        $subject->teacher_id = $request->teacher_id;
+     
         $subject->final_marks = $request->final_marks;
         $subject->pass_marks = $request->pass_marks;
         $subject->sub_code = $request->sub_code;
@@ -44,7 +41,7 @@ class SubjectController extends Controller
     }
     
     public function editSubjectView($id){
-        $subject=Subject::with('class','teacher')->find($id);
+        $subject=Subject::find($id);
         $employees=Employee::with('designation')->get();
         $classes=classe::get();
        
@@ -53,8 +50,7 @@ class SubjectController extends Controller
     public function subjectUpdate(Request $request, $id){
         $request->validate([
             'subject_name' => 'required',
-            'class_id' => 'required',
-            'teacher_id' => 'required',
+           
             'final_marks' => 'required|integer',
             'pass_marks' => 'required|integer',
             'sub_code' => 'required',
@@ -63,8 +59,6 @@ class SubjectController extends Controller
     
         $subject =Subject::findOrFail($id);
         $subject->subject_name = $request->subject_name;
-        $subject->class_id = $request->class_id;
-        $subject->teacher_id = $request->teacher_id;
         $subject->final_marks = $request->final_marks;
         $subject->pass_marks = $request->pass_marks;
         $subject->sub_code = $request->sub_code;

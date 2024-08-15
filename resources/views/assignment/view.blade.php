@@ -15,7 +15,7 @@
           <div class="container">
             <!-- Add New Employee Button -->
             <div class="mb-4">
-              <a href="{{ route('add_syllabus') }}" class="btn btn-primary">Add New Syllabus</a>
+              <a href="{{ route('add_assignment') }}" class="btn btn-primary">Add New Assignment</a>
             </div>
           <!-- Filter Inputs -->
 <div class="mb-3 row">
@@ -30,22 +30,20 @@
   </div>
   <div class="col-md-2">
     
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
+    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Assignment">
     <!-- Hidden Suggestion List -->
     <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
       <!-- Suggestions will be populated here dynamically -->
     </ul>
   </div>
-  <div class="col-md-2">
-    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
-  </div>
+  
   </div>
  
 </div>
             <!-- Employees Table -->
             <div class="card ">
               <div class="card-body">
-                <h4 class="card-title">Employees List</h4>
+                <h4 class="card-title">Assignment List</h4>
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered text-center table-sm" id="examsTable">
                     <thead >
@@ -54,8 +52,7 @@
                         <th>Date</th>
                         <th>Title</th>
                         <th>Description</th>
-                       
-                      
+                                              
                             <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
@@ -64,32 +61,29 @@
                       @php
                           $count=0;
                       @endphp
-                      @foreach ($syllabuses as $syllabus)
+                      @foreach ($assignments as $assignment)
                       <tr>
                         <td>{{ ++$count }}</td>
-                        <td>{{$syllabus->date }}</td>
-                        <td>{{ $syllabus->title}}</td>
-                        <td>{{$syllabus->description  }}</td>
-                      
+                        <td>{{$assignment->deadline }}</td>
+                        <td>{{ $assignment->title}}</td>
+                        <td>{{$assignment->description  }}</td>                      
+                       
                         
                         <td>
-                         
-                              
-                            <!-- View Button -->
-                          <a href="{{ route('syllabus_detail',['id' => $syllabus->id] ) }}" class="btn btn-info btn-sm" title="View">
+                          <!-- View Button -->
+                          <a href="{{ route('assignmet_detail',['id' => $assignment->id] ) }}" class="btn btn-info btn-sm" title="View">
                             <i class="fas fa-eye"></i>
                           </a>
-                       </div>
                           <!-- Edit Button -->
-                          <a href="{{ route('edit_syllabus',  ['id' => $syllabus->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                          <a href="{{ route('edit_assinment',  ['id' => $assignment->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
 
                           <!-- Delete Button -->
-                          <form id="delete-form-{{ $syllabus->id }}" action="{{ route('syllabus_delete', ['id' => $syllabus->id]) }}" method="POST" style="display:inline;">
+                          <form id="delete-form-{{ $assignment->id }}" action="{{ route('assignment_delete', ['id' => $assignment->id]) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $syllabus->id }})">
+                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $assignment->id }})">
                               <i class="fas fa-trash"></i>
                             </button>
                           </form>

@@ -17,66 +17,106 @@
             <div class="card">
               <div class="card-body">
                 <div class="header">
-                    <h4><i class="fas fa-book"></i> Subject</h4>
+                    <h4><i class="fas fa-file-alt"></i> Assignment</h4>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="{{route('subject_show')}}">Acadamic</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('subject_show')}}">Subject</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Subject</li>
+                            <li class="breadcrumb-item"><a href="{{route('assignment_show')}}">Assignment</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Update Assignment</li>
                         </ol>
                     </nav>
                 </div>
-                <h4 class="card-title mt-5">Add New Subject</h4>
+                <h4 class="card-title mt-5">Update Assignment</h4>
                 <div class="form-container">
                    
-                  <form action="{{ route('subject_store') }}" method="POST" enctype="multipart/form-data">
+                  <form action="{{ route('assignments_update',['id'=>$assignment->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                 
                     <div class="form-group">
-                        <label for="subject_name">Subject Name</label>
-                        <input type="text" class="form-control {{ $errors->has('subject_name') ? 'is-invalid' : '' }}" id="subject_name" name="subject_name" value="{{ old('subject_name') }}">
-                        @error('subject_name')
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" id="title" name="title" value="{{ $assignment->title }}">
+                     
+                        @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                
                     <div class="form-group">
-                        <label for="type">Subject Type</label>
-                        <select class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" id="type" name="type">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" id="description" name="description" value="{{ $assignment->description }}">
+                     
+                        @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline">DeadLine</label>
+                        <input type="date" class="form-control {{ $errors->has('deadline') ? 'is-invalid' : '' }}" id="deadline" name="deadline" value="{{ $assignment->deadline}}">
+                     
+                        @error('deadline')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="class_id">Add Class</label>
+                        <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
                             <option value="" disabled selected></option>
-                            <option value="Mandatory" {{ old('type') == 'Mandatory' ? 'selected' : '' }}>Mandatory</option>
-                            <option value="Optional" {{ old('type') == 'Optional' ? 'selected' : '' }}>Optional</option>
+                            @foreach ($classes as $class)
+                                <option value="{{ $class->id }}" {{ $assignment->class_id == $class->id ? 'selected' : '' }}>
+                                    {{ $class->name }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('type')
+                        @error('class_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="class_id">Add Section</label>
+                        <select class="form-control {{ $errors->has('section_id') ? 'is-invalid' : '' }}" id="section_id" name="section_id">
+                            <option value="" disabled selected></option>
+                            @foreach ($sections as $section)
+                                <option value="{{ $section->id }}" {{ $assignment->section_id == $section->id ? 'selected' : '' }}>
+                                    {{ $section->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('section_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="subject_id">Add Subject</label>
+                        <select class="form-control {{ $errors->has('subject_id') ? 'is-invalid' : '' }}" id="subject_id" name="subject_id">
+                            <option value="" disabled selected></option>
+                            @foreach ($subjects as $subject)
+                                <option value="{{ $subject->id }}" {{ $assignment->subject_id == $subject->id ? 'selected' : '' }}>
+                                    {{ $subject->subject_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('subject_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
                 
                     <div class="form-group">
-                        <label for="pass_marks">Pass Marks</label>
-                        <input type="text" class="form-control {{ $errors->has('pass_marks') ? 'is-invalid' : '' }}" id="pass_marks" name="pass_marks" value="{{ old('pass_marks') }}">
-                        @error('pass_marks')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                        <label for="assignment">File</label>
+                        <input type="file" class="form-control  {{ $errors->has('assignment') ? 'is-invalid' : '' }}" id="assignment" name="assignment"  value="{{ old('assignment') }}" >
+                        @error('assignment')
+                        <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="final_marks">Final Marks</label>
-                        <input type="text" class="form-control {{ $errors->has('final_marks') ? 'is-invalid' : '' }}" id="final_marks" name="final_marks" value="{{ old('final_marks') }}">
-                        @error('final_marks')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="sub_code">Subject Code</label>
-                        <input type="text" class="form-control {{ $errors->has('sub_code') ? 'is-invalid' : '' }}" id="sub_code" name="sub_code" value="{{ old('sub_code') }}">
-                        @error('sub_code')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
+                      </div>
+                              <!-- Link to view or download the current PDF file -->
+                          
+                              <div class="mt-3">
+                                  <a href="{{ asset('storage/' . $assignment->assignment) }}" target="_blank" class="btn btn-secondary">
+                                      View Current Assignment
+                                  </a>
+                              </div>
+                         
+                      </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
                 

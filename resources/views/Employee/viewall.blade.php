@@ -71,9 +71,8 @@
                       <tr>
                         <td>{{ ++$count }}</td>
                         <td>{{ $employee->joining_date }}</td>
-                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 75px; height: auto;">
-                        </td>
-                        <td>{{$employee->name  }}</td>
+                       
+                        <td><img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 25px; height: auto;margin-right:4px">{{$employee->name  }}</td>
                         <td>{{$employee->email }}</td>
                         <td>{{$employee->designation->name  }}</td>
                         <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>
@@ -133,7 +132,30 @@
       })
     }
 
- 
+ // Filter by Date
+const filterDateInput = document.getElementById('filterDate');
+
+filterDateInput.addEventListener('input', function() {
+  const filterDate = this.value;
+  const rows = document.querySelectorAll('#examsTable tbody tr');
+
+  rows.forEach(row => {
+    const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
+    const dateParts = date.split('-');
+    const dateObject = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+
+    if (filterDate) {
+      const filterDateObject = new Date(filterDate);
+      if (dateObject.getTime() >= filterDateObject.getTime()) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    } else {
+      row.style.display = '';
+    }
+  });
+});
   </script>
  <!-- Filter and Suggestion Script -->
 <script>

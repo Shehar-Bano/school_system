@@ -17,4 +17,8 @@ class Section extends Model
     public function student(){
         return $this->hasMany(Student::class);
     }
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class);
+    }
 }

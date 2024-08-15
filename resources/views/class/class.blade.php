@@ -5,36 +5,36 @@
     <!-- Include SweetAlert CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-    .form-container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px rgb(56, 56, 56);
-        box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
-    }
-    .header {
-        background-color: #4B49AC;
-        color: white;
-        padding: 10px;
-        border-radius: 8px 8px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .header h4 {
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
-    .header h4 i {
-        margin-right: 10px;
-    }
-    .header a {
-        color: whitesmoke;
-        text-decoration: none;
-    }
-</style>
+    <style>
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px rgb(56, 56, 56);
+            box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
+        }
+        .header {
+            background-color: #4B49AC;
+            color: white;
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h4 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .header h4 i {
+            margin-right: 10px;
+        }
+        .header a {
+            color: whitesmoke;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -43,6 +43,7 @@
       @include('view-file.side-bar')
       <div class="main-panel">
         <div class="content-wrapper">
+<<<<<<< HEAD
       <div class="container mt-5">
         <div class="form-container">
             <div class="header">
@@ -56,26 +57,52 @@
                     </ol>
                 </nav>
             </div>
+=======
+            <div class="container mt-5">
+                <div class="form-container">
+                    <div class="header">
+                        <h4><i class="fas fa-pencil-alt"></i> Class</h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+                                <li class="breadcrumb-item">Academic</li>
+                                <li class="breadcrumb-item"><a href="{{route('class')}}">Class</a></li>
+                                <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Class</li>
+                            </ol>
+                        </nav>
+                    </div>
+>>>>>>> ded9ca1e0ae3b2db969670d5290c8a2da6190ef0
 
-            <form class="mt-4" action="{{url('/class')}}" method="POST" >
-                @csrf
-                <div class="mb-3">
-                    <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="examName" name="name" placeholder="Enter exam name" required>
+                    <form class="mt-4" action="{{url('/class')}}" method="POST" >
+                        @csrf
+                        <div class="mb-3">
+                            <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="examName" name="name" placeholder="Enter class name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Select Subjects <span class="text-danger">*</span></label>
+                            <div class="form-check ml-5">
+                                @foreach ($subjects as $subject)
+                                    <input class="form-check-input" type="checkbox" name="subject_id[]" value="{{ $subject->id }}" id="subject-{{ $subject->id }}">
+                                    <label class="form-check-label" for="subject-{{ $subject->id }}">
+                                        {{ $subject->subject_name }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="examNote" class="form-label">Note</label>
+                            <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Class</button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="examNote" class="form-label">Note</label>
-                    <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add class</button>
-            </form>
-        </div>
-    </div>
+            </div>
         </div>
       </div>
     </div>
   </div>
-  @include('view-file.script')
+  @include('view-file/script')
   @if(session('message'))
 <script>
     Swal.fire({
@@ -96,6 +123,8 @@
         confirmButtonText: 'OK'
     });
 </script>
+@endif
+
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the form from submitting
@@ -116,11 +145,5 @@
     });
 </script>
 
-@endif
-
-
 </body>
-
 </html>
-
-

@@ -85,19 +85,27 @@ class SyllabusController extends Controller
 
 
     }
+    public function downloadFile($file)
+    {
+        $filePath = storage_path("app/public/files/{$file}");
+        $fileInfo = \Illuminate\Support\Facades\Storage::getFileInfo($filePath);
+    
+        if ($fileInfo) {
+            $headers = [
+                'Content-Type' => $fileInfo->mimeType,
+                'Content-Disposition' => "attachment; filename={$fileInfo->basename}",
+            ];
+    
+            return response()->download($filePath, $fileInfo->basename, $headers);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
 
-//     public function download($file)
-//     {
-//         // Include the 'files/' prefix to the filename if not already included
-//         $filePath = 'files/' . $file;
-    
-//         // if (Storage::disk('public')->exists($filePath))
-//          {
-//             $path = Storage::disk('public')->path($filePath);
-//             return Response::download($path);
-//         }
-    
-//         // abort(404, 'File not found');
-//     }
- }
+    public function syllabusDetail($id){
+        $syllabus=Syllabus::findOrFail($id);
+        return view('syllabus.detail',compact('syllabus'));
+
+    }
+}
     
