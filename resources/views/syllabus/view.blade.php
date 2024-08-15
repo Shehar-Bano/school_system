@@ -15,7 +15,7 @@
           <div class="container">
             <!-- Add New Employee Button -->
             <div class="mb-4">
-              <a href="{{ route('employees_create') }}" class="btn btn-primary">Add New Employee</a>
+              <a href="{{ route('add_syllabus') }}" class="btn btn-primary">Add New Syllabus</a>
             </div>
           <!-- Filter Inputs -->
 <div class="mb-3 row">
@@ -25,41 +25,42 @@
     <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
     <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
   </div>
+  <div class="col-1 text-primary mt-2">
+    Filter By:
+  </div>
   <div class="col-md-2">
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary" placeholder="Filter by Name">
+    
+    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
     <!-- Hidden Suggestion List -->
     <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
       <!-- Suggestions will be populated here dynamically -->
     </ul>
   </div>
   <div class="col-md-2">
-    <input type="text" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Role"> 
+    <input type="date" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Subject Type"> 
     <!-- Hidden Suggestion List -->
     <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
       <!-- Suggestions will be populated here dynamically -->
     </ul>
   </div>
-  <div class="col-md-2">
-    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
-  </div>
+ 
 </div>
             <!-- Employees Table -->
-            <div class="card">
+            <div class="card ">
               <div class="card-body">
                 <h4 class="card-title">Employees List</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center" id="examsTable">
-                    <thead>
+                  <table class="table table-striped table-bordered text-center table-sm" id="examsTable">
+                    <thead >
                       <tr>
                         <th>#</th>
-                        <th>Jioning</th>
-                        <th>Photo</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                       
-                        <th><i class="fa fa-ellipsis-h"></i></th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Uploader</th>
+                        <th>File</th>
+                      
+                            <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -67,33 +68,33 @@
                       @php
                           $count=0;
                       @endphp
-                      @foreach ($employees as $employee)
+                      @foreach ($syllabuses as $syllabus)
                       <tr>
                         <td>{{ ++$count }}</td>
-                        <td>{{ $employee->joining_date }}</td>
-                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 75px; height: auto;">
-                        </td>
-                        <td>{{$employee->name  }}</td>
-                        <td>{{$employee->email }}</td>
-                        <td>{{$employee->designation->name  }}</td>
-                        <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>
-                      
+                        <td>{{ $syllabus->title}}</td>
+                        <td>{{$syllabus->description  }}</td>
+                        <td>{{$syllabus->date }}</td>
+                        <td>{{$syllabus->uploader }}</td>
+                        <td>{{$syllabus->file }}</td>
+                        
                         <td>
-                          <!-- View Button -->
-                          <a href="{{ route('employees_show',['id' => $employee->id] ) }}" class="btn btn-info btn-sm" title="View">
-                            <i class="fas fa-eye"></i>
-                          </a>
-
+                            @if($syllabus->file)
+                            <a href="" class="btn btn-info btn-sm" title="Download">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        @else
+                            No File
+                        @endif
                           <!-- Edit Button -->
-                          <a href="{{ route('employees_edit',  ['id' => $employee->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                          <a href="{{ route('edit_syllabus',  ['id' => $syllabus->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
 
                           <!-- Delete Button -->
-                          <form id="delete-form-{{ $employee->id }}" action="{{ route('employees_delete', ['id' => $employee->id]) }}" method="POST" style="display:inline;">
+                          <form id="delete-form-{{ $syllabus->id }}" action="{{ route('syllabus_delete', ['id' => $syllabus->id]) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $employee->id }})">
+                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $syllabus->id }})">
                               <i class="fas fa-trash"></i>
                             </button>
                           </form>
@@ -148,7 +149,7 @@
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
+      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // assuming name is in 4th column
       if (name.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -160,7 +161,7 @@
           nameSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
             r.style.display = n === name ? '' : 'none';
           });
         });
@@ -192,7 +193,7 @@
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
+      const designation = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming designation is in 6th column
       if (designation.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -204,7 +205,7 @@
           designationSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
+            const d = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
             r.style.display = d === designation ? '' : 'none';
           });
         });

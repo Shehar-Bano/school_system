@@ -71,7 +71,7 @@
 
                         <option value="" disabled selected>Select a Teacher</option>
                         @foreach ($teacher as $tec)
-                            @if ($tec->designation == 'Teacher')
+                            @if ($tec->designation->name == 'Teacher')
                               <option value="{{$tec->id}}">{{$tec->name}}</option>
                             @endif
                             @endforeach

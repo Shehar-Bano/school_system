@@ -25,5 +25,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<style>
+  .form-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px rgb(56, 56, 56);
+      box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
+  }
+  .header {
+      background-color: #4B49AC;
+      color: white;
+      padding: 10px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+  .header h4 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+  }
+  .header h4 i {
+      margin-right: 10px;
+  }
+  .header a {
+      color: whitesmoke;
+      text-decoration: none;
+  }
+</style>
   </head>

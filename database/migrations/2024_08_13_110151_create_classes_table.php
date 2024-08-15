@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('classes', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->string('name');
-            $table->unsignedBigInteger('employee_id'); // Foreign key column
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade'); // Correct foreign key constraint
             $table->string('note');
-            $table->timestamps();
+    $table->timestamps();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('classes');
     }
 };
