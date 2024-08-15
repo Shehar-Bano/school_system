@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExamController;
@@ -51,7 +52,14 @@ Route::post('/syllabus/store', [SyllabusController::class, 'syllabusStore'])->na
 Route::get('/syllabus/edit/{id}', [SyllabusController::class, 'editsyllabusView'])->name('edit_syllabus');
 Route::post('/syllabus/update/{id}', [SyllabusController::class, 'syllabusUpdate'])->name('syllabus_update');
 Route::delete('/syllabus/delete/{id}', [SyllabusController::class, 'syllabusDelete'])->name('syllabus_delete');
-Route::get('/download/{file}', [SyllabusController::class, 'download'])->name('file_download');
+Route::get('/download_file/{file}',[SyllabusController::class, 'downloadFile'])->name('download_file');
+/////assignment
+Route::get('/assignment/view', [AssignmentController::class, 'assignmentView'])->name('assignment_show');
+Route::get('/assignment/add', [AssignmentController::class, 'addAssignmentView'])->name('add_assignment');
+Route::post('/assignment/store', [AssignmentController::class, 'assignmentStore'])->name('assignment_store');
+Route::get('/assignment/edit/{id}', [AssignmentController::class, 'editAssignmentView'])->name('edit_assignment');
+Route::post('/assignment/update/{id}', [AssignmentController::class, 'assignmentUpdate'])->name('assignment_update');
+Route::delete('/assignment/delete/{id}', [AssignmentController::class, 'assignmentDelete'])->name('assignment_delete');
 
 
 

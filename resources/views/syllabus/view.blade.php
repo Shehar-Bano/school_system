@@ -37,11 +37,8 @@
     </ul>
   </div>
   <div class="col-md-2">
-    <input type="date" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Subject Type"> 
-    <!-- Hidden Suggestion List -->
-    <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
+    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
+  </div>
   </div>
  
 </div>
@@ -54,9 +51,10 @@
                     <thead >
                       <tr>
                         <th>#</th>
+                        <th>Date</th>
                         <th>Title</th>
                         <th>Description</th>
-                        <th>Date</th>
+                       
                         <th>Uploader</th>
                         <th>File</th>
                       
@@ -71,20 +69,16 @@
                       @foreach ($syllabuses as $syllabus)
                       <tr>
                         <td>{{ ++$count }}</td>
+                        <td>{{$syllabus->date }}</td>
                         <td>{{ $syllabus->title}}</td>
                         <td>{{$syllabus->description  }}</td>
-                        <td>{{$syllabus->date }}</td>
+                      
                         <td>{{$syllabus->uploader }}</td>
                         <td>{{$syllabus->file }}</td>
                         
                         <td>
-                            @if($syllabus->file)
-                            <a href="" class="btn btn-info btn-sm" title="Download">
-                                <i class="fas fa-download"></i>
-                            </a>
-                        @else
-                            No File
-                        @endif
+                          {{-- <button onclick="downloadFile('{{ $syllabus->file }}')" class="btn btn-info btn-sm" >  <i class="fas fa-download"></i></button>
+                       --}}
                           <!-- Edit Button -->
                           <a href="{{ route('edit_syllabus',  ['id' => $syllabus->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
@@ -117,6 +111,26 @@
     </div>
   </div>
   @include('view-file.script')
+ 
+
+<script>
+  function downloadFile(file) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/download_file/${file}`, true);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file;
+        a.click();
+      }
+    };
+    xhr.send();
+  }
+</script>
   <script>
     function confirmDelete(employeeId) {
       Swal.fire({
@@ -135,7 +149,35 @@
     }
 
  
-  </script>
+</script>
+<script>
+  // Filter by Date
+  const filterDateInput = document.getElementById('filterDate');
+
+  filterDateInput.addEventListener('change', function() {
+    const filterDate = this.value;
+    const rows = document.querySelectorAll('#examsTable tbody tr');
+
+    if (filterDate) {
+      rows.forEach(row => {
+        const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
+        const filterDateObj = new Date(filterDate);
+        const dateObj = new Date(date);
+
+        if (dateObj.toDateString() === filterDateObj.toDateString()) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    } else {
+      // If filter date is cleared, show all rows
+      rows.forEach(row => {
+        row.style.display = '';
+      });
+    }
+  });
+</script>
  <!-- Filter and Suggestion Script -->
 <script>
   // Filter by Name with Suggestions
@@ -193,7 +235,7 @@
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const designation = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming designation is in 6th column
+      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
       if (designation.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -205,7 +247,7 @@
           designationSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const d = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
             r.style.display = d === designation ? '' : 'none';
           });
         });

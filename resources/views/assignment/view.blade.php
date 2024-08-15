@@ -15,7 +15,7 @@
           <div class="container">
             <!-- Add New Employee Button -->
             <div class="mb-4">
-              <a href="{{ route('employees_create') }}" class="btn btn-primary">Add New Employee</a>
+              <a href="{{ route('add_syllabus') }}" class="btn btn-primary">Add New Assignment</a>
             </div>
           <!-- Filter Inputs -->
 <div class="mb-3 row">
@@ -25,41 +25,39 @@
     <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
     <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
   </div>
+  <div class="col-1 text-primary mt-2">
+    Filter By:
+  </div>
   <div class="col-md-2">
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary" placeholder="Filter by Name">
+    
+    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
     <!-- Hidden Suggestion List -->
     <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
       <!-- Suggestions will be populated here dynamically -->
     </ul>
   </div>
   <div class="col-md-2">
-    <input type="text" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Role"> 
-    <!-- Hidden Suggestion List -->
-    <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
-  <div class="col-md-2">
     <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
   </div>
+  </div>
+ 
 </div>
             <!-- Employees Table -->
-            <div class="card">
+            <div class="card ">
               <div class="card-body">
-                <h4 class="card-title">Employees List</h4>
+                <h4 class="card-title">Assignment List</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center" id="examsTable">
-                    <thead>
+                  <table class="table table-striped table-bordered text-center table-sm" id="examsTable">
+                    <thead >
                       <tr>
                         <th>#</th>
-                        <th>Jioning</th>
-                        <th>Photo</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                       
-                        <th><i class="fa fa-ellipsis-h"></i></th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                         <th>Uploader</th>
+                        <th>File</th>
+                      
+                            <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -67,33 +65,28 @@
                       @php
                           $count=0;
                       @endphp
-                      @foreach ($employees as $employee)
+                      @foreach ($assignments as $assignment)
                       <tr>
                         <td>{{ ++$count }}</td>
-                        <td>{{ $employee->joining_date }}</td>
-                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 75px; height: auto;">
-                        </td>
-                        <td>{{$employee->name  }}</td>
-                        <td>{{$employee->email }}</td>
-                        <td>{{$employee->designation->name  }}</td>
-                        <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>
-                      
+                        <td>{{$assignment->deadline }}</td>
+                        <td>{{ $syllabus->title}}</td>
+                        <td>{{$syllabus->description  }}</td>                      
+                        <td>{{$syllabus->uploader }}</td>
+                        <td>{{$syllabus->assignment }}</td>
+                        
                         <td>
-                          <!-- View Button -->
-                          <a href="{{ route('employees_show',['id' => $employee->id] ) }}" class="btn btn-info btn-sm" title="View">
-                            <i class="fas fa-eye"></i>
-                          </a>
-
+                          {{-- <button onclick="downloadFile('{{ $syllabus->file }}')" class="btn btn-info btn-sm" >  <i class="fas fa-download"></i></button>
+                       --}}
                           <!-- Edit Button -->
-                          <a href="{{ route('employees_edit',  ['id' => $employee->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                          <a href="{{ route('edit_syllabus',  ['id' => $assignment->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
 
                           <!-- Delete Button -->
-                          <form id="delete-form-{{ $employee->id }}" action="{{ route('employees_delete', ['id' => $employee->id]) }}" method="POST" style="display:inline;">
+                          <form id="delete-form-{{ $assignment->id }}" action="{{ route('syllabus_delete', ['id' => $assignment->id]) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $employee->id }})">
+                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $assignment->id }})">
                               <i class="fas fa-trash"></i>
                             </button>
                           </form>
@@ -116,6 +109,26 @@
     </div>
   </div>
   @include('view-file.script')
+ 
+
+<script>
+  function downloadFile(file) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `/download_file/${file}`, true);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const blob = xhr.response;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file;
+        a.click();
+      }
+    };
+    xhr.send();
+  }
+</script>
   <script>
     function confirmDelete(employeeId) {
       Swal.fire({
@@ -133,31 +146,36 @@
       })
     }
 
- // Filter by Date
-const filterDateInput = document.getElementById('filterDate');
+ 
+</script>
+<script>
+  // Filter by Date
+  const filterDateInput = document.getElementById('filterDate');
 
-filterDateInput.addEventListener('input', function() {
-  const filterDate = this.value;
-  const rows = document.querySelectorAll('#examsTable tbody tr');
-
-  rows.forEach(row => {
-    const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
-    const dateParts = date.split('-');
-    const dateObject = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+  filterDateInput.addEventListener('change', function() {
+    const filterDate = this.value;
+    const rows = document.querySelectorAll('#examsTable tbody tr');
 
     if (filterDate) {
-      const filterDateObject = new Date(filterDate);
-      if (dateObject.getTime() >= filterDateObject.getTime()) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+      rows.forEach(row => {
+        const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
+        const filterDateObj = new Date(filterDate);
+        const dateObj = new Date(date);
+
+        if (dateObj.toDateString() === filterDateObj.toDateString()) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
     } else {
-      row.style.display = '';
+      // If filter date is cleared, show all rows
+      rows.forEach(row => {
+        row.style.display = '';
+      });
     }
   });
-});
-  </script>
+</script>
  <!-- Filter and Suggestion Script -->
 <script>
   // Filter by Name with Suggestions
@@ -171,7 +189,7 @@ filterDateInput.addEventListener('input', function() {
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
+      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // assuming name is in 4th column
       if (name.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -183,7 +201,7 @@ filterDateInput.addEventListener('input', function() {
           nameSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
             r.style.display = n === name ? '' : 'none';
           });
         });

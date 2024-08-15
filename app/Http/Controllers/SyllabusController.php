@@ -85,19 +85,21 @@ class SyllabusController extends Controller
 
 
     }
-
-//     public function download($file)
-//     {
-//         // Include the 'files/' prefix to the filename if not already included
-//         $filePath = 'files/' . $file;
+    public function downloadFile($file)
+    {
+        $filePath = storage_path("app/public/files/{$file}");
+        $fileInfo = \Illuminate\Support\Facades\Storage::getFileInfo($filePath);
     
-//         // if (Storage::disk('public')->exists($filePath))
-//          {
-//             $path = Storage::disk('public')->path($filePath);
-//             return Response::download($path);
-//         }
+        if ($fileInfo) {
+            $headers = [
+                'Content-Type' => $fileInfo->mimeType,
+                'Content-Disposition' => "attachment; filename={$fileInfo->basename}",
+            ];
     
-//         // abort(404, 'File not found');
-//     }
- }
+            return response()->download($filePath, $fileInfo->basename, $headers);
+        } else {
+            abort(404, 'File not found');
+        }
+    }
+}
     
