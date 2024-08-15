@@ -34,38 +34,6 @@
                     @csrf
                 
                     <div class="form-group">
-                        <label for="teacher_id">Add Teacher</label>
-                        <select class="form-control {{ $errors->has('teacher_id') ? 'is-invalid' : '' }}" id="teacher_id" name="teacher_id">
-                            <option value="" disabled selected></option>
-                            @foreach ($employees as $employee)
-                                @if($employee->designation->name == "Teacher")
-                                    <option value="{{ $employee->id }}" {{ old('teacher_id') == $employee->id ? 'selected' : '' }}>
-                                        {{ $employee->name }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        </select>
-                        @error('teacher_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="class_id">Add Class</label>
-                        <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
-                            <option value="" disabled selected></option>
-                            @foreach ($classes as $class)
-                                <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
-                                    {{ $class->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('class_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
                         <label for="subject_name">Subject Name</label>
                         <input type="text" class="form-control {{ $errors->has('subject_name') ? 'is-invalid' : '' }}" id="subject_name" name="subject_name" value="{{ old('subject_name') }}">
                         @error('subject_name')

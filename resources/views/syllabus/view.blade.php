@@ -55,8 +55,6 @@
                         <th>Title</th>
                         <th>Description</th>
                        
-                        <th>Uploader</th>
-                        <th>File</th>
                       
                             <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
@@ -73,12 +71,15 @@
                         <td>{{ $syllabus->title}}</td>
                         <td>{{$syllabus->description  }}</td>
                       
-                        <td>{{$syllabus->uploader }}</td>
-                        <td>{{$syllabus->file }}</td>
                         
                         <td>
-                          {{-- <button onclick="downloadFile('{{ $syllabus->file }}')" class="btn btn-info btn-sm" >  <i class="fas fa-download"></i></button>
-                       --}}
+                         
+                              
+                            <!-- View Button -->
+                          <a href="{{ route('syllabus_detail',['id' => $syllabus->id] ) }}" class="btn btn-info btn-sm" title="View">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                       </div>
                           <!-- Edit Button -->
                           <a href="{{ route('edit_syllabus',  ['id' => $syllabus->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
@@ -191,7 +192,7 @@
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // assuming name is in 4th column
+      const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase(); // assuming name is in 4th column
       if (name.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -203,7 +204,7 @@
           nameSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const n = r.querySelector('td:nth-child(3)').textContent.toLowerCase();
             r.style.display = n === name ? '' : 'none';
           });
         });

@@ -71,7 +71,7 @@
               <table class="table table-bordered">
                   <tr>
                     <th>Designation</th>
-                    <td>{{ $employee->designation }}</td>
+                    <td>{{ $employee->designation->name }}</td>
                   </tr>
                   <tr>
                     <th>Date of Birth</th>

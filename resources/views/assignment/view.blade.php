@@ -30,15 +30,13 @@
   </div>
   <div class="col-md-2">
     
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
+    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Assignment">
     <!-- Hidden Suggestion List -->
     <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
       <!-- Suggestions will be populated here dynamically -->
     </ul>
   </div>
-  <div class="col-md-2">
-    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
-  </div>
+  
   </div>
  
 </div>
@@ -54,9 +52,7 @@
                         <th>Date</th>
                         <th>Title</th>
                         <th>Description</th>
-                         <th>Uploader</th>
-                        <th>File</th>
-                      
+                                              
                             <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
@@ -69,21 +65,22 @@
                       <tr>
                         <td>{{ ++$count }}</td>
                         <td>{{$assignment->deadline }}</td>
-                        <td>{{ $syllabus->title}}</td>
-                        <td>{{$syllabus->description  }}</td>                      
-                        <td>{{$syllabus->uploader }}</td>
-                        <td>{{$syllabus->assignment }}</td>
+                        <td>{{ $assignment->title}}</td>
+                        <td>{{$assignment->description  }}</td>                      
+                       
                         
                         <td>
-                          {{-- <button onclick="downloadFile('{{ $syllabus->file }}')" class="btn btn-info btn-sm" >  <i class="fas fa-download"></i></button>
-                       --}}
+                          <!-- View Button -->
+                          <a href="{{ route('assignmet_detail',['id' => $assignment->id] ) }}" class="btn btn-info btn-sm" title="View">
+                            <i class="fas fa-eye"></i>
+                          </a>
                           <!-- Edit Button -->
-                          <a href="{{ route('edit_syllabus',  ['id' => $assignment->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                          <a href="{{ route('edit_assinment',  ['id' => $assignment->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
 
                           <!-- Delete Button -->
-                          <form id="delete-form-{{ $assignment->id }}" action="{{ route('syllabus_delete', ['id' => $assignment->id]) }}" method="POST" style="display:inline;">
+                          <form id="delete-form-{{ $assignment->id }}" action="{{ route('assignment_delete', ['id' => $assignment->id]) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $assignment->id }})">
@@ -189,7 +186,7 @@
     let hasSuggestions = false;
 
     rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // assuming name is in 4th column
+      const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase(); // assuming name is in 4th column
       if (name.includes(filter)) {
         row.style.display = '';
         // Add suggestion to the list
@@ -201,7 +198,7 @@
           nameSuggestionList.style.display = 'none';
           // Hide non-matching rows
           rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            const n = r.querySelector('td:nth-child(3)').textContent.toLowerCase();
             r.style.display = n === name ? '' : 'none';
           });
         });

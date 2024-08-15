@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\classe;
+use App\Models\Section;
 use App\Models\Student;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -10,67 +11,71 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $teacher= Employee::get();
-        $class = Classe::get();
-        return view('student.student', compact('students','class','teacher'));
+        $sections= Section::get();
+        $classes = Classe::get();
+        return view('student.students', compact('classes','sections'));
     }
     public function list(){
-        $sections = Student::with('employee','classe')->get();
-        return view('section.studentlist',compact('sections'));
+        $students = Student::with('employee','classe')->get();
+        return view('student.studentlist',compact('students'));
      }
- public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'guardian' => 'required|string',
-            'admissiondate' => 'required|date',
-            'dob' => 'required|date',
-            'gender' => 'required|string',
-            'class' => 'required|exists:classes,id',
-            'section' => 'required|exists:sections,id',
-            'group' => 'required|string',
-            // Add other validations as needed
-        ]);
+     public function store(Request $request)
+     {
+        // dd($request);
+        //  Validate the request data
+         $request->validate([
+             'name' => 'required|string|max:255',
+             'gurdian' => 'required|string|max:255',
+             'admissiondate' => 'required|date',
+             'dob' => 'required|date',
+             'gender' => 'required|string|in:male,female,other',
+             'religion' => 'nullable|string|max:255',
+             'email' => 'nullable|email|max:255',
+             'phone' => 'nullable|string|max:255',
+             'address' => 'nullable|string|max:255',
+             'class' => 'required',
+             'section' => 'required',
+             'group' => 'required|string|in:arts,science,commerce',
+             'registration' => 'nullable|string|max:255',
+             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
 
-        // Handle file upload if there's an image
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('students', 'public');
-        } else {
-            $imagePath = null;
-        }
+         ]);
 
-        // Create the student
-        $student = new Student([
-            'name' => $request->input('name'),
-            'guardian' => $request->input('guardian'),
-            'admissiondate' => $request->input('admissiondate'),
-            'dob' => $request->input('dob'),
-            'gender' => $request->input('gender'),
-            'religion' => $request->input('religion'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
-            'class_id' => $request->input('class'),
-            'section_id' => $request->input('section'),
-            'group' => $request->input('group'),
-            'registration' => $request->input('registration'),
-            'username' => $request->input('username'),
-            'password' => bcrypt($request->input('password')),
-            'image' => $imagePath,
-            'note' => $request->input('note'),
-        ]);
+         // Handle file upload if there's an image
+         $imagePath = $request->hasFile('image')
+            ? $request->file('image')->store('students', 'public')
+            : null;
 
-        // Save the student
-        $student->save();
+         // Create the student
+         $student = Student::create([
+             'name' => $request->input('name'),
+             'gurdian' => $request->input('gurdian'),
+             'admissiondate' => $request->input('admissiondate'),
+             'dob' => $request->input('dob'),
+             'gender' => $request->input('gender'),
+             'religion' => $request->input('religion'),
+             'email' => $request->input('email'),
+             'phone' => $request->input('phone'),
+             'address' => $request->input('address'),
+             'class_id' => $request->input('class'),
+             'section_id' => $request->input('section'),
+             'group' => $request->input('group'),
+             'registration' => $request->input('registration'),
+             'image' => $imagePath,
 
-        // Redirect with success message
-        return redirect()->route('students.create')->with('message', 'Student added successfully!');
 
-    }
+         ]);
 
-    public function show($id)
+
+         // Redirect with success message
+         return redirect()->back()->with('message', 'Student added successfully!');
+     }
+
+
+    public function del($id)
     {
         $student = Student::findOrFail($id);
-        return view('students.show', compact('student'));
+        $student->delete();
+        return redirect()->back()->with('message','deleted successfully');
     }
 }

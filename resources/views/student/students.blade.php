@@ -10,7 +10,6 @@
         background-color: white;
         padding: 20px;
         border-radius: 8px;
-        border: 1px solid rgb(56, 56, 56);
         box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
     }
     .header {
@@ -37,36 +36,36 @@
 </style>
 </head>
 <body>
-  <div class="container-scroller">
-    @include('view-file/nav')
-    <div class="container-fluid page-body-wrapper">
-      @include('view-file.side-bar')
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="container mt-5">
-            <div class="form-container">
-                <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i>Add Student</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item">Academic</li>
-                            <li class="breadcrumb-item"><a href="{{route('students')}}">Students</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Student</li>
-                        </ol>
-                    </nav>
-                </div>
+    <div class="container-scroller">
+      @include('view-file/nav')
+      <div class="container-fluid page-body-wrapper">
+        @include('view-file.side-bar')
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="container mt-5">
+              <div class="form-container">
+                  <div class="header">
+                      <h4><i class="fas fa-pencil-alt"></i>Add Student</h4>
+                      <nav aria-label="breadcrumb">
+                          <ol class="breadcrumb mb-0">
+                              <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+                              <li class="breadcrumb-item">Academic</li>
+                              <li class="breadcrumb-item"><a href="{{route('student-list')}}">Students</a></li>
+                              <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Student</li>
+                          </ol>
+                      </nav>
+                  </div>
 
-                <form class="mt-4" action="{{url('/students')}}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                  <form id="studentForm" class="mt-4" action="{{url('/student')}}" method="POST" enctype="multipart/form-data">
+                      @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Student Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Enter student name" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="guardian" class="form-label">Guardian <span class="text-danger">*</span></label>
-                        <select class="form-control" id="guardian" name="guardian" required>
+                        <label for="gurdian" class="form-label">Guardian <span class="text-danger">*</span></label>
+                        <select class="form-control" id="gurdian" name="gurdian" required>
                             <option value="" disabled selected>Select Guardian</option>
                             <option value="father">Father</option>
                             <option value="mother">Mother</option>
@@ -150,16 +149,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-                    </div>
-
-                    <div class="mb-3">
                         <label for="image" class="form-label">Upload Image</label>
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
@@ -168,9 +157,8 @@
                         <label for="note" class="form-label">Note</label>
                         <textarea class="form-control" id="note" rows="3" name="note" placeholder="Enter any notes"></textarea>
                     </div>
-
-                    <button type="submit" class="btn btn-primary">Add Student</button>
-                </form>
+                    <input type="submit" id="submitBtn" class="btn btn-primary" value="Add Student">
+                  </form>
             </div>
           </div>
         </div>
@@ -178,6 +166,7 @@
     </div>
   </div>
   @include('view-file.script')
+
   @if(session('message'))
     <script>
         Swal.fire({
@@ -199,5 +188,23 @@
         });
     </script>
   @endif
+
+  {{-- <script>
+      document.getElementById('submitBtn').addEventListener('click', function(e) {
+          Swal.fire({
+              title: 'Are you sure?',
+              text: "You are about to add this student.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, add it!'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  document.getElementById('studentForm').submit();
+              }
+          })
+      });
+  </script> --}}
 </body>
 </html>

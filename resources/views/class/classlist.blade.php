@@ -49,7 +49,6 @@
                       <tr>
                         <th>ID</th>
                         <th>Class Name</th>
-                        <th>Teacher</th>
                         <th>Note</th>
                         <th>Actions</th>
                       </tr>
@@ -59,7 +58,6 @@
                         <tr>
                             <td>{{ $class->id }}</td>
                             <td>{{ $class->name }}</td>
-                            <td>{{ $class->employee ? $class->employee->name : 'No employee assigned' }}</td>
                             <td>{{ $class->note }}</td>
                             <td>
                                 <!-- Edit Button -->

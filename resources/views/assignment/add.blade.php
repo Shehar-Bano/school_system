@@ -30,7 +30,7 @@
                 <h4 class="card-title mt-5">Add New Assignment</h4>
                 <div class="form-container">
                    
-                  <form action="{{ route('syllabus_store') }}" method="POST" enctype="multipart/form-data">
+                  <form action="{{ route('assignments_store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                 
                     <div class="form-group">
@@ -51,7 +51,7 @@
                     </div>
                     <div class="form-group">
                         <label for="deadline">DeadLine</label>
-                        <input type="text" class="form-control {{ $errors->has('deadline') ? 'is-invalid' : '' }}" id="deadline" name="deadline" value="{{ old('deadline') }}">
+                        <input type="date" class="form-control {{ $errors->has('deadline') ? 'is-invalid' : '' }}" id="deadline" name="deadline" value="{{ old('deadline') }}">
                      
                         @error('deadline')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -102,9 +102,9 @@
                     
                 
                     <div class="form-group">
-                        <label for="file">File</label>
-                        <input type="file" class="form-control  {{ $errors->has('file') ? 'is-invalid' : '' }}" id="file" name="file"  value="{{ old('file') }}" >
-                        @error('file')
+                        <label for="assignment">File</label>
+                        <input type="file" class="form-control  {{ $errors->has('assignment') ? 'is-invalid' : '' }}" id="assignment" name="assignment"  value="{{ old('assignment') }}" >
+                        @error('assignment')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                       </div>

@@ -13,14 +13,6 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('teacher_id');
-            $table->foreign('teacher_id')  // Correctly reference the 'employ' column
-            ->references('id')
-            ->on('employees')
-            ->cascadeOnDelete();
-
-            $table->unsignedBigInteger('class_id');
-            $table->foreign('class_id')->references('id')->on('classes')->cascadeOnDelete();
             $table->string('subject_name');
             $table->string('type');
             $table->string('pass_marks');

@@ -71,9 +71,8 @@
                       <tr>
                         <td>{{ ++$count }}</td>
                         <td>{{ $employee->joining_date }}</td>
-                        <td>  <img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 75px; height: auto;">
-                        </td>
-                        <td>{{$employee->name  }}</td>
+                       
+                        <td><img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 25px; height: auto;margin-right:4px">{{$employee->name  }}</td>
                         <td>{{$employee->email }}</td>
                         <td>{{$employee->designation->name  }}</td>
                         <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>

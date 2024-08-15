@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Class_Subject;
 use App\Models\classe;
 use App\Models\Employee;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class ClasseController extends Controller
 {
     public function index(){
+      $subjects=Subject::get();
+      
         $teacher= Employee::get();
-        return view('class.class', compact('teacher'));
+        return view('class.class', compact('subjects'));
     }
     public function list(){
         $classes = classe::with('employee')->get();
@@ -20,9 +24,10 @@ class ClasseController extends Controller
      public function store(Request $request){
         $class = new Classe();
         $class->name = $request->name;
-        $class->employee_id = $request->employ;
         $class->note = $request->note;
         $class->save();
+        $subejcts=new Class_Subject();
+        
         return redirect()->back()->with('message', 'class successfully added!');
      }
      public function del($id){
@@ -38,9 +43,7 @@ class ClasseController extends Controller
      public function update(Request $request,$id){
         $class = Classe::findOrFail($id);
         $class->name = $request->name;
-        $class->employee_id = $request->employ;
         $class->note = $request->note;
-       
         $class->save();
         return redirect()->back()->with('message', 'Exam successfully updated!');
 

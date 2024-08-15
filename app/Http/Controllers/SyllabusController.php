@@ -101,5 +101,11 @@ class SyllabusController extends Controller
             abort(404, 'File not found');
         }
     }
+
+    public function syllabusDetail($id){
+        $syllabus=Syllabus::findOrFail($id);
+        return view('syllabus.detail',compact('syllabus'));
+
+    }
 }
     

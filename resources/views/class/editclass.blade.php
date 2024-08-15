@@ -64,22 +64,7 @@
                     <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="examName" name="name" value="{{$classes->name}}" placeholder="Enter exam name" required>
                 </div>
-                <div class="mb-3">
-
-                    <label for="teacherSelect" class="form-label">Teacher <span class="text-danger">*</span></label>
-
-                    <select class="form-control" name="employ" id="teacherSelect" required>
-
-                        <option disabled selected>Select a Teacher</option>
-                        @foreach ($teacher as $tec)
-                            @if ($tec->designation == 'Teacher')
-                              <option value="{{$tec->id}} "{{$tec->name==$classes->employee->name ? 'selected' : ''}}>{{$tec->name}}</option>
-                            @endif
-                            @endforeach
-                    </select>
-
-
-                </div>
+               
                 <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note"  placeholder="Enter any notes">{{$classes->note}}</textarea>
