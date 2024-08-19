@@ -46,66 +46,48 @@
           <div class="container mt-5">
             <div class="form-container">
                 <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i> Add Exam Schedule</h4>
+                    <h4><i class="fas fa-pencil-alt"></i> Update Exam Schedule</h4>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam Schedule</li>
+                            {{-- <li class="breadcrumb-item"><a href="{{route('date-sheet-list',['id'=>$datesheets->id])}}">Datesheet</a></li> --}}
+                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Update Exam Subject</li>
                         </ol>
                     </nav>
                 </div>
 
-                <form class="mt-4" action="{{route('exam_schedule_store')}}" method="POST">
+
+
+                <form class="mt-1" action="{{ route('exam.schedule.datesheet.update', ['id' => $exam->id]) }}" method="POST">
                     @csrf
-                    <div class="mb-3">
-                        <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
-                        <select class="form-control" id="class_id" name="class_id" required>
-                            <option value="">Select Class</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($classes as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        <div class="col-md-3 px-5">
+                            <label class="form-control" for="subject">{{ $exam->subject->subject_name }}</label>
+                        </div>
+
+                        <!-- Date Selection -->
+                        <div class="col-md-3 mb-3">
+                            <input type="date" class="form-control" name="date" value="{{ $exam->date ?? '' }}" required>
+                        </div>
+
+                        <!-- Start Time -->
+                        <div class="col-md-3 mb-3">
+                            <input type="time" class="form-control" name="start_time" value="{{ $exam->start_time ?? '' }}" required>
+                        </div>
+
+                        <!-- End Time -->
+                        <div class="col-md-3 mb-3">
+                            <input type="time" class="form-control" name="end_time" value="{{ $exam->end_time ?? '' }}" required>
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="exam_id" class="form-label">Exam <span class="text-danger">*</span></label>
-                        <select class="form-control" id="exam_id" name="exam_id" required>
-                            <option value="">Select Exam</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($exams as $exam)
-                                <option value="{{ $exam->id }}">{{ $exam->name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Update Exam Schedule</button>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="section_id" class="form-label">Section <span class="text-danger">*</span></label>
-                        <select class="form-control" id="section_id" name="section_id" required>
-                            <option value="">Select Section</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Start Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="start_date" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="date" class="form-label">End Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="end_date" required>
-                    </div>
-
-
-
-                    <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
                 </form>
+
+
+
             </div>
           </div>
         </div>

@@ -43,7 +43,6 @@
       @include('view-file.side-bar')
       <div class="main-panel">
         <div class="content-wrapper">
-<<<<<<< HEAD
       <div class="container mt-5">
         <div class="form-container">
             <div class="header">
@@ -57,21 +56,6 @@
                     </ol>
                 </nav>
             </div>
-=======
-            <div class="container mt-5">
-                <div class="form-container">
-                    <div class="header">
-                        <h4><i class="fas fa-pencil-alt"></i> Class</h4>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                                <li class="breadcrumb-item">Academic</li>
-                                <li class="breadcrumb-item"><a href="{{route('class')}}">Class</a></li>
-                                <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Class</li>
-                            </ol>
-                        </nav>
-                    </div>
->>>>>>> ded9ca1e0ae3b2db969670d5290c8a2da6190ef0
 
                     <form class="mt-4" action="{{url('/class')}}" method="POST" >
                         @csrf

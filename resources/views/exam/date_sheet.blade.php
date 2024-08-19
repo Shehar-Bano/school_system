@@ -51,66 +51,62 @@
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam Schedule</li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam Subject</li>
                         </ol>
                     </nav>
                 </div>
+            <div class="row mt-4" >
+            <div class="col-md-3 px-5">
+                <label for="date" class="form-label">Subject <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="start_time" class="form-label">Start Time <span class="text-danger">*</span></label>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="end_time" class="form-label">End Time <span class="text-danger">*</span></label>
+            </div>
 
-                <form class="mt-4" action="{{route('exam_schedule_store')}}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
-                        <select class="form-control" id="class_id" name="class_id" required>
-                            <option value="">Select Class</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($classes as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+              </div>
+             <form class="mt-1" action="{{ url('/exam/schedule/datesheet', ['id' => $exam->id]) }}" method="POST">
+    @csrf
+    @foreach($subjects as $subject)
+    <div class="row">
+        <div class="col-md-3 px-5">
+            <label class="form-control" for="subject">{{ $subject->subject_name }}</label>
+            <input type="hidden" class="form-control" name="subject_id[]" value="{{ $subject->id }}" required>
+        </div>
 
-                    <div class="mb-3">
-                        <label for="exam_id" class="form-label">Exam <span class="text-danger">*</span></label>
-                        <select class="form-control" id="exam_id" name="exam_id" required>
-                            <option value="">Select Exam</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($exams as $exam)
-                                <option value="{{ $exam->id }}">{{ $exam->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+        <!-- Date Selection -->
+        <div class="col-md-3 mb-3">
+            <input type="date" class="form-control" name="date[]" required>
+        </div>
 
-                    <div class="mb-3">
-                        <label for="section_id" class="form-label">Section <span class="text-danger">*</span></label>
-                        <select class="form-control" id="section_id" name="section_id" required>
-                            <option value="">Select Section</option>
-                            <!-- Options populated dynamically -->
-                            @foreach($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+        <!-- Start Time -->
+        <div class="col-md-3 mb-3">
+            <input type="time" class="form-control" name="start_time[]" required>
+        </div>
 
-
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Start Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="start_date" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="date" class="form-label">End Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="end_date" required>
-                    </div>
+        <!-- End Time -->
+        <div class="col-md-3 mb-3">
+            <input type="time" class="form-control" name="end_time[]" required>
+        </div>
+    </div>
+    @endforeach
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
+    </div>
+</form>
 
 
-
-                    <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
-                </form>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
   @include('view-file/script')

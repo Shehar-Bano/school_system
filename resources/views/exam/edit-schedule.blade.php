@@ -46,17 +46,18 @@
           <div class="container mt-5">
             <div class="form-container">
                 <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i> Add Exam Schedule</h4>
+                    <h4><i class="fas fa-pencil-alt"></i> update Exam Schedule</h4>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
+                            <li class="breadcrumb-item">Exams</li>
                             <li class="breadcrumb-item"><a href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam Schedule</li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">update Exam Schedule</li>
                         </ol>
                     </nav>
                 </div>
 
-                <form class="mt-4" action="{{route('exam_schedule_store')}}" method="POST">
+                <form class="mt-4" action="{{route('exam-schedule-update',['id'=>$schedule->id])}}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="class_id" class="form-label">Class <span class="text-danger">*</span></label>
@@ -64,7 +65,7 @@
                             <option value="">Select Class</option>
                             <!-- Options populated dynamically -->
                             @foreach($classes as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                <option value="{{ $class->id }}"{{$class->id == $schedule->class_id ? 'selected' : ''}} >{{ $class->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -75,7 +76,7 @@
                             <option value="">Select Exam</option>
                             <!-- Options populated dynamically -->
                             @foreach($exams as $exam)
-                                <option value="{{ $exam->id }}">{{ $exam->name }}</option>
+                                <option value="{{ $exam->id }}"{{$exam->id == $schedule->exam_id ? 'selected' : ''}}>{{ $exam->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -86,25 +87,24 @@
                             <option value="">Select Section</option>
                             <!-- Options populated dynamically -->
                             @foreach($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
+                                <option value="{{ $section->id }}"{{$section->id == $schedule->section_id ? 'selected' : ''}}>{{ $section->name }}</option>
                             @endforeach
                         </select>
                     </div>
 
 
+
                     <div class="mb-3">
-                        <label for="date" class="form-label">Start Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="start_date" required>
+                        <label for="start_time" class="form-label">Start date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="start_time" name="start_date"  value={{$schedule->start_date}} required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="date" class="form-label">End Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="date" name="end_date" required>
+                        <label for="end_time" class="form-label">End date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="end_time" name="end_date" value={{$schedule->end_date}} required>
                     </div>
 
-
-
-                    <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
+                    <button type="submit" class="btn btn-primary">update Exam Schedule</button>
                 </form>
             </div>
           </div>

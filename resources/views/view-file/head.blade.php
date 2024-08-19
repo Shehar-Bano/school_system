@@ -54,5 +54,10 @@
       color: whitesmoke;
       text-decoration: none;
   }
+      .dropdown-toggle::after {
+        display: none;
+    }
+
+
 </style>
   </head>

@@ -49,7 +49,7 @@
                       <tr>
                         <th>ID</th>
                         <th>Exam Name</th>
-                        <th>Date</th>
+
                         <th>Note</th>
                         <th>Actions</th>
                       </tr>
@@ -59,7 +59,7 @@
                       <tr>
                         <td>{{ $exam->id }}</td>
                         <td>{{ $exam->name }}</td>
-                        <td>{{ $exam->date }}</td>
+                       
                         <td>{{ $exam->note }}</td>
                         <td>
                           <!-- Edit Button -->

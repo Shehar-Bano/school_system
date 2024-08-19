@@ -63,10 +63,6 @@
                     <input type="text" class="form-control" id="examName" name="name" placeholder="Enter exam name" required>
                 </div>
                 <div class="mb-3">
-                    <label for="examDate" class="form-label">Date <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="date" id="examDate" required>
-                </div>
-                <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes"></textarea>
                 </div>
