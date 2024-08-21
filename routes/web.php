@@ -15,6 +15,7 @@ use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TimeTableController;
 
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ExamScheduleController;
 
 Route::get('/', function () {
@@ -80,6 +81,14 @@ Route::put('/timeTable/update/{id}', [TimeTableController::class, 'timeTableUpda
 Route::get('/timeTable/delete/{id}', [TimeTableController::class, 'timeTableDelete'])->name('timetable_delete');
 Route::get('/timetable/freeSlot/{id}', [TimeTableController::class, 'timetableFreeSlot'])->name('timetable_freeSlot');
 Route::get('/timetable/occupySlot/{id}', [TimeTableController::class,'timetableOccupySlot'])->name('timetable_occupySlot');
+//////////////attendece
+Route::get('/attendance/view', [AttendanceController::class, 'attendanceView'])->name('teacher_attendence'); 
+Route::post('/attendance/store', [AttendanceController::class, 'attendanceStore'])->name('attendance_store');
+
+
+
+
+
 
 
 
