@@ -51,7 +51,7 @@
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                                 <li class="breadcrumb-item">Academic</li>
-                                <li class="breadcrumb-item"><a href="{{route('class')}}">Class</a></li>
+                                <li class="breadcrumb-item"><a href="{{route('class-list')}}">Class</a></li>
                                 <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Class</li>
                             </ol>
                         </nav>

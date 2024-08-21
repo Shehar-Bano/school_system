@@ -65,18 +65,21 @@
            
             <li class="nav-item"> <a class="nav-link" href="{{route('syllabus_show')}}">Syllabus</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('assignment_show')}}">Assignment</a></li>
+          
           </ul>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-          <i class="icon-grid-2 menu-icon"></i>
-          <span class="menu-title">Tables</span>
+          <i class="fas fa-clock menu-icon"></i>
+          <span class="menu-title">TimeTable</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="tables">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('timeTable')}}">TimeTable</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('timeTable_show')}}">Class TimeTable</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('teacher_timeTable_show')}}">Teacher TimeTable</a></li>
           </ul>
         </div>
       </li>

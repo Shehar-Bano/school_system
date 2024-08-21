@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Class_Subject;
 use App\Models\classe;
+use App\Models\ClassesSubject;
 use App\Models\Employee;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -17,19 +18,30 @@ class ClasseController extends Controller
         return view('class.class', compact('subjects'));
     }
     public function list(){
-        $classes = classe::with('employee')->get();
+        $subjects=ClassesSubject::with('subject')->get();
+        $classes = classe::with('employee','classsubject')->get();
 
-        return view('class.classlist',compact('classes'));
+        return view('class.classlist',compact('classes','subjects'));
      }
-     public function store(Request $request){
-        $class = new Classe();
-        $class->name = $request->name;
-        $class->note = $request->note;
-        $class->save();
-        $subejcts=new Class_Subject();
-        
-        return redirect()->back()->with('message', 'class successfully added!');
+     public function store(Request $request)
+     {
+         // Create a new class instance
+         $class = new Classe();
+         $class->name = $request->name;
+         $class->note = $request->note;
+         $class->save();
+     
+         // Loop through each selected subject and save it with the class
+         foreach ($request->subject_id as $subjectId) {
+             $subject = new ClassesSubject();
+             $subject->class_id = $class->id;
+             $subject->subject_id = $subjectId;
+             $subject->save();
+         }
+     
+         return redirect()->back()->with('message', 'Class successfully added!');
      }
+     
      public function del($id){
         $exams = Classe::findOrFail($id);
         $exams->delete();
@@ -45,6 +57,7 @@ class ClasseController extends Controller
         $class->name = $request->name;
         $class->note = $request->note;
         $class->save();
+
         return redirect()->back()->with('message', 'Exam successfully updated!');
 
      }

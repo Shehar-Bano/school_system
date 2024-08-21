@@ -9,6 +9,7 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\TimeTableController;
 use App\Models\Exam;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,18 @@ Route::get('/assignment/edit/{id}', [AssignmentController::class, 'editAssignmen
 Route::post('/assignment/update/{id}', [AssignmentController::class, 'assignmentUpdate'])->name('assignments_update');
 Route::delete('/assignment/delete/{id}', [AssignmentController::class, 'assignmentDelete'])->name('assignment_delete');
 Route::get('/assignment/detail/{id}',[AssignmentController::class, 'assignmetDetail'])->name('assignmet_detail');
+//////////timeTable
+Route::get('/timeTable', [TimeTableController::class, 'timeTableActions'])->name('timeTable');
+Route::get('/timeTable/class', [TimeTableController::class, 'timeTableView'])->name('timeTable_show');
+Route::get('/timeTable/teacher', [TimeTableController::class, 'timeTableViewTeacher'])->name('teacher_timeTable_show');
+Route::get('/timeTable/add', [TimeTableController::class, 'addTimeTableView'])->name('timeTable_create');
+Route::post('/timeTable/store', [TimeTableController::class, 'timeTableStore'])->name('timeTable_store');
+Route::get('/timeTable/edit/{id}', [TimeTableController::class, 'editTimeTableView'])->name('timetable_edit');
+Route::put('/timeTable/update/{id}', [TimeTableController::class, 'timeTableUpdate'])->name('timeTable_update');
+Route::get('/timeTable/delete/{id}', [TimeTableController::class, 'timeTableDelete'])->name('timetable_delete');
+Route::get('/timetable/freeSlot/{id}', [TimeTableController::class, 'timetableFreeSlot'])->name('timetable_freeSlot');
+Route::get('/timetable/occupySlot/{id}', [TimeTableController::class,'timetableOccupySlot'])->name('timetable_occupySlot');
+
 
 
 

@@ -51,7 +51,7 @@
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                         <li class="breadcrumb-item">Academic</li>
-                        <li class="breadcrumb-item"><a href="{{route('section')}}">Section</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('section-list')}}">Section</a></li>
                         <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Section</li>
                     </ol>
                 </nav>
