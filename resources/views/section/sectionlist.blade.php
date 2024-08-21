@@ -67,7 +67,7 @@
                             <td>{{ $section->note }}</td>
                             <td>
                                 <!-- Edit Button -->
-                                <a href="{{ route('edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                                <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="{{ route('class_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">

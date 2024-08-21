@@ -82,7 +82,7 @@
                           </td>
                             <td>
                                 <!-- Edit Button -->
-                                <a href="{{ route('edit', ['id' => $class->id]) }}" class="btn btn-warning btn-sm" title="Edit">
+                                <a href="{{ route('class-edit', ['id' => $class->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="{{ route('class_delete', ['id' => $class->id]) }}" method="POST" style="display:inline;">

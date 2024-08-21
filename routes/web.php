@@ -1,17 +1,21 @@
 <?php
 
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\ClasseController;
-use App\Http\Controllers\EmployeeController;
+use App\Models\Exam;
+use App\Models\ExamSchedule;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TimeTableController;
-use App\Models\Exam;
-use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\ExamScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -85,26 +89,42 @@ Route::get('/exam',[ExamController::class,'index'])->name('exam');
 Route::post('/exam',[ExamController::class,'store'])->name('store');
 Route::get('/exam/list',[ExamController::class,'list'])->name('exam-list');
 Route::delete('/exam/del/{id}',[ExamController::class,'del'])->name('exam_delete');
-Route::get('/exam/edit/{id}',[ExamController::class,'edit'])->name('edit');
-Route::post('/exam/update/{id}',[ExamController::class,'update'])->name('update');
+Route::get('/exam/edit/{id}',[ExamController::class,'edit'])->name('exam-edit');
+Route::post('/exam/update/{id}',[ExamController::class,'update'])->name('exam-update');
 ///////////////class
 Route::get('/class',[ClasseController::class,'index'])->name('class');
 Route::post('/class',[ClasseController::class,'store'])->name('store');
 Route::get('/class/list',[ClasseController::class,'list'])->name('class-list');
 Route::delete('/class/del/{id}',[ClasseController::class,'del'])->name('class_delete');
-Route::get('/class/edit/{id}',[ClasseController::class,'edit'])->name('edit');
-Route::post('/class/update/{id}',[ClasseController::class,'update'])->name('update');
+Route::get('/class/edit/{id}',[ClasseController::class,'edit'])->name('class-edit');
+Route::post('/class/update/{id}',[ClasseController::class,'update'])->name('class-update');
 /////////////////section
 Route::get('/section',[SectionController::class,'index'])->name('section');
 Route::post('/section',[SectionController::class,'store'])->name('store');
 Route::get('/section/list',[SectionController::class,'list'])->name('section-list');
 Route::delete('/section/del/{id}',[SectionController::class,'del'])->name('section_delete');
-Route::get('/section/edit/{id}',[SectionController::class,'edit'])->name('edit');
-Route::post('/section/update/{id}',[SectionController::class,'update'])->name('update');
+Route::get('/section/edit/{id}',[SectionController::class,'edit'])->name('section-edit');
+Route::post('/section/update/{id}',[SectionController::class,'update'])->name('section-update');
 /////////////////////student
 Route::get('/student',[StudentController::class,'index'])->name('student');
 Route::post('/student',[StudentController::class,'store'])->name('store');
 Route::get('/student/list',[StudentController::class,'list'])->name('student-list');
 Route::delete('/student/del/{id}',[StudentController::class,'del'])->name('section_delete');
-Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('edit');
-Route::post('/student/update/{id}',[StudentController::class,'update'])->name('update');
+Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('student-edit');
+Route::post('/student/update/{id}',[StudentController::class,'update'])->name('student-update');
+////////////////////exam-schedule
+Route::get('/exam/schedule',[ExamScheduleController::class,'index'])->name('exam-schedule');
+Route::post('/exam/schedule',[ExamScheduleController::class,'store'])->name('exam_schedule_store');
+Route::get('/exam/schedule/list',[ExamScheduleController::class,'list'])->name('exam-schedule-list');
+Route::delete('/exam/schedule/del/{id}',[ExamScheduleController::class,'del'])->name('exam-schedule_delete');
+Route::get('/exam/schedule/edit/{id}',[ExamScheduleController::class,'edit'])->name('exam-schedule-edit');
+Route::post('/exam/schedule/update/{id}',[ExamScheduleController::class,'updateschedule'])->name('exam-schedule-update');
+Route::get('/exam/schedule/datesheet/{id}',[ExamScheduleController::class,'datesheetview'])->name('date-sheet');
+Route::post('/exam/schedule/datesheet/{id}',[ExamScheduleController::class,'datesheet']);
+Route::get('/exam/schedule/datesheet/list/{id}/',[ExamScheduleController::class,'datesheetlist'])->name('date-sheet-list');
+Route::delete('/exam/schedule/datesheet/del/{id}',[ExamScheduleController::class,'datedel'])->name('exam-schedule-date_delete');
+Route::get('/exam/schedule/datesheet/edit/{id}',[ExamScheduleController::class,'dateedit'])->name('exam-schedule-date-edit');
+Route::post('/exam/schedule/datesheet/{id}', [ExamScheduleController::class, 'dateupdateschedule'])->name('exam.schedule.datesheet.update');
+///////////////////////result
+Route::get('/result',[ResultController::class,'index'])->name('result');
+

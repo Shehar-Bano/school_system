@@ -152,11 +152,6 @@
                         <label for="image" class="form-label">Upload Image</label>
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
-
-                    <div class="mb-3">
-                        <label for="note" class="form-label">Note</label>
-                        <textarea class="form-control" id="note" rows="3" name="note" placeholder="Enter any notes"></textarea>
-                    </div>
                     <input type="submit" id="submitBtn" class="btn btn-primary" value="Add Student">
                   </form>
             </div>
@@ -189,7 +184,7 @@
     </script>
   @endif
 
-  {{-- <script>
+ <script>
       document.getElementById('submitBtn').addEventListener('click', function(e) {
           Swal.fire({
               title: 'Are you sure?',
@@ -205,6 +200,6 @@
               }
           })
       });
-  </script> --}}
+  </script>
 </body>
 </html>

@@ -27,4 +27,9 @@ class Subject extends Model
  {
      return $this->belongsTo(TimeTable::class);
  }
+ public function dateSheets()
+ {
+     return $this->hasMany(DateSheet::class);
+ }
+
 }

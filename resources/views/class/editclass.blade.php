@@ -51,20 +51,20 @@
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
                         <li class="breadcrumb-item">Academic</li>
-                        <li class="breadcrumb-item"><a href="{{route('class')}}">Class</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('class-list')}}">Class</a></li>
 
                         <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Update Class</li>
                     </ol>
                 </nav>
             </div>
 
-            <form class="mt-4" action="{{route('update',['id'=>$classes->id])}}" method="POST" >
+            <form class="mt-4" action="{{route('class-update',['id'=>$classes->id])}}" method="POST" >
                 @csrf
                 <div class="mb-3">
                     <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="examName" name="name" value="{{$classes->name}}" placeholder="Enter exam name" required>
+                    <input type="text" class="form-control" id="examName" name="name" value="{{$classes->name}}" placeholder="Enter class name" required>
                 </div>
-               
+
                 <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note"  placeholder="Enter any notes">{{$classes->note}}</textarea>

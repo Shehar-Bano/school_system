@@ -6,6 +6,7 @@ use App\Models\Section;
 use App\Models\Student;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -16,7 +17,7 @@ class StudentController extends Controller
         return view('student.students', compact('classes','sections'));
     }
     public function list(){
-        $students = Student::with('employee','classe')->get();
+        $students = Student::with('employee','class')->get();
         return view('student.studentlist',compact('students'));
      }
      public function store(Request $request)
@@ -78,4 +79,73 @@ class StudentController extends Controller
         $student->delete();
         return redirect()->back()->with('message','deleted successfully');
     }
+    public function edit($id)
+    {
+        $sections= Section::get();
+        $classes = Classe::get();
+        $student = Student::findOrFail($id);
+
+        return view('student.editstudent',compact('student','classes','sections'));
+    }
+    public function update(Request $request, $id)
+{
+    // Validate the request data
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'gurdian' => 'required|string|max:255',
+        'admissiondate' => 'required|date',
+        'dob' => 'required|date',
+        'gender' => 'required|string|in:male,female,other',
+        'religion' => 'nullable|string|max:255',
+        'email' => 'nullable|email|max:255',
+        'phone' => 'nullable|string|max:255',
+        'address' => 'nullable|string|max:255',
+        'class' => 'required',
+        'section' => 'required',
+        'group' => 'required|string|in:arts,science,commerce',
+        'registration' => 'nullable|string|max:255',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+    ]);
+
+    // Find the student by ID
+    $student = Student::findOrFail($id);
+
+    // Handle file upload if there's a new image
+    if ($request->hasFile('image')) {
+        // Delete the old image if it exists
+        if ($student->image) {
+            Storage::disk('public')->delete($student->image);
+        }
+
+        // Store the new image
+        $imagePath = $request->file('image')->store('students', 'public');
+    } else {
+        // Keep the old image path if no new image is uploaded
+        $imagePath = $student->image;
+    }
+
+    // Update the student record
+    $student->update([
+        'name' => $request->input('name'),
+        'gurdian' => $request->input('gurdian'),
+        'admissiondate' => $request->input('admissiondate'),
+        'dob' => $request->input('dob'),
+        'gender' => $request->input('gender'),
+        'religion' => $request->input('religion'),
+        'email' => $request->input('email'),
+        'phone' => $request->input('phone'),
+        'address' => $request->input('address'),
+        'class_id' => $request->input('class'),
+        'section_id' => $request->input('section'),
+        'group' => $request->input('group'),
+        'registration' => $request->input('registration'),
+       'image' => $imagePath,
+
+
+    ]);
+
+    // Redirect with success message
+    return redirect()->back()->with('message', 'Student updated successfully!');
+}
+
 }

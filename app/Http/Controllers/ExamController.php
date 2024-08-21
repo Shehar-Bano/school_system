@@ -13,7 +13,6 @@ class ExamController extends Controller
      public function store(Request $request){
         $exam = new Exam();
         $exam->name = $request->name;
-        $exam->date = $request->date;
         $exam->note = $request->note;
         $exam->save();
         return redirect()->back()->with('message', 'Exam successfully added!');
@@ -34,8 +33,7 @@ class ExamController extends Controller
      public function update(Request $request,$id){
         $exam =Exam::findOrFail($id);
         $exam->name = $request->name;
-        $exam->date = $request->date;
-        $exam->note = $request->note;
+         $exam->note = $request->note;
         $exam->save();
         return redirect()->back()->with('message', 'Exam successfully added!');
 

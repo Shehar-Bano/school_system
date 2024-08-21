@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{route('dashboard')}}">
           <i class="icon-grid menu-icon"></i>
           <span class="menu-title">Dashboard</span>
         </a>
@@ -15,8 +15,8 @@
         <div class="collapse" id="ui-basic">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{route('exam-list')}}">Exam</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Exam Schedule</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Grade</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('result')}}">Result</a></li>
             <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Exam Attendance</a></li>
           </ul>
         </div>
@@ -25,32 +25,23 @@
         <a class="nav-link" href="{{ route('employee_view') }}" >
           <i class="fas fa-users menu-icon"></i>
           <span class="menu-title">Employees</span>
-
         </a>
-
-        <div class="collapse" id="form-elements">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-          </ul>
-        </div>
       </li>
       <li class="nav-item">
-      <a class="nav-link" href="{{url('/student/list')}}" >
-        <i class="fas fa-briefcase menu-icon"></i>
-        <span class="menu-title">Student</span>
-
-      </a>
-    </li>
-    <li class="nav-item">
-        
-      
+        <a class="nav-link" href="{{url('/student/list')}}" >
+            <i class="fas fa-briefcase menu-icon"></i>
+            <span class="menu-title">Student</span>
+          </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{{ route('designation_view') }}" >
           <i class="fas fa-briefcase menu-icon"></i>
           <span class="menu-title">Designation</span>
-
         </a>
-        
+
       </li>
+
+
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
           <i class="fas fa-school menu-icon"></i>
@@ -62,7 +53,7 @@
             <li class="nav-item"> <a class="nav-link" href="{{route('subject_show')}}">Subject</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('class-list')}}">Class</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('section-list')}}">Section</a></li>
-           
+
             <li class="nav-item"> <a class="nav-link" href="{{route('syllabus_show')}}">Syllabus</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('assignment_show')}}">Assignment</a></li>
           
