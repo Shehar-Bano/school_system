@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
             $table->date('date');
-            $table->enum('attendance',['present','absent','leave','late','excused late']);
+            $table->enum('status',['present','absent','leave','late','excused late']);
             $table->timestamps();
         });
     }

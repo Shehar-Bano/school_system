@@ -21,8 +21,8 @@
                   <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                       <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                      <li class="breadcrumb-item"><a href="{{ route('subject_show') }}">Academic</a></li>
-                      <li class="breadcrumb-item"><a href="{{ route('teacher_attendence') }}">Employee Attendace</a></li>
+                      <li class="breadcrumb-item"><a href="{{ route('employee_attendence') }}">Attendance</a></li>
+                      <li class="breadcrumb-item"><a href="{{ route('employee_attendence') }}">Employee Attendace</a></li>
                       <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Attendance</li>
                     </ol>
                   </nav>
@@ -80,11 +80,7 @@
                             <button type="submit" class="btn btn-success mt-3">Submit Attendance</button>
                         </div>
                     </form>
-                  </div>
-                  
-                
-                  
-                 
+                  </div>                 
                 </div>
               </div>
             </div>

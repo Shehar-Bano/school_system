@@ -91,8 +91,8 @@
         </a>
         <div class="collapse" id="icons">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{ route('teacher_attendence') }}">Teacher Attendence</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Student Attendence</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('employee_attendence') }}">Teacher Attendence</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('students_attendence') }}">Student Attendence</a></li>
           </ul>
         </div>
       </li>

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('section_id');
             $table->foreign('section_id')->references('id')->on('sections')->cascadeOnDelete();
             $table->date('date');
-            $table->enum('attendece',['present','absent','leave','late','excused late']);
+            $table->enum('status',['present','absent','leave','late','excused late']);
 
             $table->timestamps();
         });
