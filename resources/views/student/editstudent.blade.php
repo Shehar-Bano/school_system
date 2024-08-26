@@ -118,7 +118,7 @@
                         <select class="form-control" id="class" name="class" required>
                             <option value="" disabled selected>Select Class</option>
                             @foreach ($classes as $class)
-                                <option value="{{ $class->id }}" {{$student->class_id == $class->id ? 'selected' : ''}}>{{ $class->name }}</option>
+                                <option  value="{{ $class->id }}" {{$student->class_id == $class->id ? 'selected' : ''}} index="{{$class->id}}">{{ $class->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -128,7 +128,7 @@
                         <select class="form-control" id="section" name="section" required>
                             <option value="" disabled selected>Select Section</option>
                             @foreach ($sections as $section)
-                                <option value="{{ $section->id }}"{{$student->section_id == $section->id ? 'selected' : ''}}>{{ $section->name }}</option>
+                                <option  value="{{ $section->id }}"{{$student->section_id == $section->id ? 'selected' : ''}} class="ab ab{{$section->classe_id}}">{{ $section->name }}, {{$section->classe->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -151,7 +151,7 @@
                     <div class="mb-3">
                         <label for="image" class="form-label">Upload Image</label>
                         <input type="file" class="form-control"  id="image" name="image">
-                        
+
 
                     </div>
                     <input type="submit" id="submitBtn" class="btn btn-primary" value="Update Student">
@@ -202,5 +202,13 @@
           })
       });
   </script>
+   <script>
+    $(document).ready(function(){
+        $('#class').on('change',function(){
+      $('.ab').hide()
+      $('.ab'+ $(this).children('option:selected').attr('index')).css('display', 'block')
+      })
+    })
+    </script>
 </body>
 </html>

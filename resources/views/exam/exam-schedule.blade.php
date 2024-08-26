@@ -86,7 +86,7 @@
                             <option value="">Select Section</option>
                             <!-- Options populated dynamically -->
                             @foreach($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
+                                <option value="{{ $section->id }}">{{ $section->name }}, {{$section->classe->name}}</option>
                             @endforeach
                         </select>
                     </div>

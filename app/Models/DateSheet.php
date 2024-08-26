@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DateSheet extends Model
 {
     use HasFactory;
-    
+
     public function exam_schedule(){
         return $this->hasMany(ExamSchedule::class);
     }

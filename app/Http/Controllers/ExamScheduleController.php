@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Exam;
 use App\Models\classe;
+use App\Models\Result;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\Subject;
 use App\Models\DateSheet;
 use App\Models\ExamSchedule;
-use App\Models\Section;
-use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class ExamScheduleController extends Controller
@@ -19,9 +21,36 @@ class ExamScheduleController extends Controller
         $exams = Exam::get();
         return view('exam.exam-schedule', compact('classes','sections','exams'));
     }
-    public function list(){
-        $exams = ExamSchedule::with('section','class','exam')->get();
-        return view('exam.schedulelist',compact('exams'));
+    public function list(Request $request){
+        $sections= Section::get();
+        $classes = Classe::get();
+        $exams = Exam::get();
+        $query = ExamSchedule::with('section','class','exam');
+        if ($request->has('class') && !empty($request->input('class'))) {
+            $query->where('class_id', $request->input('class'));
+        }
+        if ($request->has('section') && !empty($request->input('section'))) {
+            $query->where('section_id', $request->input('section'));
+        }
+        if ($request->has('exam') && !empty($request->input('exam'))) {
+            $query->where('exam_id', $request->input('exam'));
+        }
+
+        $examschedules = $query->get();
+
+        return view('exam.schedulelist',compact('exams','classes','sections','examschedules'));
+     }
+     public function resultPrint($id){
+
+        $students = Student::with('class', 'section', 'exam')->get();
+        $examSchedule =ExamSchedule::find($id);
+        $results = Result::where('exam_id', $examSchedule->exam_id)
+        ->where('class_id',$examSchedule->class_id)
+        ->with(['subject', 'student','exam'])
+        ->get();
+        // dd($results);
+        return view('result.exam-result',compact('results','students','examSchedule'));
+
      }
      public function store(Request $request)
     {
@@ -86,25 +115,29 @@ class ExamScheduleController extends Controller
     public function datesheet(Request $request, $id)
     {
         $exam = ExamSchedule::find($id);
-        $validatedData = $request->validate([
-            'subject_id.*' => 'required|exists:subjects,id',
-            'date.*' => 'required|date',
-            'start_time.*' => 'required|date_format:H:i',
-            'end_time.*' => 'required|date_format:H:i|after:start_time.*',
-        ]);
+        $subjects = $request->input('subjects');
 
-        foreach ($validatedData['subject_id'] as $index => $subjectId) {
-            $dateSheet = new DateSheet();
+
+        $dateSheets = DateSheet::where('exam_schedule_id', $exam->id)->get();
+
+        foreach ($subjects as $index => $subjectData) {
+            $dateSheet = $dateSheets[$index] ?? new DateSheet();
             $dateSheet->exam_schedule_id = $exam->id;
-            $dateSheet->subject_id = $subjectId;
-            $dateSheet->date = $validatedData['date'][$index];
-            $dateSheet->start_time = $validatedData['start_time'][$index];
-            $dateSheet->end_time = $validatedData['end_time'][$index];
+            $dateSheet->subject_id = $subjectData['subject_id'] ?? null;
+            $dateSheet->date = $subjectData['date'] ?? null;
+            $dateSheet->start_time = $subjectData['start_time'] ?? null;
+            $dateSheet->end_time = $subjectData['end_time'] ?? null;
+
+            // Check if any of the critical fields are null
+            if (is_null($dateSheet->subject_id) || is_null($dateSheet->date) || is_null($dateSheet->start_time) || is_null($dateSheet->end_time)) {
+                return redirect()->back()->withErrors('All fields are required.');
+            }
+
             $dateSheet->save();
         }
 
-        return redirect()->back()->with('success', 'Exam schedule added successfully!');
-        }
+        return redirect()->back()->with('success', 'Exam schedule updated successfully!');
+    }
 
 
     public function datesheetlist($id){

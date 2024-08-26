@@ -151,6 +151,30 @@
 </script>
 
 @endif
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Check for validation errors
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ $errors->first() }}', // Display the first validation error
+        });
+    @endif
+
+    // Check for success message
+    @if(session('message'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('message') }}',
+        });
+    @endif
+</script>
+
 
 
 </body>
