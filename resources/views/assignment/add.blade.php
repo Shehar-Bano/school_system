@@ -234,22 +234,7 @@
         subjectSelect.value = '';
     });
   
-//     document.getElementById('class_id').addEventListener('change', function() {
-//     var selectedClassId = this.value;
-//     var sectionSelect = document.getElementById('section_id');
-//     var options = sectionSelect.querySelectorAll('option');
-    
-//     options.forEach(function(option) {
-//         if (option.getAttribute('data-class-id') == selectedClassId || option.value == '') {
-//             option.style.display = '';
-//         } else {
-//             option.style.display = 'none';
-//         }
-//     });
 
-//     // Reset the section selection
-//     sectionSelect.value = '';
-// });
 </script>
 
 </body>

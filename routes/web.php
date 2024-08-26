@@ -84,10 +84,23 @@ Route::get('/timetable/occupySlot/{id}', [TimeTableController::class,'timetableO
 //////////////Employees Attendece
 Route::get('/attendance/employee/view', [AttendanceController::class, 'employeeAttendanceView'])->name('employee_attendence'); 
 Route::get('/attendance/employee/add', [AttendanceController::class, 'addAttendanceView'])->name('add_attendance');
-Route::get('/attendance/employee/show/{id}', [AttendanceController::class, 'showEmployeeAttendace'])->name('show_employee_attendace');
+Route::get('/attendance/employee/show/{id}', [AttendanceController::class, 'showEmployeeAttendance'])->name('show_employee_attendace');
+Route::post('/attendance/employee/store', [AttendanceController::class, 'employeeAttendanceStore'])->name('attendance_store');
+
 /////////////Student Attendace
+Route::get('/attendance/student/', [AttendanceController::class, 'attendanceClass'])->name('students_class');
+Route::get('/attendance/student/class/choice', [AttendanceController::class, 'attendanceClass'])->name('students_class_select');
+
+
 Route::get('/attendance/student/view', [AttendanceController::class, 'studentAttendanceView'])->name('students_attendence');
-Route::get('/attendance/student/add', [AttendanceController::class, 'addStudentAttendanceView'])->name('addStudentAttendanceView');
+Route::get('/attendance/student/add', [AttendanceController::class, 'addStudentAttendanceView'])->name('add_student_attendance');
+Route::get('/attendance/student/show/{id}', [AttendanceController::class, 'showStudentAttendance'])->name('show_student_attendace');
+
+Route::post('/attendance/student/store', [AttendanceController::class, 'studentAttendanceStore'])->name("student_attendance_store");
+
+Route::get('/attendance/class/view', [AttendanceController::class, 'classAttendanceView'])->name('select_attendance_class');
+
+
 
 
 

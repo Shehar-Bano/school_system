@@ -19,7 +19,7 @@
           <div class="container">
             <!-- Add New TimeTable Button -->
             <div class="mb-4">
-              <a href="{{ route('add_student_attendance') }}" class="btn btn-primary">Add new attendance</a>
+              <a href="{{ route('students_class') }}" class="btn btn-primary">Add new attendance</a>
             </div>
             <!-- Buttons for Exporting and Copying -->
             <div class="mb-3 row">
@@ -32,34 +32,34 @@
             </div>
 
             <!-- Search Form -->
-            <form id="searchForm" method="GET" action="{{ route('employee_attendence') }}" class="mb-4">
+            <form id="searchForm" method="GET" action="{{ route('students_attendence') }}" class="mb-4">
               <div class="row">
-                {{-- <div class="col-md-3">
+                <div class="col-md-3">
                   <div class="form-group">
-                    <label for="designation">Employee</label>
-                    <select name="id" id="employee" class="form-control">
-                      <option value="">Select Employee</option>
-                      @foreach ($employees as $employee)
-                        <option value="{{ $employee->id }}" {{ $employee->id == request()->query('employee') ? 'selected' : '' }}>
-                          {{ $employee->name }}
+                    <label for="class">Class</label>
+                    <select name="class" id="class" class="form-control">
+                      <option value="">Select Class</option>
+                      @foreach ($classes as $class)
+                        <option value="{{ $class->id }}" {{ $class->id == request()->query('class') ? 'selected' : '' }}>
+                          {{ $class->name }}
                         </option>
                       @endforeach
                     </select>
                   </div>
                 </div>
-                <div class="col-md-3">
+                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="designation">Role</label>
-                    <select name="designation" id="designation" class="form-control">
-                      <option value="">Select Role</option>
-                      @foreach ($designations as $designation)
-                        <option value="{{ $designation->id }}" {{ $designation->id == request()->query('designation') ? 'selected' : '' }}>
-                          {{ $designation->name }}
+                    <label for="section">Section</label>
+                    <select name="section" id="section" class="form-control">
+                      <option value="">Select Section</option>
+                      @foreach ($sections as $section)
+                        <option value="{{ $section->id }}" {{ $section->id == request()->query('section') ? 'selected' : '' }}>
+                          {{ $section->name }}
                         </option>
                       @endforeach
                     </select>
                   </div>
-                </div> --}}
+                </div>
                 <div class="col-md-3 mt-4">
                   <button type="submit" class="btn btn-primary">Search</button>
                 </div>
@@ -67,48 +67,110 @@
             </form>
 
             <!-- Time Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Employees Attendance</h4>
-                <div class="table-responsive">
-                  <div id="attendanceTable" class="mt-4">
-                    <table class="table table-bordered text-center">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Student</th>
-                          <th>Roll_No</th>
-                          <th>Email</th>
-                          <th>Attendance</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @php
-                          $count = 0;
-                        @endphp
-                        @foreach($students as $student)
-                          <tr>
-                            <td>{{ ++$count }}</td>
-                            <td>{{ $student->name }}</td>
-                            <td>{{ $student->registration }}</td>
-                            <td>{{ $student->email }}</td>
-                            <td>
-                              <a href="{{ route('show_student_attendace', ['id' => $student->id]) }}" class="btn btn-info btn-sm" title="View">
-                                <i class="fas fa-eye"></i>
-                              </a>
-                            </td>
-                          </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- Pagination -->
-                  <div class="mt-3">
-                    {{ $students->links('pagination::bootstrap-5') }}
+            <!-- Table for Class, Section, and Students -->
+<div class="card mt-4">
+  <div class="card-body">
+    <h4 class="card-title">Class and Student Information</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Class</th>
+            <th>Section</th>
+            <th>Teacher</th>
+            <th>Students</th>
+          </tr>
+        </thead>
+        <tbody>
+          @php
+            $serialNumber = 1;
+          @endphp
+          @foreach ($sections as $section)
+          <tr>
+            <td>{{ $serialNumber++ }}</td>
+            <td>{{ $section->classe->name }}</td> <!-- Assuming there is a relation to Class model -->
+            <td>{{ $section->name }}</td> <!-- Assuming there is a relation to Section model -->
+            <td>{{ $section->employee->name }}</td>
+            <td>
+              <a href="javascript:void(0);" class="toggle-details" data-target="#details-{{ $section->classe->id }}">
+                <i class="fas fa-chevron-down"></i>
+              </a>
+            </td>
+          </tr>
+          <tr id="details-{{ $section->classe->id }}" class="details-row" style="display: none;">
+            <td colspan="5">
+              <div class="details-content">
+                @php
+                  $count=0;
+                @endphp
+               
+               
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Student Attendance</h4>
+                    <div class="table-responsive">
+                      <div id="attendanceTable" class="mt-4">
+                        <table class="table table-bordered text-center">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Student</th>
+                              <th>Roll_No</th>
+                              <th>Email</th>
+                              <th>Attendance</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                     
+                            @foreach ($students as $student)
+                @if ($section->classe->id == $student->class_id && $section->id == $student->section_id)
+                              <tr>
+                                <td>{{ ++$count }}</td>
+                                <td>{{ $student->name }}</td>
+                                <td>{{ $student->registration }}</td>
+                                <td>{{ $student->email }}</td>
+                                <td>
+                                  <a href="{{ route('show_student_attendace', ['id' => $student->id]) }}" class="btn btn-info btn-sm" title="View">
+                                    <i class="fas fa-eye"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                              
+                              @endif
+                  
+                              @endforeach
+                              @if($section->classe->id != $student->class_id || $section->id != $student->section_id)
+                              <tr>
+                                <td colspan="5">
+                                There Is No Student For Class {{$section->classe->name  }} and Section {{ $section->name }}
+                              </td>
+                              </tr>
+                              @endif
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- Pagination -->
+                      <div class="mt-3">
+                        {{ $students->links('pagination::bootstrap-5') }}
+                      </div>
+                    </div>
                   </div>
                 </div>
+            
+              
               </div>
-            </div>
+            </td>
+          </tr>
+          
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+            
           </div>
         </div>
       </div>
@@ -196,7 +258,22 @@
       }
     });
   </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleLinks = document.querySelectorAll('.toggle-details');
 
+    toggleLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        const target = document.querySelector(this.dataset.target);
+        if (target.style.display === "none") {
+          target.style.display = "table-row";
+        } else {
+          target.style.display = "none";
+        }
+      });
+    });
+  });
+</script>
   @if(session('message'))
     <script>
       Swal.fire({

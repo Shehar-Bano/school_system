@@ -220,3 +220,47 @@
   @endif
 </body>
 </html>
+
+
+ {{-- <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Student Attendance</h4>
+                    <div class="table-responsive">
+                      <div id="attendanceTable" class="mt-4">
+                        <table class="table table-bordered text-center">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Student</th>
+                              <th>Roll_No</th>
+                              <th>Email</th>
+                              <th>Attendance</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @php
+                              $count = 0;
+                            @endphp
+                            @foreach($students as $student)
+                              <tr>
+                                <td>{{ ++$count }}</td>
+                                <td>{{ $student->name }}</td>
+                                <td>{{ $student->registration }}</td>
+                                <td>{{ $student->email }}</td>
+                                <td>
+                                  <a href="{{ route('show_student_attendace', ['id' => $student->id]) }}" class="btn btn-info btn-sm" title="View">
+                                    <i class="fas fa-eye"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- Pagination -->
+                      <div class="mt-3">
+                        {{ $students->links('pagination::bootstrap-5') }}
+                      </div>
+                    </div>
+                  </div>
+                </div> --}}
