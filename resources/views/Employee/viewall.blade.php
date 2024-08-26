@@ -53,7 +53,7 @@
                       <tr>
                         <th>#</th>
                         <th>Jioning</th>
-                        <th>Photo</th>
+                       
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>

@@ -58,47 +58,49 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="class_id">Add Class</label>
-                        <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
-                            <option value="" disabled selected></option>
-                            @foreach ($classes as $class)
-                                <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
-                                    {{ $class->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('class_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                      <label for="class_id">Add Class</label>
+                      <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
+                          <option value="" disabled selected></option>
+                          @foreach ($classes as $class)
+                              <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
+                                  {{ $class->name }}
+                              </option>
+                          @endforeach
+                      </select>
+                      @error('class_id')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                  </div>
+                  <div class="form-group">
+                      <label for="subject_id">Add Subject</label>
+                      <select class="form-control {{ $errors->has('subject_id') ? 'is-invalid' : '' }}" id="subject_id" name="subject_id">
+                          <option value="" disabled selected></option>
+                          @foreach ($subjects as $subject)
+                              <option value="{{ $subject->subject_id }}" data-class-id="{{ $subject->class_id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
+                                  {{ $subject->subject->subject_name }}
+                              </option>
+                          @endforeach
+                      </select>
+                      @error('subject_id')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                  </div>
+                  
                     <div class="form-group">
-                        <label for="class_id">Add Section</label>
+                        <label for="section_id">Add Section</label>
                         <select class="form-control {{ $errors->has('section_id') ? 'is-invalid' : '' }}" id="section_id" name="section_id">
                             <option value="" disabled selected></option>
                             @foreach ($sections as $section)
-                                <option value="{{ $section->id }}" {{ old('section_id') == $section->id ? 'selected' : '' }}>
-                                    {{ $section->name }}
-                                </option>
-                            @endforeach
+                            <option value="{{ $section->id }}" data-class-id="{{ $section->class_id }}" {{ old('section_id') == $section->id ? 'selected' : '' }}>
+                                {{ $section->name }}
+                            </option>
+                        @endforeach
                         </select>
                         @error('section_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="form-group">
-                        <label for="subject_id">Add Subject</label>
-                        <select class="form-control {{ $errors->has('subject_id') ? 'is-invalid' : '' }}" id="subject_id" name="subject_id">
-                            <option value="" disabled selected></option>
-                            @foreach ($subjects as $subject)
-                                <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
-                                    {{ $subject->subject_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('subject_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                   
                     
                 
                     <div class="form-group">
@@ -214,5 +216,41 @@
       }
     });
   </script>
+  <script>
+    document.getElementById('class_id').addEventListener('change', function() {
+        var selectedClassId = this.value;
+        var subjectSelect = document.getElementById('subject_id');
+        var options = subjectSelect.querySelectorAll('option');
+        
+        options.forEach(function(option) {
+            if (option.getAttribute('data-class-id') == selectedClassId || option.value == '') {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+
+        // Reset the subject selection
+        subjectSelect.value = '';
+    });
+  
+//     document.getElementById('class_id').addEventListener('change', function() {
+//     var selectedClassId = this.value;
+//     var sectionSelect = document.getElementById('section_id');
+//     var options = sectionSelect.querySelectorAll('option');
+    
+//     options.forEach(function(option) {
+//         if (option.getAttribute('data-class-id') == selectedClassId || option.value == '') {
+//             option.style.display = '';
+//         } else {
+//             option.style.display = 'none';
+//         }
+//     });
+
+//     // Reset the section selection
+//     sectionSelect.value = '';
+// });
+</script>
+
 </body>
 </html>

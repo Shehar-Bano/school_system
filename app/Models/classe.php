@@ -29,4 +29,11 @@ class classe extends Model
     public function examschedule(){
         return $this->hasMany(ExamSchedule::class);
     }
+
+    public function classsubject()
+
+    {
+        return $this->belongsToMany(Subject::class, 'classes_subjects', 'class_id', 'subject_id');
+    }
+
 }

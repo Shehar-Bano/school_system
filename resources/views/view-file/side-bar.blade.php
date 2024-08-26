@@ -1,7 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
       <li class="nav-item">
-        <a class="nav-link" href="{{route('dashboard')}}">
+        <a class="nav-link" href="index.html">
           <i class="icon-grid menu-icon"></i>
           <span class="menu-title">Dashboard</span>
         </a>
@@ -25,23 +25,32 @@
         <a class="nav-link" href="{{ route('employee_view') }}" >
           <i class="fas fa-users menu-icon"></i>
           <span class="menu-title">Employees</span>
+
         </a>
+
+        <div class="collapse" id="form-elements">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
+          </ul>
+        </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{url('/student/list')}}" >
-            <i class="fas fa-briefcase menu-icon"></i>
-            <span class="menu-title">Student</span>
-          </a>
-      </li>
-      <li class="nav-item">
+      <a class="nav-link" href="{{url('/student/list')}}" >
+        <i class="fas fa-briefcase menu-icon"></i>
+        <span class="menu-title">Student</span>
+
+      </a>
+    </li>
+    <li class="nav-item">
+
+
         <a class="nav-link" href="{{ route('designation_view') }}" >
           <i class="fas fa-briefcase menu-icon"></i>
           <span class="menu-title">Designation</span>
+
         </a>
 
       </li>
-
-
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
           <i class="fas fa-school menu-icon"></i>
@@ -56,30 +65,34 @@
 
             <li class="nav-item"> <a class="nav-link" href="{{route('syllabus_show')}}">Syllabus</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('assignment_show')}}">Assignment</a></li>
+
           </ul>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-          <i class="icon-grid-2 menu-icon"></i>
-          <span class="menu-title">Tables</span>
+          <i class="fas fa-clock menu-icon"></i>
+          <span class="menu-title">TimeTable</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="tables">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('timeTable')}}">TimeTable</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('timeTable_show')}}">Class TimeTable</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('teacher_timeTable_show')}}">Teacher TimeTable</a></li>
           </ul>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-          <i class="icon-contract menu-icon"></i>
-          <span class="menu-title">Icons</span>
+          <i class="fas fa-user-check menu-icon"></i>
+          <span class="menu-title">Attendance</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="icons">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Mdi icons</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('employee_attendence') }}">Teacher Attendence</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('students_attendence') }}">Student Attendence</a></li>
           </ul>
         </div>
       </li>

@@ -51,9 +51,8 @@
                         <th>#</th>
                         <th>Date</th>
                         <th>Title</th>
-                        <th>Description</th>
-                                              
-                            <th><i class="fa fa-ellipsis-h"></i></th>
+                        <th>Description</th>                   
+                        <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
                     <tbody>

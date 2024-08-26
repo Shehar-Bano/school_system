@@ -19,6 +19,14 @@ class Subject extends Model
  {
      return $this->hasMany(Assignment::class);
  }
+ public function classSunject()
+ {
+     return $this->hasMany(ClassesSubject::class);
+ }
+ public function timetable()
+ {
+     return $this->belongsTo(TimeTable::class);
+ }
  public function dateSheets()
  {
      return $this->hasMany(DateSheet::class);

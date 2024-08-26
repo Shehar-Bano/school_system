@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use App\Models\classe;
+use App\Models\ClassesSubject;
 use App\Models\Section;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class AssignmentController extends Controller
     public function addAssignmentView(){
         $classes=classe::get();
         $sections=Section::get();
-        $subjects=Subject::get();
+        $subjects=ClassesSubject::with('class','subject')->get();
         return view('assignment.add',compact('classes','sections','subjects'));
         
         }

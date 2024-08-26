@@ -21,4 +21,8 @@ class Employee extends Model
     public function subjects(){
         return $this->hasMany(Subject::class);
         }
+    public function attendance()
+    {
+        return $this->belongsTo(EmployeeAttendance::class);
+    }
 }

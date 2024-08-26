@@ -34,7 +34,7 @@
                   </ul>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" id="filterId" class="form-control" placeholder="Filter by ID">
+                    <input type="text" id="filterId" class="form-control" placeholder="Filter by #">
                   </div>
               </div>
             </div>
@@ -44,21 +44,42 @@
               <div class="card-body">
                 <h4 class="card-title">Class List</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped table-bordered" id="examsTable">
+                  <table class="table table-striped table-bordered text-center" id="examsTable">
                     <thead>
                       <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Class Name</th>
                         <th>Note</th>
-                        <th>Actions</th>
+                        <th>Subjects</th>
+                        <th><i class="fa fa-ellipsis-h"></i></th>
                       </tr>
                     </thead>
                     <tbody>
+                      @php
+                        $count=0;
+                      @endphp
                         @foreach ($classes as $class)
                         <tr>
-                            <td>{{ $class->id }}</td>
+                            <td>{{++$count}}</td>
+
                             <td>{{ $class->name }}</td>
                             <td>{{ $class->note }}</td>
+                            <td>
+                              @php
+                                  $subjectCount = $subjects->where('class_id', $class->id)->count();
+                                  $counter = 0;
+                              @endphp
+                          
+                              @foreach ($subjects as $subject)
+                                  @if ($subject->class_id == $class->id)
+                                      {{ $subject->subject->subject_name }}
+                                      @php $counter++; @endphp
+                                      @if ($counter < $subjectCount)
+                                          |
+                                      @endif
+                                  @endif
+                              @endforeach
+                          </td>
                             <td>
                                 <!-- Edit Button -->
                                 <a href="{{ route('class-edit', ['id' => $class->id]) }}" class="btn btn-warning btn-sm" title="Edit">
