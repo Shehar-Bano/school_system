@@ -10,19 +10,20 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $sections= Section::get();
+        $sections= Section::all();
         $classes = Classe::get();
         return view('student.students', compact('classes','sections'));
     }
+
     public function list(){
         $students = Student::with('employee','class')->get();
         return view('student.studentlist',compact('students'));
      }
      public function store(Request $request)
      {
-        // dd($request);
+
         //  Validate the request data
          $request->validate([
              'name' => 'required|string|max:255',
@@ -109,18 +110,12 @@ class StudentController extends Controller
 
     // Find the student by ID
     $student = Student::findOrFail($id);
-
-    // Handle file upload if there's a new image
     if ($request->hasFile('image')) {
-        // Delete the old image if it exists
         if ($student->image) {
             Storage::disk('public')->delete($student->image);
         }
-
-        // Store the new image
         $imagePath = $request->file('image')->store('students', 'public');
     } else {
-        // Keep the old image path if no new image is uploaded
         $imagePath = $student->image;
     }
 

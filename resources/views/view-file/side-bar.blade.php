@@ -17,7 +17,7 @@
             <li class="nav-item"> <a class="nav-link" href="{{route('exam-list')}}">Exam</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('result')}}">Result</a></li>
-            <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Exam Attendance</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{route('result-list')}}">Result List</a></li>
           </ul>
         </div>
       </li>

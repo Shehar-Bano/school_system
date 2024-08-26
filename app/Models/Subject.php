@@ -23,5 +23,9 @@ class Subject extends Model
  {
      return $this->hasMany(DateSheet::class);
  }
+ public function result()
+ {
+     return $this->hasMany(Result::class);
+ }
 
 }

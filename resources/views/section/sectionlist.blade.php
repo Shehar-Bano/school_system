@@ -70,7 +70,8 @@
                                 <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('class_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
+                                {{-- <a href="{{ route('section_delete', ['id' => $section->id]) }}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a> --}}
+                                <form action="{{ route('section_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" title="Delete">

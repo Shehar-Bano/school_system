@@ -70,34 +70,35 @@
             </div>
 
               </div>
-             <form class="mt-1" action="{{ url('/exam/schedule/datesheet', ['id' => $exam->id]) }}" method="POST">
+             <form class="mt-1" action="{{url('/exam/schedule/datesheet/store', ['id' => $exam->id]) }}" method="POST">
     @csrf
     @foreach($subjects as $subject)
     <div class="row">
         <div class="col-md-3 px-5">
             <label class="form-control" for="subject">{{ $subject->subject_name }}</label>
-            <input type="hidden" class="form-control" name="subject_id[]" value="{{ $subject->id }}" required>
+            <input type="hidden" class="form-control" name="subjects[{{ $loop->index }}][subject_id]" value="{{ $subject->id }}" required>
         </div>
 
         <!-- Date Selection -->
         <div class="col-md-3 mb-3">
-            <input type="date" class="form-control" name="date[]" required>
+            <input type="date" class="form-control" name="subjects[{{ $loop->index }}][date]" required>
         </div>
 
         <!-- Start Time -->
         <div class="col-md-3 mb-3">
-            <input type="time" class="form-control" name="start_time[]" required>
+            <input type="time" class="form-control" name="subjects[{{ $loop->index }}][start_time]" required>
         </div>
 
         <!-- End Time -->
         <div class="col-md-3 mb-3">
-            <input type="time" class="form-control" name="end_time[]" required>
+            <input type="time" class="form-control" name="subjects[{{ $loop->index }}][end_time]" required>
         </div>
     </div>
     @endforeach
     <div class="text-center">
         <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
     </div>
+
 </form>
 
 

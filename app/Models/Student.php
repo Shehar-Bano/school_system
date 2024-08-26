@@ -20,7 +20,16 @@ class Student extends Model
     public function section(){
         return $this->belongsTo(Section::class);
     }
+
+
     public function employee(){
         return $this->belongsTo(Employee::class);
+    }
+
+    public function results() {
+        return $this->hasMany(Result::class);
+    }
+    public function exam(){
+        return $this->belongsTo(Exam::class);
     }
 }

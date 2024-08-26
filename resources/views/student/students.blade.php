@@ -116,9 +116,9 @@
                     <div class="mb-3">
                         <label for="class" class="form-label">Class <span class="text-danger">*</span></label>
                         <select class="form-control" id="class" name="class" required>
-                            <option value="" disabled selected>Select Class</option>
+                            <option value=""  disabled selected>Select Class</option>
                             @foreach ($classes as $class)
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                <option value="{{ $class->id }}" index="{{$class->id}}">{{ $class->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -127,9 +127,13 @@
                         <label for="section" class="form-label">Section <span class="text-danger">*</span></label>
                         <select class="form-control" id="section" name="section" required>
                             <option value="" disabled selected>Select Section</option>
-                            @foreach ($sections as $section)
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
-                            @endforeach
+                            @if($sections)
+                                @foreach ($sections as $section)
+                                    <option value="{{ $section->id }}" class="ab ab{{$section->classe_id}}" {{ request('section') == $section->id ? 'selected' : '' }}>
+                                        {{ $section->name }}, {{$section->classe->name}}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
 
@@ -200,6 +204,16 @@
               }
           })
       });
+
   </script>
+  <script>
+    $(document).ready(function(){
+        $('#class').on('change',function(){
+      $('.ab').hide()
+      $('.ab'+ $(this).children('option:selected').attr('index')).css('display', 'block')
+      })
+    })
+    </script>
 </body>
 </html>
+

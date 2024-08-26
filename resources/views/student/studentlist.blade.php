@@ -78,14 +78,14 @@
                             <td> {{$student->class->name}}
                            </td>
                             <td>{{$student->registration}}</td>
-                            <td> {{$student->section->name}}</td>
+                            <td> {{$student->section->name}} ,{{$student->section->classe->name}}</td>
                             <td>{{ $student->status }}</td>
                             <td>
                                 <!-- Edit Button -->
                                 <a href="{{ route('student-edit', ['id' => $student->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('section_delete', ['id' => $student->id]) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('student_delete', ['id' => $student->id]) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" title="Delete">
