@@ -3,6 +3,7 @@
 use App\Models\Exam;
 use App\Models\ExamSchedule;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FeeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\ResultController;
@@ -12,8 +13,8 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SyllabusController;
-use App\Http\Controllers\TimeTableController;
 
+use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ExamScheduleController;
@@ -82,7 +83,7 @@ Route::get('/timeTable/delete/{id}', [TimeTableController::class, 'timeTableDele
 Route::get('/timetable/freeSlot/{id}', [TimeTableController::class, 'timetableFreeSlot'])->name('timetable_freeSlot');
 Route::get('/timetable/occupySlot/{id}', [TimeTableController::class,'timetableOccupySlot'])->name('timetable_occupySlot');
 //////////////Employees Attendece
-Route::get('/attendance/employee/view', [AttendanceController::class, 'employeeAttendanceView'])->name('employee_attendence'); 
+Route::get('/attendance/employee/view', [AttendanceController::class, 'employeeAttendanceView'])->name('employee_attendence');
 Route::get('/attendance/employee/add', [AttendanceController::class, 'addAttendanceView'])->name('add_attendance');
 Route::get('/attendance/employee/show/{id}', [AttendanceController::class, 'showEmployeeAttendance'])->name('show_employee_attendace');
 Route::post('/attendance/employee/store', [AttendanceController::class, 'employeeAttendanceStore'])->name('attendance_store');
@@ -161,4 +162,12 @@ Route::get('/result/list',[ResultController::class,'list'])->name('result-list')
 Route::get('/result/list/view/{id}',[ResultController::class,'view'])->name('result-view');
 Route::get('/result/card',[ResultController::class,'showResultCard'])->name('result.card');
 Route::get('/notfound',[ResultController::class,'notFound'])->name('not_Found');
+
+///////////////////////////fees
+Route::get('/fees',[FeeController::class,'index'])->name('fee');
+Route::get('/fees/add',[FeeController::class,'add'])->name('fee-add');
+Route::post('/fees/store',[FeeController::class,'store'])->name('student-fee-store');
+Route::get('/fees/list',[FeeController::class,'viewStudentFee'])->name('student-fee-list');
+Route::get('/fees/reciept/{id}',[FeeController::class,'reciept'])->name('fee-reciept');
+Route::get('/receipt/download/{studentId}', [FeeController::class, 'downloadReceipt'])->name('receipt.download');
 
