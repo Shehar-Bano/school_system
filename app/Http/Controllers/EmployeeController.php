@@ -62,6 +62,7 @@ class EmployeeController extends Controller
    $employee->gender=$request->gender;
    $employee->religion=$request->religion;
    $employee->joining_date=$request->joining_date;
+   $employee->salary=$request->salary;
    $image=$request->file('image');
    $imagePath=$image->store('images','public');
    $employee->image=$imagePath;

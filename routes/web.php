@@ -16,7 +16,10 @@ use App\Http\Controllers\TimeTableController;
 
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\ExamScheduleController;
+use App\Http\Controllers\FinanceRecodeController;
+use App\Models\EmployeeSalary;
 
 Route::get('/', function () {
     return view('welcome');
@@ -99,6 +102,25 @@ Route::get('/attendance/student/show/{id}', [AttendanceController::class, 'showS
 Route::post('/attendance/student/store', [AttendanceController::class, 'studentAttendanceStore'])->name("student_attendance_store");
 
 Route::get('/attendance/class/view', [AttendanceController::class, 'classAttendanceView'])->name('select_attendance_class');
+///////////////////////Finance
+Route::group(['prefix'=>'finance'],function (){
+    Route::get('recode',[FinanceRecodeController::class,'index'])->name('finance');
+    Route::post('record/store', [FinanceRecodeController::class, 'storeFinanceRecord'])->name('finance.store');
+    Route::get('record/add', [FinanceRecodeController::class, 'addFinanceRecordView'])->name('finance.create');
+    Route::get('record/edit/{id}', [FinanceRecodeController::class, 'editFinanceRecordView'])->name('finance.edit');
+    Route::post('record/update/{id}', [FinanceRecodeController::class, 'updateFinanceRecord'])->name('finance.update');
+    Route::get('record/delete/{id}', [FinanceRecodeController::class, 'deleteFinanceRecord'])->name('finance.delete');
+    /////////salary
+    Route::group(['prefix'=>'salary'],function (){
+        Route::get('view',[EmployeeSalaryController::class,'index'])->name('finance.salary'); 
+        Route::get('store', [EmployeeSalaryController::class, 'store'])->name('salary.store');
+        Route::get('pay/{id}', [EmployeeSalaryController::class, 'pay'])->name('salary.pay');
+        Route::get('/salary/pdf/{id}', [EmployeeSalaryController::class, 'PDFview'])->name('salary.pdf');
+
+
+    });
+    
+});
 
 
 

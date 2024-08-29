@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <?php use Carbon\Carbon; ?>
 @include('view-file/head')

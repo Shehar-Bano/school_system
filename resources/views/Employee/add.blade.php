@@ -123,6 +123,14 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
+                  <div class="form-group">
+                    <label for="salary">Salary</label>
+                    <input type="number" class="form-control  {{ $errors->has('salary') ? 'is-invalid' : '' }}" id="salary" name="salary" value="{{ old('salary') }}">
+                    @error('salary')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+
 
                   <div class="form-group">
                     <label for="image">Image</label>

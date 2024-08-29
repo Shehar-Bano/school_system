@@ -32,6 +32,7 @@ class storeEmployeeRequest extends FormRequest
             'address' => 'required|string|max:255',
             'image' => 'required|image|max:2048',
             'joining_date' => 'required|date|before_or_equal:today',
+            'salary' => 'required|numeric',
             'status' => 'nullable|string|in:active,inactive,suspended',
         ];
     }

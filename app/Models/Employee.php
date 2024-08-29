@@ -25,4 +25,12 @@ class Employee extends Model
     {
         return $this->belongsTo(EmployeeAttendance::class);
     }
+    public function financeRecode()
+    {
+        return $this->belongsTo(Finance_recode::class);
+    }
+    public function financeRecords()
+    {
+        return $this->hasMany(Finance_recode::class);
+    }
 }
