@@ -26,6 +26,8 @@
                 width: 100%;
                 margin: 0 auto;
                 margin-top: 100px;
+                position: relative;
+                z-index: 2; /* Ensure content is above the watermark */
             }
 
             h3, h4, h5, h6 {
@@ -37,82 +39,85 @@
             .result-summary {
                 text-align: left;
             }
+
             .page-break {
                 page-break-after: always;
             }
+
             .table-container {
-            width: 90%;
-            margin: 0 auto;
-            margin-top: 30px;
+                width: 90%;
+                margin: 0 auto;
+                margin-top: 30px;
             }
 
-        table {
-            border: 2px solid black;
-            border-collapse: collapse;
-            width: 100%;
-        }
+            table {
+                border: 2px solid black;
+                border-collapse: collapse;
+                width: 100%;
+            }
 
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-        }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+            }
 
-        .thead-dark th {
-            background-color: #343a40 !important;
-            color: white !important;
-        }
+            .thead-dark th {
+                background-color: #343a40 !important;
+                color: white !important;
+            }
 
-        .result-summary {
-            margin-top: 15px;
-            text-align: right;
-        }
-        .footer-section {
-            margin-top: 30px;
-            text-align: center;
-        }
-        .footer-section p {
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-        }
-        .footer-section .signature {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-around;
-        }
-        .footer-section .signature div {
-            text-align: center;
-        }
-        .footer-section .signature div p {
-            margin-top: 50px;
-            border-top: 1px solid #333;
-            width: 200px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-top: 10px;
-            font-size: 14px;
-        }
-        .image{
-            width: 25%;
-            height: 25%;
-            margin-top:20px
-        }
+            .result-summary {
+                margin-top: 15px;
+                text-align: right;
+            }
+
+            .footer-section {
+                margin-top: 30px;
+                text-align: center;
+            }
+
+            .footer-section p {
+                margin: 0;
+                font-size: 14px;
+                color: #666;
+            }
+
+            .footer-section .signature {
+                margin-top: 30px;
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .footer-section .signature div {
+                text-align: center;
+            }
+
+            .footer-section .signature div p {
+                margin-top: 50px;
+                border-top: 1px solid #333;
+                width: 200px;
+                margin-left: auto;
+                margin-right: auto;
+                padding-top: 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="printArea" class="d-none d-print-block">
+    <div id="printArea" class="d-none d-print-block main">
         @foreach($students as $student)
         @if($results->where('student_id', $student->id)->first())
-            <div class="result-card ">
+            <div class="result-card">
+
                 <h3>RESULT CARD</h3>
                 <h4>Science Academy Girls High School Bhera</h4>
-                <h4>Results for {{ $student->name }}</h5>
-                <h5>Class: {{ $student->class->name }}  Section: {{ $student->section->name }}</h6>
+                <h4>Results for {{ $student->name }}</h4>
+                <h5>Class: {{ $student->class->name }}  Section: {{ $student->section->name }}</h5>
 
                 <div class="table-container">
-                    <table class="table table-bordered table-hover ">
+                    <table class="table table-bordered table-hover">
                         <thead class="thead-dark">
                             <tr>
                                 <th>Subject</th>
@@ -166,6 +171,7 @@
                         </tfoot>
                     </table>
                 </div>
+
                 <div class="footer-section">
                     <div class="signature">
                         <div>
@@ -181,14 +187,10 @@
                 </div>
 
             </div>
-            <div>
-                <img src="{{asset('assesst\images\stamp.png')}}" class="image" />
-            </div>
 
             <!-- Page break after each student's result -->
             <div class="page-break"></div>
-            @endif
-
+        @endif
         @endforeach
     </div>
 
