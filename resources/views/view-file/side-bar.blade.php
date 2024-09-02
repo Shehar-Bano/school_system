@@ -117,7 +117,7 @@
         </a>
         <div class="collapse" id="error">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Types </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Categories </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.view') }}">Manage Transactions </a></li>
                <li class="nav-item"> <a class="nav-link" href="">Student Fee List</a></li>
           </ul>

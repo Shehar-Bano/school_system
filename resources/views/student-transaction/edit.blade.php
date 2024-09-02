@@ -29,7 +29,7 @@
                 </div>
                 <h4 class="card-title mt-5">Update Transaction</h4>
                 <div class="form-container">
-                  <form action="{{ route('transaction.store') }}" method="POST">
+                  <form action="{{ route('transaction.update',['id'=>$transaction->id]) }}" method="POST">
                     @csrf
                     <div class="form-group">
                       <label for="class">Class</label>
@@ -156,7 +156,23 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
- $(document).ready(function () {
+$(document).ready(function () {
+  // Set default values for class and section based on the selected student
+  var selectedStudentId = $('#employee_id').val();
+  var selectedClassId = $('option:selected', '#employee_id').data('class-id');
+  var selectedSectionId = $('option:selected', '#employee_id').data('section-id');
+
+  $('#class').val(selectedClassId);
+  $('#section').val(selectedSectionId);
+
+  // Filter sections based on selected class
+  $('#section option').hide();
+  $('#section option[data-custom="' + selectedClassId + '"]').show();
+
+  // Filter students based on selected class and section
+  $('#employee_id option').hide();
+  $('#employee_id option[data-class-id="' + selectedClassId + '"][data-section-id="' + selectedSectionId + '"]').show();
+
   // Handle class change
   $('#class').on('change', function () {
     var selectedClassId = $(this).val();
@@ -166,14 +182,24 @@
     $('#section option[data-custom="' + selectedClassId + '"]').show();
 
     // Select the first visible section option
-    $('#section').val($('#section option:visible:first').val());
+    var firstVisibleSectionOption = $('#section option:visible:first');
+    if (firstVisibleSectionOption.length > 0) {
+      $('#section').val(firstVisibleSectionOption.val());
+    } else {
+      $('#section').val('');
+    }
 
     // Filter students based on selected class
     $('#employee_id option').hide();
     $('#employee_id option[data-class-id="' + selectedClassId + '"]').show();
 
     // Select the first visible student option
-    $('#employee_id').val($('#employee_id option:visible:first').val());
+    var firstVisibleStudentOption = $('#employee_id option:visible:first');
+    if (firstVisibleStudentOption.length > 0) {
+      $('#employee_id').val(firstVisibleStudentOption.val());
+    } else {
+      $('#employee_id').val('');
+    }
   });
 
   // Handle section change
@@ -186,11 +212,13 @@
     $('#employee_id option[data-class-id="' + selectedClassId + '"][data-section-id="' + selectedSectionId + '"]').show();
 
     // Select the first visible student option
-    $('#employee_id').val($('#employee_id option:visible:first').val());
+    var firstVisibleStudentOption = $('#employee_id option:visible:first');
+    if (firstVisibleStudentOption.length > 0) {
+      $('#employee_id').val(firstVisibleStudentOption.val());
+    } else {
+      $('#employee_id').val('');
+    }
   });
-
-  // Initialize the selections
-  $('#class').change();
 });
    </script>
 

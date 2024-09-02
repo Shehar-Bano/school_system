@@ -66,6 +66,10 @@
                             <td>{{ $section->classe ? $section->classe->name : 'No class assigned' }}</td>
                             <td>{{ $section->note }}</td>
                             <td>
+                              <a href="{{ route('section-fee', ['id' => $section->id]) }}" class="btn btn-info btn-sm" title="Add Fee">
+                                <i class="fas fa-dollar-sign"></i>
+
+                            </a>
                                 <!-- Edit Button -->
                                 <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="fas fa-edit"></i>

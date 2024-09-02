@@ -94,5 +94,10 @@ class SectionController extends Controller
 
         return redirect()->back()->with('message', 'Section successfully updated!');
     }
+public function fee($id){
+    $section = Section::find($id);
+    
+    return view('section.fee',compact('section'));
 
+}
 }

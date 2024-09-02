@@ -21,9 +21,10 @@
               <a href="{{ route('transaction.addView') }}" class="btn btn-primary">Add New Transaction</a>
             </div>
           <!-- Filter Inputs -->
+<!-- Filter Inputs -->
 <div class="mb-3 row">
   <div class="col-12 mt-5">
-    {{-- <form action="{{ route('finance') }}" method="get">
+    <form action="{{ route('transaction.view') }}" method="get">
       <div class="mb-3 row">
         <div class="col-md-3">
           <label for="start_date" class="form-label">Start Date</label>
@@ -34,34 +35,20 @@
           <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}">
         </div>
         <div class="col-md-3">
-          <label for="employee_id" class="form-label">Name</label>
-          <select class="form-control {{ $errors->has('employee_id') ? 'is-invalid' : '' }}" id="employee_id" name="employee_id">
-            <option value="">Select Employee</option>
-            @foreach ($employees as $employee)
-              <option value="{{ $employee->id }}" {{ request('employee_id') == $employee->id ? 'selected' : '' }}>
-                {{ $employee->name }}
+          <label for="category_id" class="form-label">Transaction Category</label>
+          <select class="form-control {{ $errors->has('category_id') ? 'is-invalid' : '' }}" id="category_id" name="category_id">
+            <option value="">Select category</option>
+            @foreach ($transactionCategories as $category)
+              <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                {{ $category->name }}
               </option>
             @endforeach
           </select>
         </div>
-        <div class="col-md-3">
-          <label for="transaction_type" class="form-label">Transaction Type</label>
-          <select id="transaction_type" name="transaction_type" class="form-control">
-            <option value="">Select Transaction Type</option>
-            <option value="late_Penalty" {{ request('transaction_type') == 'late_Penalty' ? 'selected' : '' }}>Late Penalty</option>
-            <option value="absentance_Penalty" {{ request('transaction_type') == 'absentance_Penalty' ? 'selected' : '' }}>Attendance Penalty</option>
-            <option value="loan_Repayment" {{ request('transaction_type') == 'loan_Repayment' ? 'selected' : '' }}>Loan Repayment</option>
-            <option value="performance_Bonus" {{ request('transaction_type') == 'performance_Bonus' ? 'selected' : '' }}>Performance Bonus</option>
-            <option value="festival_Bonus" {{ request('transaction_type') == 'festival_Bonus' ? 'selected' : '' }}>Festival Bonus</option>
-            <option value="duty_Reward" {{ request('transaction_type') == 'duty_Reward' ? 'selected' : '' }}>Exam Duty Reward</option>
-            <option value="paperChinging_reward" {{ request('transaction_type') == 'paperChinging_reward' ? 'selected' : '' }}>Paper Checking Reward</option>
-          </select>
-        </div>
       </div>
       <button type="submit" class="btn btn-primary">Filter</button>
-    </form> --}}
+    </form>
   </div>
-  
 </div>
             <!-- Employees Table -->
             <div class="card">

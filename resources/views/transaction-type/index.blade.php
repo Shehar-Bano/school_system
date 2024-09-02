@@ -21,25 +21,11 @@
     <div class="card">
         <div class="card-body">
         
-          <h4 class="card-title mt-5">Add Transaction</h4>
+          <h4 class="card-title mt-5">Add Transaction Categories</h4>
           <div class="form-container">
             <form action="{{ route('transaction,type.store') }}" method="POST">
               @csrf
-             
-{{--           
-                  <option value="Library Fine" {{ old('transaction_type') == 'Library Fine' ? 'selected' : '' }}>Library Fine</option>
-                  <option value="Late Payment Fine" {{ old('transaction_type') == 'Late Payment Fine' ? 'selected' : '' }}>Late Payment Fine</option>
-                  <option value="Disciplinary Fines" {{ old('transaction_type') == 'Disciplinary Fines' ? 'selected' : '' }}>Disciplinary Fines</option>
-                  <option value="late submission of assignments" {{ old('transaction_type') == 'late submission of assignments' ? 'selected' : '' }}>late submission of assignments</option>
-                  <option value="Transport Fine" {{ old('transaction_type') == 'Transport Fine' ? 'selected' : '' }}>Transport Fine</option>
-                  <option value="Uniform Fine" {{ old('transaction_type') == 'Uniform Fine' ? 'selected' : '' }}>Uniform Fine</option>
-                  <option value="Scholarship" {{ old('transaction_type') == 'Scholarship' ? 'selected' : '' }}>Scholarship</option>
-                  <option value="Grant" {{ old('transaction_type') == 'Grant' ? 'selected' : '' }}>Grant</option>
-                  <option value="Academic achievement awards" {{ old('transaction_type') == 'Academic achievement awards' ? 'selected' : '' }}>Academic achievement awards</option>
-                  <option value="Awards for extracurricular achievements" {{ old('transaction_type') == 'Awards for extracurricular achievements' ? 'selected' : '' }}>Awards for extracurricular achievements</option>
-                  <option value="Emergency Fund" {{ old('transaction_type') == 'Emergency Fund' ? 'selected' : '' }}>Emergency Fund</option>
-                   --}}
-                
+  
                    
               <div class="form-group">
                 <label for="description">Type</label>
@@ -71,7 +57,7 @@
             <!-- Employees Table -->
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Transaction List</h4>
+                <h4 class="card-title">Transaction Categories List</h4>
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered text-center" id="examsTable">
                     <thead>
@@ -97,7 +83,7 @@
 
                         <td>
 
-                              <a class="btn btn-warning btn-sm" href="{{ route('transaction.edit', ['id' => $recode->id]) }}" title="Edit"><i class="fas fa-edit"></i> </a>
+                              {{-- <a class="btn btn-warning btn-sm" href="{{ route('transaction.edit', ['id' => $recode->id]) }}" title="Edit"><i class="fas fa-edit"></i> </a> --}}
                               <a class="btn btn-danger btn-sm" href="{{ route('transaction.type.delete', ['id' => $recode->id]) }}" title="Delete" onclick="confirmDelete(event, '{{ route('transaction.type.delete', ['id' => $recode->id]) }}')">
                                 <i class="fas fa-trash"></i>  </a>
                             
