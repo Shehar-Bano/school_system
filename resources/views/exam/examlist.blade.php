@@ -44,12 +44,12 @@
               <div class="card-body">
                 <h4 class="card-title">Exams List</h4>
                 <div class="table-responsive">
-                  <table class="table table-striped table-bordered" id="examsTable">
+                  <table class="table table-striped table-bordered text-center table-sm" id="examsTable">
                     <thead>
                       <tr>
                         <th>ID</th>
                         <th>Exam Name</th>
-
+                        <th>Exam Fee</th>
                         <th>Note</th>
                         <th>Actions</th>
                       </tr>
@@ -59,7 +59,11 @@
                       <tr>
                         <td>{{ $exam->id }}</td>
                         <td>{{ $exam->name }}</td>
-                       
+                        @if($exam->exam_fee==0)
+                        <td>0</td>
+                        @else
+                       <td>{{ number_format($exam->exam_fee) }} Rs/-</td>
+                       @endif
                         <td>{{ $exam->note }}</td>
                         <td>
                           <!-- Edit Button -->

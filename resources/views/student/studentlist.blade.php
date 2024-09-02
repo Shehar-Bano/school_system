@@ -61,8 +61,11 @@
                         <th>Sr.no</th>
                         <th>Name</th>
                         <th>Class</th>
+                        
                         <th>Registration No</th>
                         <th>Section</th>
+                        
+                        <th>Tution Fee</th>
                         <th>Status</th>
                         <th>Actions</th>
                       </tr>
@@ -77,8 +80,11 @@
                             <td><img src="{{asset('storage/'. $student->image)}}" style="width: 25px;height:25px">{{ $student->name }}</td>
                             <td> {{$student->class->name}}
                            </td>
+                           
                             <td>{{$student->registration}}</td>
+
                             <td> {{$student->section->name}} ,{{$student->section->classe->name}}</td>
+                            <td>{{number_format($student->tution_fee)}} Rs/-</td>
                             <td>{{ $student->status }}</td>
                             <td>
                                 <!-- Edit Button -->

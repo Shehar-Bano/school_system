@@ -64,6 +64,10 @@
                             <input type="text" class="form-control" id="examName" name="name" placeholder="Enter class name" required>
                         </div>
                         <div class="mb-3">
+                            <label for="tution_fee" class="form-label">Tution Fee <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="tution_fee" name="tution_fee" placeholder="Enter Tution fee" required>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Select Subjects <span class="text-danger">*</span></label>
                             <div class="form-check ml-5">
                                 @foreach ($subjects as $subject)

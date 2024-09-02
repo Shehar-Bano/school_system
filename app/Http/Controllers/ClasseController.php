@@ -28,6 +28,7 @@ class ClasseController extends Controller
          // Create a new class instance
          $class = new Classe();
          $class->name = $request->name;
+         $class->tution_fee = $request->tution_fee;
          $class->note = $request->note;
          $class->save();
      
@@ -55,6 +56,7 @@ class ClasseController extends Controller
      public function update(Request $request,$id){
         $class = Classe::findOrFail($id);
         $class->name = $request->name;
+        $class->tution_fee = $request->tution_fee;
         $class->note = $request->note;
         $class->save();
 

@@ -20,7 +20,12 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
+use App\Http\Controllers\StudentTransactionController;
+use App\Http\Controllers\TransactionTypeController;
 use App\Models\EmployeeSalary;
+use App\Models\FineControler;
+use App\Models\StudentTransaction;
+use App\Models\TransactionType;
 
 Route::get('/', function () {
     return view('welcome');
@@ -123,11 +128,32 @@ Route::group(['prefix'=>'finance'],function (){
     
 });
 
+///////////////student payments
+Route::group(['prefix'=>'payment/student'],function (){
+    Route::group(['prefix'=>'transaction/types'], function(){
+
+        Route::get('view',[TransactionTypeController::class,'index'])->name('transaction.types');
+        Route::post('add', [TransactionTypeController::class, 'store'])->name('transaction,type.store');
+        Route::get('edit/{id}', [TransactionTypeController::class, 'edit'])->name
+        ('transaction.type.edit');
+        Route::post('update/{id}', [TransactionTypeController::class, 'update'])->name
+        ('transaction.type.update');
+        Route::get('delete/{id}', [TransactionTypeController::class, 'delete'])->name('transaction.type.delete');
 
 
 
+    });
+   Route::group(['prefix'=>'transaction'],function (){
+Route::get('/view',[StudentTransactionController::class, 'index'])->name('transaction.view');
+Route::get('/create',[StudentTransactionController::class, 'create'])->name('transaction.addView');
+Route::post('/store',[StudentTransactionController::class, 'store'])->name('transaction.store');
+Route::get('/edit/{id}',[StudentTransactionController::class, 'edit'])->name('transaction.edit');
+Route::post('/update/{id}',[StudentTransactionController::class, 'update'])->name('transaction.update');
+Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name('transaction.delete');
 
-
+   });
+   
+});
 
 
 

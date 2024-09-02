@@ -11,7 +11,7 @@ class Student extends Model
     protected $fillable = [
         'name', 'gurdian', 'admissiondate', 'dob', 'gender', 'religion',
         'email', 'phone', 'address', 'class_id', 'section_id', 'group',
-        'registration', 'username', 'password', 'image', 'note'
+        'registration', 'username', 'password', 'image', 'note','tution_fee'
     ];
 
     public function class(){

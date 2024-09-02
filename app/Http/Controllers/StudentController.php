@@ -23,7 +23,7 @@ class StudentController extends Controller
      }
      public function store(Request $request)
      {
-
+     
         //  Validate the request data
          $request->validate([
              'name' => 'required|string|max:255',
@@ -42,12 +42,12 @@ class StudentController extends Controller
              'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
 
          ]);
-
-         // Handle file upload if there's an image
+         
+        
          $imagePath = $request->hasFile('image')
             ? $request->file('image')->store('students', 'public')
             : null;
-
+         
          // Create the student
          $student = Student::create([
              'name' => $request->input('name'),
@@ -63,6 +63,8 @@ class StudentController extends Controller
              'section_id' => $request->input('section'),
              'group' => $request->input('group'),
              'registration' => $request->input('registration'),
+             'tution_fee' => $request->input('tution_fee'),
+             'fee_concession'=> $request->fee_concession,
              'image' => $imagePath,
 
 
@@ -107,8 +109,7 @@ class StudentController extends Controller
         'registration' => 'nullable|string|max:255',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
     ]);
-
-    // Find the student by ID
+  
     $student = Student::findOrFail($id);
     if ($request->hasFile('image')) {
         if ($student->image) {
@@ -133,6 +134,8 @@ class StudentController extends Controller
         'class_id' => $request->input('class'),
         'section_id' => $request->input('section'),
         'group' => $request->input('group'),
+        'tution_fee' => $request->input('tution_fee'),
+        
         'registration' => $request->input('registration'),
        'image' => $imagePath,
 

@@ -95,7 +95,7 @@
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
           <i class="fas  fa-balance-scale menu-icon"></i>
-          <span class="menu-title">Finance</span>
+          <span class="menu-title">Finance Management</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="auth">
@@ -103,6 +103,7 @@
             {{-- <li class="nav-item"> <a class="nav-link" href="{{ route('salary') }}"> Manage Salary </a></li> --}}
             <li class="nav-item"> <a class="nav-link" href="{{ route('finance') }}">Manage Transactions  </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('finance.salary') }}">Manage Salary  </a></li>
+            
           </ul>
         </div>
       </li>
@@ -111,13 +112,14 @@
       <li class="nav-item">
         <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
            <i class="fa-solid fa-money-bill menu-icon"></i>
-          <span class="menu-title">Fees</span>
+          <span class="menu-title">Student Payment</span>
           <i class="menu-arrow"></i>
         </a>
         <div class="collapse" id="error">
           <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{ route('fee') }}"> Student Fee </a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{route('student-fee-list')}}">Student Fee List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Types </a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.view') }}">Manage Transactions </a></li>
+               <li class="nav-item"> <a class="nav-link" href="">Student Fee List</a></li>
           </ul>
         </div>
       </li>

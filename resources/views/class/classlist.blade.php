@@ -49,6 +49,7 @@
                       <tr>
                         <th>#</th>
                         <th>Class Name</th>
+                        <th>Tution Fee</th>
                         <th>Note</th>
                         <th>Subjects</th>
                         <th><i class="fa fa-ellipsis-h"></i></th>
@@ -63,6 +64,7 @@
                             <td>{{++$count}}</td>
 
                             <td>{{ $class->name }}</td>
+                            <td>{{number_format($class->tution_fee )}} Rs/-</td>
                             <td>{{ $class->note }}</td>
                             <td>
                               @php

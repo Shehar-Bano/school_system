@@ -63,6 +63,10 @@
                     <input type="text" class="form-control" id="examName" name="name" placeholder="Enter exam name" required>
                 </div>
                 <div class="mb-3">
+                    <label for="exam_fee" class="form-label">Exam Fee </label>
+                    <input type="number" class="form-control" id="exam_fee" name="exam_fee" placeholder="Enter exam fee" >
+                </div>
+                <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note" placeholder="Enter any notes"></textarea>
                 </div>

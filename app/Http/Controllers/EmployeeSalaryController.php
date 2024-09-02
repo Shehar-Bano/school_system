@@ -83,12 +83,14 @@ class EmployeeSalaryController extends Controller
             ];
         });
     
-        $currentDate = now()->format('Y-m-d'); // Format the current date as Y-m-d
+        $currentMonth = now()->format('m'); // Get the current month
+    $currentYear = now()->format('Y'); // Get the current year
+
+    $salaryForMonth = EmployeeSalary::whereMonth('date', $currentMonth)
+                                     ->whereYear('date', $currentYear)
+                                     ->first();
     
-        $salarydate = EmployeeSalary::whereDate('date', $currentDate)->first(); // Use whereDate to compare only the date
-        
-    
-        if ($salarydate) {
+        if ($salaryForMonth) {
             return redirect()->back()->with('error', 'Salary already added for this month!');
         }
     
@@ -114,26 +116,36 @@ class EmployeeSalaryController extends Controller
   
 
   public function PDFview($id)
-  {
-      $employee = EmployeeSalary::with('employee')->find($id);
-      $transctions = Finance_recode::select('employee_id', 'transaction_type', 'amount')->get();
+{
+    $employee = EmployeeSalary::with([
+        'employee.financeRecords' => function ($query) {
+            $query->where('status', 'paid');
+        },
+        'employee.financeRecordBonus' => function ($query) {
+            $query->whereIn('transaction_type', ['Performance Bonus', 'Festival Bonus', 'Duty Reward', 'Paper Checking Reward']);
+        },
+        'employee.financeRecordDeduction' => function ($query) {
+            $query->whereIn('transaction_type', ['Late Penalty', 'Absentance Penalty', 'Loan Repayment']);
+        }
+    ])->find($id);
+
+    $bonus = $employee->employee->financeRecordBonus->sum('amount');
+    $deduction = $employee->employee->financeRecordDeduction->sum('amount');
+    $gross_salary = $employee->employee->salary + $bonus;
+    $net_salary = $gross_salary - $deduction;
+
+   
+    $transactions = $employee->employee->financeRecords->select('transaction_type');
+
+   
     
-      $bonus = $employee->employee->financeRecords->whereIn('transaction_type', ['Performance Bonus', 'Festival Bonus', 'Duty Reward', 'Paper Checking Reward'])
-          ->sum('amount'); 
-      $deduction = $employee->employee->financeRecords->whereIn('transaction_type', ['Late Penalty', 'Absentance Penalty', 'Loan Repayment'])
-          ->sum('amount');
-      
-      $gross_salary = $employee->employee->salary + $bonus;
-      $net_salary = $gross_salary - $deduction;
-      
-      $pdf = Pdf::loadView('salary.printPDF', compact('employee', 'gross_salary', 'net_salary', 'deduction', 'bonus', 'transctions'))
-      ->setPaper('A4', 'portrait')
-      ->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
-  
-      return $pdf->download('salary_slip.pdf');  // To download
-      // return $pdf->stream();  // To display in the browser
-  }
-  
+    $pdf = Pdf::loadView('salary.printPDF',  compact('employee', 'bonus', 'deduction', 'gross_salary', 'net_salary', 'transactions'))
+    ->setPaper('A4', 'portrait')
+    ->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+    return $pdf->download('salary_slip.pdf'); 
+}
+
   
   
   

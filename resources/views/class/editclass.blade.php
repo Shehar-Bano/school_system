@@ -64,7 +64,10 @@
                     <label for="examName" class="form-label">Class Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="examName" name="name" value="{{$classes->name}}" placeholder="Enter class name" required>
                 </div>
-
+                <div class="mb-3">
+                    <label for="tution_fee" class="form-label">Tution Fee <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="tution_fee" name="tution_fee"  value="{{$classes->tution_fee}}" placeholder="Enter Tution fee" required>
+                </div>
                 <div class="mb-3">
                     <label for="examNote" class="form-label">Note</label>
                     <textarea class="form-control" id="examNote" rows="3" name="note"  placeholder="Enter any notes">{{$classes->note}}</textarea>

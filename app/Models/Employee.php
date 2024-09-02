@@ -33,4 +33,12 @@ class Employee extends Model
     {
         return $this->hasMany(Finance_recode::class);
     }
+    public function financeRecordBonus()
+    {
+        return $this->hasMany(Finance_recode::class);
+    }
+    public function financeRecordDeduction()
+    {
+        return $this->hasMany(Finance_recode::class);
+    }
 }

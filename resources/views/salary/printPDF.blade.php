@@ -9,41 +9,51 @@ use Carbon\Carbon;
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 10px;
+        }
+        .pdfDiv {
+            width: 40vh;
+            height: 60vh;
+            padding: 10px;
         }
         .table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
+            font-size: 0.7em;
         }
         .table th, .table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 2px;
             text-align: left;
         }
         .table-borderless th, .table-borderless td {
             border: none;
-            padding: 8px;
+            padding: 2px;
             text-align: left;
         }
-        h1{
-            margin-top: 10px;
-            margin-bottom: 50px;
-            
+        h1 {
+            margin-top: 5px;
+            margin-bottom: 20px;
             text-align: center;
+            font-size: 1em;
+        }
+        h3 {
+            margin-bottom: 8px;
+            font-size: 0.9em;
         }
         .text-center {
             text-align: center;
         }
-        .nodata{
-            text-align: center;
+        .nodata {
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <div>
+    <div class="pdfDiv">
         <!-- Employee Details Section -->
-        <h1>Payment Recipte</h1>
+        <h1>Payment Receipt</h1>
         <table class="table table-borderless">
             <tr>
                 <td><strong>Name:</strong></td>
@@ -85,7 +95,7 @@ use Carbon\Carbon;
         </table>
 
         <!-- Bonus Information Section -->
-        <h3>Bounues</h3>
+        <h3>Bonuses</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -97,7 +107,7 @@ use Carbon\Carbon;
                 @php
                     $hasBonus = false;
                 @endphp
-                @foreach ($transctions as $transction)
+                @foreach ($transactions as $transction)
                     @if (in_array($transction->transaction_type, ['Performance Bonus', 'Festival Bonus', 'Duty Reward', 'Paper Checking Reward']) && $transction->employee_id == $employee->employee->id)
                         @php
                             $hasBonus = true;
@@ -117,7 +127,7 @@ use Carbon\Carbon;
         </table>
 
         <!-- Deduction Information Section -->
-        <h3>Deduction</h3>
+        <h3>Deductions</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -129,8 +139,8 @@ use Carbon\Carbon;
                 @php
                     $hasDeduction = false;
                 @endphp
-                @foreach ($transctions as $transction)
-                    @if (in_array($transction->transaction_type, ['Late Penalty', 'Absentance Penalty', 'Loan Repayment']) && $transction->employee_id == $employee->employee->id)
+                @foreach ($transactions as $transction)
+                    @if (in_array($transction->transaction_type, ['Late Penalty', 'Absence Penalty', 'Loan Repayment']) && $transction->employee_id == $employee->employee->id)
                         @php
                             $hasDeduction = true;
                         @endphp
@@ -157,7 +167,7 @@ use Carbon\Carbon;
             </tr>
             <tr>
                 <td>Total Deduction</td>
-                @if($deduction===0)
+                @if($deduction === 0)
                 <td>0.00</td>
                 @else
                 <td>{{ number_format($deduction) }} Rs/-</td>

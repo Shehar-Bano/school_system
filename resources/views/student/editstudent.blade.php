@@ -122,7 +122,11 @@
                             @endforeach
                         </select>
                     </div>
-
+                   
+                    <div class="mb-3">
+                        <label for="tution_fee" class="form-label">Tution Fee </label>
+                        <input type="number" class="form-control" id="tution_fee" name="tution_fee"  value={{ $student->tution_fee }} placeholder="Enter fee concession">
+                    </div>
                     <div class="mb-3">
                         <label for="section" class="form-label">Section <span class="text-danger">*</span></label>
                         <select class="form-control" id="section" name="section" required>
@@ -185,23 +189,7 @@
         });
     </script>
   @endif
- <script>
-      document.getElementById('submitBtn').addEventListener('click', function(e) {
-          Swal.fire({
-              title: 'Are you sure?',
-              text: "You are about to add this student.",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, add it!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  document.getElementById('studentForm').submit();
-              }
-          })
-      });
-  </script>
+
    <script>
     $(document).ready(function(){
         $('#class').on('change',function(){

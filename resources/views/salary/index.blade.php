@@ -85,14 +85,26 @@
                               <td>{{ number_format($salary['deduction']) }} {{ $salary['deduction'] ? 'Rs/-' : '' }}</td>
                               <td>{{ number_format($salary['gross_salary']) }} Rs/-</td>
                               <td>{{ number_format($salary['net_salary']) }} Rs/-</td>
-                              @if ($salary['status']=='unpaid')
-                              <td><a   class="btn btn-info btn-sm text-sm">{{ $salary['status'] }}</a></td>
+                              
+                              @if ($salary['status'] == 'unpaid')
+                                  <td><a class="btn btn-info btn-sm text-sm">{{ $salary['status'] }}</a></td>
                               @else
-                              <td><a class="btn btn-success btn-sm text-sm">{{ $salary['status'] }}</a></td>  
+                                  <td><a class="btn btn-success btn-sm text-sm">{{ $salary['status'] }}</a></td>
                               @endif
+                  
                               <td>
-                                <a href="{{ route('salary.pay',['id'=>$salary['employee_id']]) }}" title='pay Salary'><i class="fas fa-coins btn btn-sm btn-info"></i></a>
-                              <a href="{{ route('salary.pdf',['id'=>$salary['employee_id']]) }}"><i class="fas fa-print btn btn-sm btn-warning" title='Print Recipte'></i></a>
+                                  @if ($salary['status'] == 'unpaid')
+                                      <a href="{{ route('salary.pay', ['id' => $salary['id']]) }}" title='Pay Salary' class="btn btn-sm btn-info">
+                                          <i class="fas fa-coins"></i>
+                                      </a>
+                                  @else
+                                      <button class="btn btn-sm btn-secondary" disabled title="Salary Already Paid">
+                                          <i class="fas fa-coins"></i>
+                                      </button>
+                                  @endif
+                                  <a href="{{ route('salary.pdf', ['id' => $salary['employee_id']]) }}" class="btn btn-sm btn-warning" title='Print Receipt'>
+                                      <i class="fas fa-print"></i>
+                                  </a>
                               </td>
                           </tr>
                       @endforeach
@@ -131,6 +143,7 @@
       });
   </script>
   @endif
+  
   
 </body>
 
