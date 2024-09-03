@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\classe;
 use App\Models\Section;
 use App\Models\Employee;
+use App\Models\StudentTransaction;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SectionController extends Controller
 {
@@ -94,10 +96,75 @@ class SectionController extends Controller
 
         return redirect()->back()->with('message', 'Section successfully updated!');
     }
-public function fee($id){
-    $section = Section::find($id);
-    
-    return view('section.fee',compact('section'));
 
+    public function generateFeeSlips($id)
+{
+    $section = Section::with('student', 'classe')->findOrFail($id);
+    $studentData = $section->student;
+    $fines = StudentTransaction::with('student')->where('transaction_type', 'fine')->get();
+    $funds = StudentTransaction::with('student')->where('transaction_type', '!=', 'fine')->get();
+   
+    $students = [];
+    foreach ($studentData as $student) {
+        $students[] = [
+            'id' => $student->id,
+            'name' => $student->name,
+            'class' => $student->class,
+            'roll_no' => $student->registration,
+            'tuition_fee' => $student->tution_fee,
+            'section' => $student->section,
+            'funds'=>$student->transaction->where('transaction_type', '!=', 'fine'),
+        ];
+    }
+  
+
+    $feeTypes = [
+        'Admission' => 100, // static fee amount for admission
+        'Other Activity' => 300, // static fee amount for school fees
+        'School Bus' => 50, // static fee amount for school bus
+        'Lunch' => 50, // static fee amount for lunch
+        'Diary' => 50, // static fee amount for diary
+        // add more fee types as needed
+    ];
+
+    $fees = [];
+    foreach ($students as $student) {
+        $studentFees = [];
+        foreach ($feeTypes as $feeType => $amount) {
+            $studentFees[] = [
+                'student_id' => $student['id'],
+                'fee_type' => $feeType,
+                'amount' => $amount,
+                'paid' => 0, // assuming paid amount is 0 for now
+            ];
+        }
+        // Add tuition fee to the $studentFees array
+        $studentFees[] = [
+            'student_id' => $student['id'],
+            'fee_type' => 'Tuition Fee',
+            'amount' => $student['tuition_fee'],
+            'paid' => 0, // assuming paid amount is 0 for now
+        ];
+
+        // Add transaction fee to the $studentFees array
+        foreach ($fines as $fine) {
+            if ($fine->student_id == $student['id']) {
+                $studentFees[] = [
+                    'student_id' => $student['id'],
+                    'fee_type' => 'Fine',
+                    'amount' => $fine->amount,
+                    'paid' => $fine->paid_amount, // assuming paid amount is stored in the transaction table
+                ];
+            }
+        }
+
+        $fees[$student['id']] = $studentFees;
+    }
+
+    // Pass the dynamic data to the view
+    return view('section.feeslip', compact('students', 'fees'));
 }
+
+
+
 }

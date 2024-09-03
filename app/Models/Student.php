@@ -32,5 +32,8 @@ class Student extends Model
     public function exam(){
         return $this->belongsTo(Exam::class);
     }
-   
+   public function transaction()
+   {
+       return $this->hasMany(StudentTransaction::class);
+   }
 }

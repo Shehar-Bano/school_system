@@ -178,7 +178,7 @@ Route::get('/section/list',[SectionController::class,'list'])->name('section-lis
 Route::delete('/section/del/{id}',[SectionController::class,'del'])->name('section_delete');
 Route::get('/section/edit/{id}',[SectionController::class,'edit'])->name('section-edit');
 Route::post('/section/update/{id}',[SectionController::class,'update'])->name('section-update');
-Route::get('/section-fee/{id}',[SectionController::class,'fee'])->name('section-fee');
+Route::get('/section-fee/{id}',[SectionController::class,'generateFeeSlips'])->name('section-fee');
 /////////////////////student
 Route::get('/student',[StudentController::class,'index'])->name('student');
 
