@@ -24,12 +24,15 @@
 
             /* Optional: Adjust styles for printing */
             .result-card {
-    width: 50%; /* Changed from 50% to 100% */
-    margin: 20px; /* Added margin to separate cards */
-    display: block; /* Changed from inline-block to block */
+    width: 60%; 
+   
+    /* margin: 20px; Added margin to separate cards */
+    display: block; 
+    text-align: center;/* Changed from inline-block to block */
     vertical-align: top;
     position: relative;
     z-index: 2; /* Ensure content is above the watermark */
+    
 }
 
 
@@ -41,6 +44,7 @@
                 text-align: center;
                 margin: 0;
                 padding: 5px;
+                
             }
 
             .result-summary {
@@ -55,7 +59,8 @@
             .table-container {
                 width: 100%;
                 margin-top: 5px;
-                margin-right: 20px;
+                /* margin-right: 20px; */
+                
             }
 
             table {
@@ -103,11 +108,14 @@
             .footer-section .signature div p {
                 margin-top: 30px;
                 border-top: 1px solid #333;
-                width: 70px;
+                width: 90px;
                 margin-left: auto;
                 margin-right: auto;
                 padding-top: 5px;
                 font-size: 12px;
+            }
+            #printArea{
+                height: 90vh;
             }
         }
     </style>
@@ -195,15 +203,29 @@
     </div>
     
     <script>
-        window.onload = function() {
-            window.print();
-    
-            window.onafterprint = function() {
-                setTimeout(function() {
-                    window.location.href = "{{ route('section-list') }}";
-                }, 1000); // Adjust the delay as needed
-            };
-        };
+      window.onload = function() {
+    // Hide all elements except the printArea
+    const printArea = document.getElementById('printArea');
+    const bodyContent = document.body.innerHTML;
+    const printContent = printArea.innerHTML;
+
+    // Set the body content to only the printArea content
+    document.body.innerHTML = printContent;
+
+    // Print the content
+    window.print();
+
+    // Restore the original body content after printing
+    document.body.innerHTML = bodyContent;
+
+    // After printing, redirect to the section list page
+    window.onafterprint = function() {
+        setTimeout(function() {
+            window.location.href = "{{ route('section-list') }}";
+        }, 1000); // Adjust the delay as needed
+    };
+};
+
     </script>
 
 </body>

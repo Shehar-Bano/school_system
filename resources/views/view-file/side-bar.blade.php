@@ -124,6 +124,22 @@
         </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#inventory" aria-expanded="false" aria-controls="inventory">
+          <i class="fas fa-boxes menu-icon"></i>
+          <span class="menu-title">Inventory</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="inventory">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.category') }}">Category</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.product') }}">Product</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.warehouse') }}">Warehouse</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.suppliers') }}">Suppliers</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.purchase') }}">Purchase</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="pages/documentation/documentation.html">
           <i class="icon-paper menu-icon"></i>
           <span class="menu-title">Documentation</span>

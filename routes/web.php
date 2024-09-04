@@ -20,6 +20,11 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
+use App\Http\Controllers\InventoryCategoryController;
+use App\Http\Controllers\InventoryProductController;
+use App\Http\Controllers\InventoryPurchaseController;
+use App\Http\Controllers\InventorySuplierController;
+use App\Http\Controllers\InventoryWarehouseController;
 use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Models\EmployeeSalary;
@@ -211,3 +216,23 @@ Route::get('/result/list',[ResultController::class,'list'])->name('result-list')
 Route::get('/result/list/view/{id}',[ResultController::class,'view'])->name('result-view');
 Route::get('/result/card',[ResultController::class,'showResultCard'])->name('result.card');
 Route::get('/notfound',[ResultController::class,'notFound'])->name('not_Found');
+
+///////////////inventary
+Route::group(['prefix'=>'inventory'],function (){
+    Route::group(['prefix'=>'category'],function(){
+        Route::get('/category',[InventoryCategoryController::class,'index'])->name('inventory.category');
+    });
+    Route::group(['prefix'=>'product'],function(){
+        Route::get('/product',[InventoryProductController::class,'index'])->name('inventory.product');
+    });
+    Route::group(['prefix'=>'warehouse'],function(){
+        Route::get('/warehouse',[InventoryWarehouseController::class,'index'])->name('inventory.warehouse');
+    });
+    Route::group(['prefix'=>'suppliers'],function(){
+        Route::get('/suppliers',[InventorySuplierController::class,'index'])->name('inventory.suppliers');
+    });
+    Route::group(['prefix'=>'purchase'],function(){
+        Route::get('/purchase',[InventoryPurchaseController::class,'index'])->name('inventory.purchase');
+        });
+
+});
