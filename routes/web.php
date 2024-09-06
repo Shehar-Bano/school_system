@@ -27,6 +27,7 @@ use App\Http\Controllers\InventoryPurchaseController;
 use App\Http\Controllers\InventorySubCategoryController;
 use App\Http\Controllers\InventorySuplierController;
 use App\Http\Controllers\InventoryWarehouseController;
+use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Models\EmployeeSalary;
@@ -159,6 +160,9 @@ Route::post('/update/{id}',[StudentTransactionController::class, 'update'])->nam
 Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name('transaction.delete');
 
    });
+   Route::group(['prefix'=>'student'],function(){
+    Route::get('select/class',[StudentFeeController::class,'index'])->name('fee.index');
+   });
    
 });
 
@@ -194,6 +198,7 @@ Route::get('/student/list',[StudentController::class,'list'])->name('student-lis
 Route::delete('/student/del/{id}',[StudentController::class,'del'])->name('student_delete');
 Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('student-edit');
 Route::post('/student/update/{id}',[StudentController::class,'update'])->name('student-update');
+
 ////////////////////exam-schedule
 Route::get('/exam/schedule',[ExamScheduleController::class,'index'])->name('exam-schedule');
 Route::post('/exam/schedule',[ExamScheduleController::class,'store'])->name('exam_schedule_store');
