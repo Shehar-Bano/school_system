@@ -119,7 +119,7 @@
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Categories </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.view') }}">Manage Transactions </a></li>
-               <li class="nav-item"> <a class="nav-link" href="">Student Fee List</a></li>
+              
           </ul>
         </div>
       </li>
@@ -132,10 +132,10 @@
         <div class="collapse" id="inventory">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.category') }}">Category</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.product') }}">Product</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.warehouse') }}">Warehouse</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.suppliers') }}">Suppliers</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.purchase') }}">Purchase</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.subCatagory') }}">SubCategory</a></li>
+             <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.expences') }}">Expences</a></li>
+            {{--<li class="nav-item"> <a class="nav-link" href="{{ route('inventory.suppliers') }}">Suppliers</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.purchase') }}">Purchase</a></li> --}}
           </ul>
         </div>
       </li>

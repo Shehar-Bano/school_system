@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inventory_products', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('expences', function (Blueprint $table) {
+            $table->softDeletes()->after('date');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventory_products');
+        Schema::table('expences', function (Blueprint $table) {
+            //
+        });
     }
 };

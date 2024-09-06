@@ -3,24 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryCategory;
+use App\Models\InventorySubCategory;
 use Illuminate\Http\Request;
 
-class InventoryCategoryController extends Controller
+class InventorySubCategoryController extends Controller
 {
     public function index(){
-        $categories = InventoryCategory::get();
-        return view('inventory-category.index', compact('categories'));
+        $categories=InventoryCategory::get();
+        $subcategories=InventorySubCategory::with('category')->get();
+        return view('inventory-subcategory.index',compact('subcategories','categories'));
     }
     public function store(Request $request){
         $validated=$request->validate([
             'name'=>'required',
+            'category_id'=>'required',
             
         ]);
-        InventoryCategory::create($validated);
-        return redirect()->back()->with('success','Category created successfully');
+        InventorySubCategory::create($validated); 
+        return redirect()->back()->with('success','Sub Category Added Successfully');
+    
     }
+
     public function delete($id){
-        $category=InventoryCategory::findOrFail($id);
+        $category=InventorySubCategory::findOrFail($id);
         $category->status='deleted';
         $category->save();
         return redirect()->back()->with('success','Sub Category Deleted Successfully');
@@ -28,14 +33,14 @@ class InventoryCategoryController extends Controller
 
     }
     public function changeStatus($id){
-        $category=InventoryCategory::findOrFail($id);
+        $category=InventorySubCategory::findOrFail($id);
         if($category->status=='active'){
             $category->status='inactive';
             }else{
                 $category->status='active';
                 }
                 $category->save();
-                return redirect()->back()->with('success','Category Status Changed Successfully');
-    }
+                return redirect()->back()->with('success','Sub Category Status Changed Successfully');
 
+    }
 }

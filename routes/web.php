@@ -19,10 +19,12 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\ExamScheduleController;
+use App\Http\Controllers\ExpenceController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InventoryProductController;
 use App\Http\Controllers\InventoryPurchaseController;
+use App\Http\Controllers\InventorySubCategoryController;
 use App\Http\Controllers\InventorySuplierController;
 use App\Http\Controllers\InventoryWarehouseController;
 use App\Http\Controllers\StudentTransactionController;
@@ -220,19 +222,26 @@ Route::get('/notfound',[ResultController::class,'notFound'])->name('not_Found');
 ///////////////inventary
 Route::group(['prefix'=>'inventory'],function (){
     Route::group(['prefix'=>'category'],function(){
-        Route::get('/category',[InventoryCategoryController::class,'index'])->name('inventory.category');
+        Route::get('/index',[InventoryCategoryController::class,'index'])->name('inventory.category');
+        Route::post('/add',[InventoryCategoryController::class,'store'])->name('inventory.category.store');
+        Route::get('delete/{id}',[InventoryCategoryController::class,'delete'])->name('inventory.catagory.delete');
+        Route::get('changeStatus/{id}',[InventoryCategoryController::class,'changeStatus'])->name('inventory.catagory.changeStatus');       
+
     });
-    Route::group(['prefix'=>'product'],function(){
-        Route::get('/product',[InventoryProductController::class,'index'])->name('inventory.product');
+    Route::group(['prefix'=>'subCategory'],function(){
+        Route::get('/product',[InventorySubCategoryController::class,'index'])->name('inventory.subCatagory');
+        Route::post('/add',[InventorySubCategoryController::class,'store'])->name('inventory.subCatagory.store');
+        Route::get('delete/{id}',[InventorySubCategoryController::class,'delete'])->name('inventory.subCatagory.delete');
+        Route::get('changeStatus/{id}',[InventorySubCategoryController::class,'changeStatus'])->name('inventory.catagory.subchangeStatus');
+     });
+    Route::group(['prefix'=>'expences'],function(){
+        Route::get('/index',[ExpenceController::class,'index'])->name('inventory.expences');
+        Route::get('/create',[ExpenceController::class,'create'])->name('inventory.expences.create');
+        Route::post('/add',[ExpenceController::class,'store'])->name('inventory.expences.store');
+        Route::get('edit/{id}',[ExpenceController::class,'edit'])->name('inventory.expences.edit');
+        Route::post('update/{id}',[ExpenceController::class,'update'])->name('inventory.expences.update');
+        Route::get('delete/{id}',[ExpenceController::class,'delete'])->name('inventory.expences.delete');
+      
     });
-    Route::group(['prefix'=>'warehouse'],function(){
-        Route::get('/warehouse',[InventoryWarehouseController::class,'index'])->name('inventory.warehouse');
-    });
-    Route::group(['prefix'=>'suppliers'],function(){
-        Route::get('/suppliers',[InventorySuplierController::class,'index'])->name('inventory.suppliers');
-    });
-    Route::group(['prefix'=>'purchase'],function(){
-        Route::get('/purchase',[InventoryPurchaseController::class,'index'])->name('inventory.purchase');
-        });
 
 });
