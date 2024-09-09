@@ -160,9 +160,12 @@ Route::post('/update/{id}',[StudentTransactionController::class, 'update'])->nam
 Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name('transaction.delete');
 
    });
-   Route::group(['prefix'=>'student'],function(){
-    Route::get('select/class',[StudentFeeController::class,'index'])->name('fee.index');
-   });
+  
+    Route::get('/select/class',[StudentFeeController::class,'index'])->name('fee.index');
+    Route::get('/class/student-list/{id}',[StudentFeeController::class,'listStudent'])->name('fee.show.student');
+    Route::get('/class/fee/recived/{id}',[StudentFeeController::class,'feeRecive'])->name('fee.receive');
+
+  
    
 });
 
