@@ -13,18 +13,23 @@ return new class extends Migration
     {
         Schema::create('employee_salaries', function (Blueprint $table) {
             $table->id();
+
+            // Date when the salary was processed
             $table->date('date')->nullable();
+
+            // Foreign key to the employees table
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
-            $table->integer('base_salary', 8);
-            $table->integer('bonus',8);           
-            $table->integer('deduction', 8);
-            $table->integer('gross_salary',8);
-            $table->integer('net_salary', 8);
-            $table->enum('status',['paid','unpaid','deleted'])->default('unpaid');
+
+          
+            // Status of the salary payment
+            $table->enum('status', ['paid', 'unpaid', 'deleted'])->default('unpaid');
+
+            // Created_at and updated_at timestamps
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

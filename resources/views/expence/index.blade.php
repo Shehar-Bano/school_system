@@ -11,7 +11,7 @@
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
-      
+
       <!-- Inner-page -->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -55,12 +55,12 @@
             @endforeach
           </select>
         </div>
-        
+
       </div>
       <button type="submit" class="btn btn-primary">Filter</button>
     </form>
   </div>
-  
+
 </div>
             <!-- Employees Table -->
             <div class="card">
@@ -74,15 +74,16 @@
                         <th>Date</th>
                         <th>Category</th>
                         <th>Sub  Category</th>
-                        <th>Amount</th> 
-                        <th>Description</th>                       
-                       
+                        <th>Amount</th>
+                        <th>Description</th>
+
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       @php
                           $count = 0;
+                          $totalExpence = 0;
                       @endphp
                       @foreach ($expences as $recode)
                           <tr>
@@ -92,20 +93,26 @@
                               <td>{{$recode->sub_category->name}}</td>
                               <td>{{ number_format($recode->amount) }} Rs/-</td>
                               <td>{{$recode->description}}</td>
-
-                  
                               <td>
-
                                 <a class="btn btn-warning btn-sm" href="{{ route('inventory.expences.edit', ['id' => $recode->id]) }}" title="Edit"><i class="fas fa-edit"></i> </a>
                                 <a class="btn btn-danger btn-sm" href="{{ route('inventory.expences.delete', ['id' => $recode->id]) }}" title="Delete" onclick="confirmDelete(event, '{{ route('inventory.expences.delete', ['id' => $recode->id]) }}')">
                                   <i class="fas fa-trash"></i>  </a>
-                              
-                            
                           </td>
                           </tr>
+                          @php
+                              $totalExpence += $recode->amount;
+                          @endphp
                       @endforeach
                   </tbody>
-                 
+                  <tfoot>
+                    <tr>
+
+                      <td colspan="6"><strong>Total Expenses</strong></td>
+                      <td ><strong>{{ $totalExpence }} Rs/-</strong></td>
+
+                    </tr>
+                  </tfoot>
+
                   </table>
                   <div class="d-flex justify-content-center mt-4">
                     {{ $expences->links('pagination::simple-bootstrap-4') }}
@@ -161,8 +168,8 @@
       });
   </script>
   @endif
-  
-  
+
+
 </body>
 
 </html>

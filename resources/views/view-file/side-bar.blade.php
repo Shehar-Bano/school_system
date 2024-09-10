@@ -7,12 +7,12 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+        <a class="nav-link" data-toggle="collapse" href="#exam" aria-expanded="false" >
           <i class="icon-layout menu-icon"></i>
           <span class="menu-title">Exam</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="ui-basic">
+        <div class="collapse" id="exam">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{route('exam-list')}}">Exam</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
@@ -48,17 +48,16 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+        <a class="nav-link" data-toggle="collapse" href="#acadmic" aria-expanded="false">
           <i class="fas fa-school menu-icon"></i>
           <span class="menu-title">Academic</span>
           <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="charts">
+        <div class="collapse" id="acadmic">
           <ul class="nav flex-column sub-menu">
             <li class="nav-item"> <a class="nav-link" href="{{route('subject_show')}}">Subject</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('class-list')}}">Class</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('section-list')}}">Section</a></li>
-
             <li class="nav-item"> <a class="nav-link" href="{{route('syllabus_show')}}">Syllabus</a></li>
             <li class="nav-item"> <a class="nav-link" href="{{route('assignment_show')}}">Assignment</a></li>
 
@@ -103,7 +102,7 @@
             {{-- <li class="nav-item"> <a class="nav-link" href="{{ route('salary') }}"> Manage Salary </a></li> --}}
             <li class="nav-item"> <a class="nav-link" href="{{ route('finance') }}">Manage Transactions  </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('finance.salary') }}">Manage Salary  </a></li>
-            
+
           </ul>
         </div>
       </li>
@@ -120,7 +119,7 @@
             <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Categories </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.view') }}">Manage Transactions </a></li>
             <li class="nav-item"> <a class="nav-link" href="{{ route('fee.index') }}">Manage Fee </a></li>
-              
+
           </ul>
         </div>
       </li>
@@ -141,10 +140,20 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="pages/documentation/documentation.html">
+        <a class="nav-link" data-toggle="collapse" href="#report" aria-expanded="false">
           <i class="icon-paper menu-icon"></i>
-          <span class="menu-title">Documentation</span>
+          <span class="menu-title">Report</span>
+          <i class="menu-arrow"></i>
         </a>
+        <div class="collapse" id="report">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="{{ route('admissionReport') }}">Admission Report</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{{ route('resultReport') }}">Result Report</a></li>
+               <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.expences') }}">Expences</a></li>
+              {{--<li class="nav-item"> <a class="nav-link" href="{{ route('inventory.suppliers') }}">Suppliers</a></li>
+              <li class="nav-item"> <a class="nav-link" href="{{ route('inventory.purchase') }}">Purchase</a></li> --}}
+            </ul>
+          </div>
       </li>
     </ul>
   </nav>

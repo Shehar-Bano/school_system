@@ -2,38 +2,39 @@
 
 use App\Models\Exam;
 use App\Models\ExamSchedule;
+use App\Models\FineControler;
+use App\Models\EmployeeSalary;
+use App\Models\TransactionType;
+use App\Models\StudentTransaction;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FeeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ExpenceController;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SyllabusController;
-
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\EmployeeSalaryController;
-use App\Http\Controllers\ExamScheduleController;
-use App\Http\Controllers\ExpenceController;
-use App\Http\Controllers\FinanceRecodeController;
-use App\Http\Controllers\InventoryCategoryController;
-use App\Http\Controllers\InventoryProductController;
-use App\Http\Controllers\InventoryPurchaseController;
-use App\Http\Controllers\InventorySubCategoryController;
-use App\Http\Controllers\InventorySuplierController;
-use App\Http\Controllers\InventoryWarehouseController;
 use App\Http\Controllers\StudentFeeController;
-use App\Http\Controllers\StudentTransactionController;
+use App\Http\Controllers\ExamScheduleController;
+use App\Http\Controllers\FinanceRecodeController;
+use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\TransactionTypeController;
-use App\Models\EmployeeSalary;
-use App\Models\FineControler;
-use App\Models\StudentTransaction;
-use App\Models\TransactionType;
+use App\Http\Controllers\InventoryProductController;
+use App\Http\Controllers\InventorySuplierController;
+use App\Http\Controllers\InventoryCategoryController;
+use App\Http\Controllers\InventoryPurchaseController;
+use App\Http\Controllers\InventoryWarehouseController;
+use App\Http\Controllers\StudentTransactionController;
+use App\Http\Controllers\InventorySubCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -126,14 +127,14 @@ Route::group(['prefix'=>'finance'],function (){
     Route::get('record/delete/{id}', [FinanceRecodeController::class, 'deleteFinanceRecord'])->name('finance.delete');
     /////////salary
     Route::group(['prefix'=>'salary'],function (){
-        Route::get('view',[EmployeeSalaryController::class,'index'])->name('finance.salary'); 
+        Route::get('view',[EmployeeSalaryController::class,'index'])->name('finance.salary');
         Route::get('store', [EmployeeSalaryController::class, 'store'])->name('salary.store');
         Route::get('pay/{id}', [EmployeeSalaryController::class, 'pay'])->name('salary.pay');
         Route::get('/salary/pdf/{id}', [EmployeeSalaryController::class, 'PDFview'])->name('salary.pdf');
 
 
     });
-    
+
 });
 
 ///////////////student payments
@@ -163,7 +164,7 @@ Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name
    Route::group(['prefix'=>'student'],function(){
     Route::get('select/class',[StudentFeeController::class,'index'])->name('fee.index');
    });
-   
+
 });
 
 
@@ -230,7 +231,7 @@ Route::group(['prefix'=>'inventory'],function (){
         Route::get('/index',[InventoryCategoryController::class,'index'])->name('inventory.category');
         Route::post('/add',[InventoryCategoryController::class,'store'])->name('inventory.category.store');
         Route::get('delete/{id}',[InventoryCategoryController::class,'delete'])->name('inventory.catagory.delete');
-        Route::get('changeStatus/{id}',[InventoryCategoryController::class,'changeStatus'])->name('inventory.catagory.changeStatus');       
+        Route::get('changeStatus/{id}',[InventoryCategoryController::class,'changeStatus'])->name('inventory.catagory.changeStatus');
 
     });
     Route::group(['prefix'=>'subCategory'],function(){
@@ -246,7 +247,12 @@ Route::group(['prefix'=>'inventory'],function (){
         Route::get('edit/{id}',[ExpenceController::class,'edit'])->name('inventory.expences.edit');
         Route::post('update/{id}',[ExpenceController::class,'update'])->name('inventory.expences.update');
         Route::get('delete/{id}',[ExpenceController::class,'delete'])->name('inventory.expences.delete');
-      
+
     });
+
+});
+Route::group(['prefix'=>'report'],function(){
+    Route::get('/admissionReport',[ReportController::class,'admissionReport'])->name('admissionReport');
+    Route::get('/resultReport',[ReportController::class,'resultReport'])->name('resultReport');
 
 });
