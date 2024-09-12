@@ -16,6 +16,7 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
@@ -29,9 +30,11 @@ use App\Http\Controllers\Student\StudentProfileController;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -127,7 +130,7 @@ Route::group(['prefix'=>'finance'],function (){
         Route::get('pay/{id}', [EmployeeSalaryController::class, 'pay'])->name('salary.pay');
         Route::get('/salary/pdf/{id}', [EmployeeSalaryController::class, 'PDFview'])->name('salary.pdf');
 
-
+Route::get('/exam/schedule/datesheet/print/{id}',[ExamScheduleController::class,'datesheetPrint'])->name('date-sheet-print');
     });
 
 });
@@ -273,3 +276,5 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/profile', [StudentProfileController::class, 'index'])->name('profile.student');
 
 });
+
+Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
