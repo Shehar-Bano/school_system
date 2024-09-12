@@ -57,7 +57,7 @@
                 </nav>
             </div>
 
-            <form class="mt-4" action="{{route('update',['id'=>$section->id])}}" method="POST" >
+            <form class="mt-4" action="{{route('section-update',['id'=>$section->id])}}" method="POST" >
                 @csrf
                 <div class="mb-3">
                     <label for="examName" class="form-label">Section Name <span class="text-danger">*</span></label>

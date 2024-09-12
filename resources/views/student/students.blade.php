@@ -35,6 +35,9 @@
             text-decoration: none;
         }
     </style>
+    <!-- Include SweetAlert2 library -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
     <div class="container-scroller">
@@ -63,7 +66,7 @@
                           <label for="name" class="form-label">Student Name <span class="text-danger">*</span></label>
                           <input type="text" class="form-control" id="name" name="name" placeholder="Enter student name" required>
                       </div>
-                     
+
                       <div class="mb-3">
                           <label for="gurdian" class="form-label">Guardian <span class="text-danger">*</span></label>
                           <select class="form-control" id="gurdian" name="gurdian" required>
@@ -157,6 +160,10 @@
                           <label for="registration" class="form-label">Registration Number</label>
                           <input type="text" class="form-control" id="registration" name="registration" placeholder="Enter registration number">
                       </div>
+                      <div class="mb-3">
+                        <label for="username" class="form-label">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter User name">
+                    </div>
 
                       <div class="mb-3">
                           <label for="image" class="form-label">Upload Image</label>
@@ -170,7 +177,7 @@
         </div>
       </div>
     </div>
-  
+
     @include('view-file.script')
 
     @if(session('message'))
@@ -195,7 +202,7 @@
       </script>
     @endif
 
-  
+
 
     <script>
         $(document).ready(function(){
@@ -208,5 +215,14 @@
             });
         });
     </script>
+    @if(Session::has('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ Session::get('error') }}'
+        });
+    </script>
+@endif
 </body>
 </html>

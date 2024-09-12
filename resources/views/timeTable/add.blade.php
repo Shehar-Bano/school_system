@@ -31,7 +31,7 @@
                 <div class="form-container">
                   <form action="{{ route('timeTable_store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    
+
                     <div class="form-group">
                       <label for="class_id">Add Class</label>
                       <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
@@ -61,14 +61,14 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                     </div>
-                    
+
                     <div class="form-group">
                       <label for="section_id">Add Section</label>
                       <select class="form-control {{ $errors->has('section_id') ? 'is-invalid' : '' }}" id="section_id" name="section_id">
                         <option value="" disabled selected></option>
                         @foreach ($sections as $section)
                           <option value="{{ $section->id }}" data-class-id="{{ $section->class_id }}" {{ old('section_id') == $section->id ? 'selected' : '' }}>
-                            {{ $section->name }}
+                            {{ $section->name }}-{{$section->classe->name}}
                           </option>
                         @endforeach
                       </select>
@@ -127,7 +127,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                     </div>
-                   
+
                     <button type="submit" class="btn btn-primary">Save</button>
                   </form>
                 </div>
@@ -153,7 +153,7 @@
       var selectedClassId = this.value;
       var subjectSelect = document.getElementById('subject_id');
       var options = subjectSelect.querySelectorAll('option');
-      
+
       options.forEach(function(option) {
         if (option.getAttribute('data-class-id') == selectedClassId || option.value == '') {
           option.style.display = '';

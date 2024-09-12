@@ -41,10 +41,10 @@
                   <div class="form-group">
                     <label for="class">Class</label>
                     <select name="class" id="class" class="form-control">
-                  
+
                       <!-- Populate classes dynamically -->
                       @foreach ($classes as $class)
-                        <option value="{{ $class->id }}" 
+                        <option value="{{ $class->id }}"
                             {{ $class->id == request()->query('class') ? 'selected' : '' }}>
                             {{ $class->name }}
                         </option>
@@ -59,9 +59,9 @@
                       <option value="">Select Section</option>
                       <!-- Populate sections dynamically -->
                       @foreach ($sections as $section)
-                        <option value="{{ $section->id }}" 
+                        <option value="{{ $section->id }}"
                             {{ $section->id == request()->query('section') ? 'selected' : '' }}>
-                            {{ $section->name }}
+                            {{ $section->name }}-{{$section->classe->name}}
                         </option>
                       @endforeach
                     </select>
@@ -75,7 +75,7 @@
                       <!-- Populate teachers dynamically -->
                       @foreach ($employees as $employee)
                         @if($employee->designation->name == "Teacher")
-                          <option value="{{ $employee->id }}" 
+                          <option value="{{ $employee->id }}"
                               {{ $employee->id == request()->query('teacher') ? 'selected' : '' }}>
                               {{ $employee->name }}
                           </option>
@@ -105,7 +105,7 @@
                         @endforeach
                       </tr>
                     </thead>
-                    
+
                     <tbody>
                       @foreach($subjects as $subject)
                       <tr>
@@ -113,7 +113,7 @@
                         @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
                           <td>
                             @php
-                            
+
                               $dayTimetables = $timetables->where('day', $day)->where('subject_id', $subject->id);
                             @endphp
                             @if($dayTimetables->isNotEmpty())
@@ -134,7 +134,7 @@
                       </tr>
                     @endforeach
                     </tbody>
-                    
+
                   </table>
                 </div>
               </div>

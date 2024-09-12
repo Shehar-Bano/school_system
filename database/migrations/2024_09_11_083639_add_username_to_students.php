@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',50);
-            $table->string('description',100);
-
-
-            $table->timestamps();
+        Schema::table('students', function (Blueprint $table) {
+            $table->string('username')->unique();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_types');
+        Schema::table('students', function (Blueprint $table) {
+            //
+        });
     }
 };

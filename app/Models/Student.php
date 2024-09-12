@@ -2,17 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Student extends Model
+class Student extends Authenticatable
 {
-    use HasFactory;
+    use  Notifiable;
+
     protected $fillable = [
         'name', 'gurdian', 'admissiondate', 'dob', 'gender', 'religion',
         'email', 'phone', 'address', 'class_id', 'section_id', 'group',
-        'registration', 'username', 'password', 'image', 'note','tution_fee'
+        'registration', 'password', 'image', 'note', 'tution_fee','username',
     ];
+
+    protected $hidden = ['password'];
+
+    // For the student guard
+    protected $guard = 'student';
 
     public function class(){
         return $this->belongsTo(Classe::class);
@@ -36,4 +42,5 @@ class Student extends Model
    {
        return $this->hasMany(StudentTransaction::class);
    }
+
 }

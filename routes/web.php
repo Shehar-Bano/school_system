@@ -1,19 +1,10 @@
 <?php
-
-use App\Models\Exam;
-use App\Models\ExamSchedule;
-use App\Models\FineControler;
-use App\Models\EmployeeSalary;
-use App\Models\TransactionType;
-use App\Models\StudentTransaction;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FeeController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ExpenceController;
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
@@ -24,45 +15,45 @@ use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentFeeController;
+use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\TransactionTypeController;
-use App\Http\Controllers\InventoryProductController;
-use App\Http\Controllers\InventorySuplierController;
+use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\InventoryCategoryController;
-use App\Http\Controllers\InventoryPurchaseController;
-use App\Http\Controllers\InventoryWarehouseController;
 use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\InventorySubCategoryController;
+use App\Http\Controllers\Student\StudentProfileController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 require __DIR__.'/auth.php';
 ///////designation
-Route::get('/designation', [EmployeeController::class, 'designationView'])->name('designation_view');
-Route::post('/designation', [EmployeeController::class, 'designationStore'])->name('designations_store');
-Route::delete('/designation/{id}', [EmployeeController::class, 'designationDelete'])->name('designation_delete');
-//////Employee
-Route::get('employee/view',[EmployeeController::class,'viewEmployee'])->name('employee_view');
-Route::get('employee/create',[EmployeeController::class,'createEmployee'])->name('employees_create');
-Route::post('employee/store',[EmployeeController::class,'storeEmployee'])->name('employees_store');
-Route::get('employee/show/{id}',[EmployeeController::class,'showEmployee'])->name('employees_show');
-Route::get('employee/edit/{id}',[EmployeeController::class,'editEmployee'])->name('employees_edit');
-Route::post('employee/update/{id}',[EmployeeController::class,'updateEmployee'])->name('employees_update');
-Route::delete('employee/delete{id}',[EmployeeController::class,'deleteEmployee'])->name('employees_delete');
+Route::prefix('designation')->name('designation_')->group(function () {
+    Route::get('/', [EmployeeController::class, 'designationView'])->name('view');
+    Route::post('/', [EmployeeController::class, 'designationStore'])->name('store');
+    Route::delete('/{id}', [EmployeeController::class, 'designationDelete'])->name('delete');
+});
+///////// Employee
+Route::prefix('employee')->name('employee_')->group(function () {
+    Route::get('/view', [EmployeeController::class, 'viewEmployee'])->name('view');
+    Route::get('/create', [EmployeeController::class, 'createEmployee'])->name('create');
+    Route::post('/store', [EmployeeController::class, 'storeEmployee'])->name('store');
+    Route::get('/show/{id}', [EmployeeController::class, 'showEmployee'])->name('show');
+    Route::get('/edit/{id}', [EmployeeController::class, 'editEmployee'])->name('edit');
+    Route::post('/update/{id}', [EmployeeController::class, 'updateEmployee'])->name('update');
+    Route::delete('/delete/{id}', [EmployeeController::class, 'deleteEmployee'])->name('delete');
+});
 ////////////subjact
 Route::get('/subject/view', [SubjectController::class, 'subjectView'])->name('subject_show');
 Route::get('/subject/add', [SubjectController::class, 'addSubjectView'])->name('add_subject');
@@ -71,15 +62,16 @@ Route::get('/subject/edit/{id}', [SubjectController::class, 'editSubjectView'])-
 Route::post('/subject/update/{id}', [SubjectController::class, 'subjectUpdate'])->name('subject_update');
 Route::delete('/subject/delete/{id}', [SubjectController::class, 'subjectDelete'])->name('subject_delete');
 ///////////syllabus
-Route::get('/syllabus/view', [SyllabusController::class, 'syllabusView'])->name('syllabus_show');
-Route::get('/syllabus/add', [SyllabusController::class, 'addSyllabusView'])->name('add_syllabus');
-Route::post('/syllabus/store', [SyllabusController::class, 'syllabusStore'])->name('syllabus_store');
-Route::get('/syllabus/edit/{id}', [SyllabusController::class, 'editsyllabusView'])->name('edit_syllabus');
-Route::post('/syllabus/update/{id}', [SyllabusController::class, 'syllabusUpdate'])->name('syllabus_update');
-Route::delete('/syllabus/delete/{id}', [SyllabusController::class, 'syllabusDelete'])->name('syllabus_delete');
-Route::get('/download_file/{file}',[SyllabusController::class, 'downloadFile'])->name('download_file');
-Route::get('/syllabus/detail/{id}',[SyllabusController::class, 'syllabusDetail'])->name('syllabus_detail');
-
+Route::prefix('syllabus')->name('syllabus_')->group(function () {
+    Route::get('/view', [SyllabusController::class, 'syllabusView'])->name('show');
+    Route::get('/add', [SyllabusController::class, 'addSyllabusView'])->name('add');
+    Route::post('/store', [SyllabusController::class, 'syllabusStore'])->name('store');
+    Route::get('/edit/{id}', [SyllabusController::class, 'editsyllabusView'])->name('edit');
+    Route::post('/update/{id}', [SyllabusController::class, 'syllabusUpdate'])->name('update');
+    Route::delete('/delete/{id}', [SyllabusController::class, 'syllabusDelete'])->name('delete');
+    Route::get('/detail/{id}', [SyllabusController::class, 'syllabusDetail'])->name('detail');
+    Route::get('/download_file/{file}', [SyllabusController::class, 'downloadFile'])->name('downloadFile');
+});
 /////assignment
 Route::get('/assignment/view', [AssignmentController::class, 'assignmentView'])->name('assignment_show');
 Route::get('/assignment/add', [AssignmentController::class, 'addAssignmentView'])->name('add_assignment');
@@ -89,34 +81,37 @@ Route::post('/assignment/update/{id}', [AssignmentController::class, 'assignment
 Route::delete('/assignment/delete/{id}', [AssignmentController::class, 'assignmentDelete'])->name('assignment_delete');
 Route::get('/assignment/detail/{id}',[AssignmentController::class, 'assignmetDetail'])->name('assignmet_detail');
 //////////timeTable
-Route::get('/timeTable', [TimeTableController::class, 'timeTableActions'])->name('timeTable');
-Route::get('/timeTable/class', [TimeTableController::class, 'timeTableView'])->name('timeTable_show');
-Route::get('/timeTable/teacher', [TimeTableController::class, 'timeTableViewTeacher'])->name('teacher_timeTable_show');
-Route::get('/timeTable/add', [TimeTableController::class, 'addTimeTableView'])->name('timeTable_create');
-Route::post('/timeTable/store', [TimeTableController::class, 'timeTableStore'])->name('timeTable_store');
-Route::get('/timeTable/edit/{id}', [TimeTableController::class, 'editTimeTableView'])->name('timetable_edit');
-Route::put('/timeTable/update/{id}', [TimeTableController::class, 'timeTableUpdate'])->name('timeTable_update');
-Route::get('/timeTable/delete/{id}', [TimeTableController::class, 'timeTableDelete'])->name('timetable_delete');
-Route::get('/timetable/freeSlot/{id}', [TimeTableController::class, 'timetableFreeSlot'])->name('timetable_freeSlot');
-Route::get('/timetable/occupySlot/{id}', [TimeTableController::class,'timetableOccupySlot'])->name('timetable_occupySlot');
+Route::prefix('timeTable')->group(function () {
+    Route::get('/', [TimeTableController::class, 'timeTableActions'])->name('timeTable');
+    Route::get('/class', [TimeTableController::class, 'timeTableView'])->name('timeTable_show');
+    Route::get('/teacher', [TimeTableController::class, 'timeTableViewTeacher'])->name('teacher_timeTable_show');
+    Route::get('/add', [TimeTableController::class, 'addTimeTableView'])->name('timeTable_create');
+    Route::post('/store', [TimeTableController::class, 'timeTableStore'])->name('timeTable_store');
+    Route::get('/edit/{id}', [TimeTableController::class, 'editTimeTableView'])->name('timetable_edit');
+    Route::put('/update/{id}', [TimeTableController::class, 'timeTableUpdate'])->name('timeTable_update');
+    Route::get('/delete/{id}', [TimeTableController::class, 'timeTableDelete'])->name('timetable_delete');
+    Route::get('/freeSlot/{id}', [TimeTableController::class, 'timetableFreeSlot'])->name('timetable_freeSlot');
+    Route::get('/occupySlot/{id}', [TimeTableController::class, 'timetableOccupySlot'])->name('timetable_occupySlot');
+});
 //////////////Employees Attendece
-Route::get('/attendance/employee/view', [AttendanceController::class, 'employeeAttendanceView'])->name('employee_attendence');
-Route::get('/attendance/employee/add', [AttendanceController::class, 'addAttendanceView'])->name('add_attendance');
-Route::get('/attendance/employee/show/{id}', [AttendanceController::class, 'showEmployeeAttendance'])->name('show_employee_attendace');
-Route::post('/attendance/employee/store', [AttendanceController::class, 'employeeAttendanceStore'])->name('attendance_store');
-
-/////////////Student Attendace
+Route::prefix('attendance/employee')->group(function () {
+    Route::get('/view', [AttendanceController::class, 'employeeAttendanceView'])->name('employee_attendence');
+    Route::get('/add', [AttendanceController::class, 'addAttendanceView'])->name('add_attendance');
+    Route::get('/show/{id}', [AttendanceController::class, 'showEmployeeAttendance'])->name('show_employee_attendace');
+    Route::post('/store', [AttendanceController::class, 'employeeAttendanceStore'])->name('show_employee_attendace');
+});
+// Prefix for Student Attendance
 Route::get('/attendance/student/', [AttendanceController::class, 'attendanceClass'])->name('students_class');
 Route::get('/attendance/student/class/choice', [AttendanceController::class, 'attendanceClass'])->name('students_class_select');
-
-
 Route::get('/attendance/student/view', [AttendanceController::class, 'studentAttendanceView'])->name('students_attendence');
 Route::get('/attendance/student/add', [AttendanceController::class, 'addStudentAttendanceView'])->name('add_student_attendance');
 Route::get('/attendance/student/show/{id}', [AttendanceController::class, 'showStudentAttendance'])->name('show_student_attendace');
-
 Route::post('/attendance/student/store', [AttendanceController::class, 'studentAttendanceStore'])->name("student_attendance_store");
-
 Route::get('/attendance/class/view', [AttendanceController::class, 'classAttendanceView'])->name('select_attendance_class');
+// Prefix for Class Attendance
+Route::prefix('attendance/class')->name('class.')->group(function () {
+    Route::get('/view', [AttendanceController::class, 'classAttendanceView'])->name('view');
+});
 ///////////////////////Finance
 Route::group(['prefix'=>'finance'],function (){
     Route::get('recode',[FinanceRecodeController::class,'index'])->name('finance');
@@ -136,7 +131,6 @@ Route::group(['prefix'=>'finance'],function (){
     });
 
 });
-
 ///////////////student payments
 Route::group(['prefix'=>'payment/student'],function (){
     Route::group(['prefix'=>'transaction/types'], function(){
@@ -165,24 +159,32 @@ Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name
     Route::get('select/class',[StudentFeeController::class,'index'])->name('fee.index');
    });
 
+
+    Route::get('/select/class',[StudentFeeController::class,'index'])->name('fee.index');
+    Route::get('/class/student-list/{id}',[StudentFeeController::class,'listStudent'])->name('fee.show.student');
+    Route::get('/class/fee/recived/{id}',[StudentFeeController::class,'feeRecive'])->name('fee.receive');
+
+
+
 });
-
-
-
 ////////////exam
-Route::get('/exam',[ExamController::class,'index'])->name('exam');
-Route::post('/exam',[ExamController::class,'store'])->name('store');
-Route::get('/exam/list',[ExamController::class,'list'])->name('exam-list');
-Route::delete('/exam/del/{id}',[ExamController::class,'del'])->name('exam_delete');
-Route::get('/exam/edit/{id}',[ExamController::class,'edit'])->name('exam-edit');
-Route::post('/exam/update/{id}',[ExamController::class,'update'])->name('exam-update');
+Route::prefix('exam')->group(function () {
+    Route::get('/', [ExamController::class, 'index'])->name('exam');
+    Route::post('/', [ExamController::class, 'store'])->name('exam-store');
+    Route::get('/list', [ExamController::class, 'list'])->name('exam-list');
+    Route::delete('/del/{id}', [ExamController::class, 'del'])->name('exam-delete');
+    Route::get('/edit/{id}', [ExamController::class, 'edit'])->name('exam-edit');
+    Route::post('/update/{id}', [ExamController::class, 'update'])->name('exam-update');
+});
 ///////////////class
-Route::get('/class',[ClasseController::class,'index'])->name('class');
-Route::post('/class',[ClasseController::class,'store'])->name('store');
-Route::get('/class/list',[ClasseController::class,'list'])->name('class-list');
-Route::delete('/class/del/{id}',[ClasseController::class,'del'])->name('class_delete');
-Route::get('/class/edit/{id}',[ClasseController::class,'edit'])->name('class-edit');
-Route::post('/class/update/{id}',[ClasseController::class,'update'])->name('class-update');
+Route::prefix('class')->group(function () {
+    Route::get('/', [ClasseController::class, 'index'])->name('class');
+    Route::post('/', [ClasseController::class, 'store'])->name('store');
+    Route::get('/list', [ClasseController::class, 'list'])->name('class-list');
+    Route::delete('/del/{id}', [ClasseController::class, 'del'])->name('class_delete');
+    Route::get('/edit/{id}', [ClasseController::class, 'edit'])->name('class-edit');
+    Route::post('/update/{id}', [ClasseController::class, 'update'])->name('class-update');
+});
 /////////////////section
 Route::get('/section',[SectionController::class,'index'])->name('section');
 Route::post('/section',[SectionController::class,'store'])->name('store');
@@ -193,38 +195,39 @@ Route::post('/section/update/{id}',[SectionController::class,'update'])->name('s
 Route::get('/section-fee/{id}',[SectionController::class,'generateFeeSlips'])->name('section-fee');
 /////////////////////student
 Route::get('/student',[StudentController::class,'index'])->name('student');
-
 Route::post('/student',[StudentController::class,'store'])->name('store');
 Route::get('/student/list',[StudentController::class,'list'])->name('student-list');
 Route::delete('/student/del/{id}',[StudentController::class,'del'])->name('student_delete');
 Route::get('/student/edit/{id}',[StudentController::class,'edit'])->name('student-edit');
 Route::post('/student/update/{id}',[StudentController::class,'update'])->name('student-update');
-
 ////////////////////exam-schedule
-Route::get('/exam/schedule',[ExamScheduleController::class,'index'])->name('exam-schedule');
-Route::post('/exam/schedule',[ExamScheduleController::class,'store'])->name('exam_schedule_store');
-Route::get('/exam/schedule/list',[ExamScheduleController::class,'list'])->name('exam-schedule-list');
-Route::get('/exam/schedule/list/{id}',[ExamScheduleController::class,'resultPrint'])->name('exam-result');
+Route::prefix('exam/schedule')->group(function () {
+    Route::get('/', [ExamScheduleController::class, 'index'])->name('exam-schedule');
+    Route::post('/', [ExamScheduleController::class, 'store'])->name('exam_schedule_store');
+    Route::get('/list', [ExamScheduleController::class, 'list'])->name('exam-schedule-list');
+    Route::get('/list/{id}', [ExamScheduleController::class, 'resultPrint'])->name('exam-result');
+    Route::delete('/del/{id}', [ExamScheduleController::class, 'del'])->name('exam-schedule_delete');
+    Route::get('/edit/{id}', [ExamScheduleController::class, 'edit'])->name('exam-schedule-edit');
+    Route::post('/update/{id}', [ExamScheduleController::class, 'updateschedule'])->name('exam-schedule-update');
 
-Route::delete('/exam/schedule/del/{id}',[ExamScheduleController::class,'del'])->name('exam-schedule_delete');
-Route::get('/exam/schedule/edit/{id}',[ExamScheduleController::class,'edit'])->name('exam-schedule-edit');
-Route::post('/exam/schedule/update/{id}',[ExamScheduleController::class,'updateschedule'])->name('exam-schedule-update');
-Route::get('/exam/schedule/datesheet/{id}',[ExamScheduleController::class,'datesheetview'])->name('date-sheet');
-
-Route::post('/exam/schedule/datesheet/store/{id}',[ExamScheduleController::class,'datesheet'])->name('datesheet_store');
-Route::get('/exam/schedule/datesheet/list/{id}/',[ExamScheduleController::class,'datesheetlist'])->name('date-sheet-list');
-Route::delete('/exam/schedule/datesheet/del/{id}',[ExamScheduleController::class,'datedel'])->name('exam-schedule-date_delete');
-Route::get('/exam/schedule/datesheet/edit/{id}',[ExamScheduleController::class,'dateedit'])->name('exam-schedule-date-edit');
-Route::post('/exam/schedule/datesheet/{id}', [ExamScheduleController::class, 'dateupdateschedule'])->name('exam.schedule.datesheet.update');
+    // Date Sheet Routes
+    Route::get('/datesheet/{id}', [ExamScheduleController::class, 'datesheetview'])->name('date-sheet');
+    Route::post('/datesheet/store/{id}', [ExamScheduleController::class, 'datesheet'])->name('datesheet_store');
+    Route::get('/datesheet/list/{id}', [ExamScheduleController::class, 'datesheetlist'])->name('date-sheet-list');
+    Route::delete('/datesheet/del/{id}', [ExamScheduleController::class, 'datedel'])->name('exam-schedule-date_delete');
+    Route::get('/datesheet/edit/{id}', [ExamScheduleController::class, 'dateedit'])->name('exam-schedule-date-edit');
+    Route::post('/datesheet/{id}', [ExamScheduleController::class, 'dateupdateschedule'])->name('exam.schedule.datesheet.update');
+});
 ///////////////////////result
-Route::get('/result',[ResultController::class,'index'])->name('result');
-Route::get('/result/add',[ResultController::class,'add'])->name('result-add');
-Route::post('/result/store',[ResultController::class,'store'])->name('result-store');
-Route::get('/result/list',[ResultController::class,'list'])->name('result-list');
-Route::get('/result/list/view/{id}',[ResultController::class,'view'])->name('result-view');
-Route::get('/result/card',[ResultController::class,'showResultCard'])->name('result.card');
+Route::prefix('result')->group(function () {
+    Route::get('/', [ResultController::class, 'index'])->name('result');
+    Route::get('/add', [ResultController::class, 'add'])->name('result-add');
+    Route::post('/store', [ResultController::class, 'store'])->name('result-store');
+    Route::get('/list', [ResultController::class, 'list'])->name('result-list');
+    Route::get('/list/view/{id}', [ResultController::class, 'view'])->name('result-view');
+    Route::get('/card', [ResultController::class, 'showResultCard'])->name('result.card');
+});
 Route::get('/notfound',[ResultController::class,'notFound'])->name('not_Found');
-
 ///////////////inventary
 Route::group(['prefix'=>'inventory'],function (){
     Route::group(['prefix'=>'category'],function(){
@@ -254,5 +257,19 @@ Route::group(['prefix'=>'inventory'],function (){
 Route::group(['prefix'=>'report'],function(){
     Route::get('/admissionReport',[ReportController::class,'admissionReport'])->name('admissionReport');
     Route::get('/resultReport',[ReportController::class,'resultReport'])->name('resultReport');
+
+});
+// Student login routes
+Route::get('student/login', [StudentAuthController::class, 'showLoginForm'])->name('student.login');
+Route::post('student/login', [StudentAuthController::class, 'login']);
+Route::any('student/logout', [StudentAuthController::class, 'logout'])->name('student.logout');
+// Student dashboard
+Route::middleware(['auth:student'])->group(function() {
+    Route::get('/student/dashboard',[StudentDashboardController::class,'index'])->name('student.dashboard');
+});
+///////////////////////////////studentDashboard Routes//////////////////////////////////////////////////////
+Route::group(['prefix'=>'studentDashboard'],function(){
+    Route::get('/profile', [StudentProfileController::class, 'index'])->name('profile.student');
+    Route::get('/profile', [StudentProfileController::class, 'index'])->name('profile.student');
 
 });
