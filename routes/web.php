@@ -17,6 +17,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\BalanceSheetController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
@@ -31,9 +32,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard',[DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

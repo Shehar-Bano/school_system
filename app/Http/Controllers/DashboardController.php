@@ -38,16 +38,15 @@ class DashboardController extends Controller
     ')
     ->groupBy('employee_id')
     ->get();
-    $studentAttendance = StudentAttendance::selectRaw('
-    COUNT(CASE WHEN status = "present" THEN 1 END) as `present`,
-    COUNT(CASE WHEN status = "absent" THEN 1 END) as `absent`,
-    COUNT(CASE WHEN status = "leave" THEN 1 END) as `leave`,
-    COUNT(CASE WHEN status = "late" THEN 1 END) as `late`,
-    COUNT(CASE WHEN status = "excused_late" THEN 1 END) as `excused_late`
+$studentAttendance = StudentAttendance::selectRaw('
+COUNT(CASE WHEN status = "present" THEN 1 END) as `present`,
+COUNT(CASE WHEN status = "absent" THEN 1 END) as `absent`,
+COUNT(CASE WHEN status = "leave" THEN 1 END) as `leave`,
+COUNT(CASE WHEN status = "late" THEN 1 END) as `late`,
+COUNT(CASE WHEN status = "excused_late" THEN 1 END) as `excused_late`
 ')
 ->groupBy('student_id')
 ->get();
-// dd($studentAttendance);
         return view('dashboard', compact('students', 'employee', 'income', 'expence', 'totalSalary','salaries','expences','income','employeeAttendance','studentAttendance'));
     }
     

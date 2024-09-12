@@ -51,7 +51,7 @@
               <div class="card card-tale">
                 <div class="card-body">
                   <p class="mb-4">Students</p>
-                  <p class="fs-30 mb-2">{{  $students}}</p>
+                  <p class="fs-30 mb-2">{{$students}}</p>
                   
                 </div>
               </div>
@@ -151,9 +151,7 @@
             <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
             <canvas id="employee-attendance-chart" width="100" height="100"></canvas>
           </div>
-          <div>
-            
-          </div>
+          
         </div>
       </div>
       <div class="col-md-6 grid-margin stretch-card">
@@ -190,9 +188,9 @@
   document.addEventListener('DOMContentLoaded', function () {
     const ctx = document.getElementById('revenue-chart').getContext('2d');
     
-    const income = {{ $income }};  
-    const expenses = {{ $expence }}; 
-    const salaries = {{ $totalSalary }}; 
+    const income = {{ $income }};  // Total income
+    const expenses = {{ $expence }};  // Total expenses
+    const salaries = {{ $totalSalary }};  // Total salaries
     
     const revenueChart = new Chart(ctx, {
       type: 'line',  // or 'line', 'pie', etc.
