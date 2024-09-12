@@ -51,8 +51,8 @@
               <div class="card card-tale">
                 <div class="card-body">
                   <p class="mb-4">Students</p>
-                  <p class="fs-30 mb-2">{{  $students}}</p>
-                  
+                  <p class="fs-30 mb-2">{{$students}}</p>
+
                 </div>
               </div>
             </div>
@@ -61,7 +61,7 @@
                 <div class="card-body">
                   <p class="mb-4">Employee</p>
                   <p class="fs-30 mb-2">{{ $employee }}</p>
-                  
+
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
                 <div class="card-body">
                   <p class="mb-4">Income</p>
                   <p class="fs-30 mb-2">{{ number_format($income ).' Rs/-'}}</p>
-                  
+
                 </div>
               </div>
             </div>
@@ -81,9 +81,9 @@
                 <div class="card-body">
                   <p class="mb-4">Expence</p>
                   <p class="fs-30 mb-2">{{ number_format($expence+$totalSalary ).' Rs/-'}}</p>
-                  
+
                 </div>
-                
+
               </div>
             </div>
             <div class="col-md-6 mb-4 mt-4 mb-lg-0 stretch-card transparent">
@@ -91,12 +91,12 @@
                 <div class="card-body">
                   <p class="mb-4">Revenue</p>
                   <p class="fs-30 mb-2">{{ number_format($income-($expence+$totalSalary) ).' Rs/-'}}</p>
-                  
+
                 </div>
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
       <div class="row">
@@ -133,11 +133,11 @@
               </div>
               </div>
               <canvas id="revenue-chart" width="400" height="200"></canvas>
-              
+
             </div>
           </div>
         </div>
-       
+
     </div>
     <div class="row">
       <div class="col-md-6 grid-margin stretch-card">
@@ -145,14 +145,14 @@
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <p class="card-title">Employee Attendace</p>
-              
+
             </div>
             <p class="font-weight-500">Employees Attendace Recode</p>
             <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
             <canvas id="employee-attendance-chart" width="100" height="100"></canvas>
           </div>
           <div>
-            
+
           </div>
         </div>
       </div>
@@ -161,7 +161,7 @@
           <div class="card-body">
             <div class="d-flex justify-content-between">
               <p class="card-title">Student Attendace</p>
-             
+
             </div>
             <p class="font-weight-500">Student Attendace Recode</p>
             <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
@@ -170,8 +170,8 @@
         </div>
       </div>
     </div>
-    
-    
+
+
     <!-- partial:partials/_footer.html -->
     <footer class="footer">
         <div class="d-sm-flex justify-content-center justify-content-sm-between">
@@ -189,11 +189,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const ctx = document.getElementById('revenue-chart').getContext('2d');
-    
-    const income = {{ $income }};  
-    const expenses = {{ $expence }}; 
-    const salaries = {{ $totalSalary }}; 
-    
+
+    const income = {{ $income }};
+    const expenses = {{ $expence }};
+    const salaries = {{ $totalSalary }};
+
     const revenueChart = new Chart(ctx, {
       type: 'line',  // or 'line', 'pie', etc.
       data: {

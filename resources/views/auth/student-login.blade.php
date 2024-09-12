@@ -72,9 +72,9 @@
 
         <button type="submit" class="btn btn-primary">Log In</button>
     </form>
-    <div class="text-center mt-3">
+    {{-- <div class="text-center mt-3">
         <a href="#" class="register-link">Don't have an account? Register</a>
-    </div>
+    </div> --}}
 </div>
 
 </body>
