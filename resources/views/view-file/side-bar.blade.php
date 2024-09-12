@@ -6,41 +6,7 @@
           <span class="menu-title">Dashboard</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#exam" aria-expanded="false" >
-          <i class="icon-layout menu-icon"></i>
-          <span class="menu-title">Exam</span>
-          <i class="menu-arrow"></i>
-        </a>
-        <div class="collapse" id="exam">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{route('exam-list')}}">Exam</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{route('result')}}">Result</a></li>
-            <li class="nav-item"> <a class="nav-link" href="{{route('result-list')}}">Result List</a></li>
-          </ul>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ route('employee_view') }}" >
-          <i class="fas fa-users menu-icon"></i>
-          <span class="menu-title">Employees</span>
-
-        </a>
-
-        <div class="collapse" id="form-elements">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-          </ul>
-        </div>
-      </li>
-      <li class="nav-item">
-       <a class="nav-link" href="{{url('/student/list')}}" >
-        <i class="fas fa-briefcase menu-icon"></i>
-        <span class="menu-title">Student</span>
-
-      </a>
-    </li>
+     
     <li class="nav-item">
       <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
         <i class="icon-layout menu-icon"></i>
