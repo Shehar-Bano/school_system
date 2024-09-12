@@ -17,6 +17,8 @@ use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\BalanceSheetController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeSalaryController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\ExpenceController;
@@ -39,9 +41,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard',[DashboardController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -131,7 +132,7 @@ Route::group(['prefix'=>'finance'],function (){
         Route::get('pay/{id}', [EmployeeSalaryController::class, 'pay'])->name('salary.pay');
         Route::get('/salary/pdf/{id}', [EmployeeSalaryController::class, 'PDFview'])->name('salary.pdf');
 
-
+Route::get('/exam/schedule/datesheet/print/{id}',[ExamScheduleController::class,'datesheetPrint'])->name('date-sheet-print');
     });
     
 });
@@ -253,3 +254,5 @@ Route::group(['prefix'=>'inventory'],function (){
     });
 
 });
+
+Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
