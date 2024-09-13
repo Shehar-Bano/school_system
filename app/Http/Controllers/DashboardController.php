@@ -38,6 +38,7 @@ class DashboardController extends Controller
     ')
     ->groupBy('employee_id')
     ->get();
+    
 $studentAttendance = StudentAttendance::selectRaw('
 COUNT(CASE WHEN status = "present" THEN 1 END) as `present`,
 COUNT(CASE WHEN status = "absent" THEN 1 END) as `absent`,
