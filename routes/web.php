@@ -33,7 +33,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard',[DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -199,7 +199,7 @@ Route::post('/exam/schedule/datesheet/store/{id}',[ExamScheduleController::class
 Route::get('/exam/schedule/datesheet/list/{id}/',[ExamScheduleController::class,'datesheetlist'])->name('date-sheet-list');
 Route::delete('/exam/schedule/datesheet/del/{id}',[ExamScheduleController::class,'datedel'])->name('exam-schedule-date_delete');
 Route::get('/exam/schedule/datesheet/edit/{id}',[ExamScheduleController::class,'dateedit'])->name('exam-schedule-date-edit');
-Route::post('/exam/schedule/datesheet/{id}', [ExamScheduleController::class, 'dateupdateschedule'])->name('exam.schedule.datesheet.update'); 
+Route::post('/exam/schedule/datesheet/{id}', [ExamScheduleController::class, 'dateupdateschedule'])->name('exam.schedule.datesheet.update');
 ///////////////////////result
 Route::get('/result',[ResultController::class,'index'])->name('result');
 Route::get('/result/add',[ResultController::class,'add'])->name('result-add');
@@ -251,6 +251,8 @@ Route::middleware(['auth:student'])->group(function() {
 Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/profile', [StudentProfileController::class, 'index'])->name('profile.student');
     Route::get('/timetable', [StudentProfileController::class, 'timetable'])->name('timetable.student');
+    Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
+
 
 });
 

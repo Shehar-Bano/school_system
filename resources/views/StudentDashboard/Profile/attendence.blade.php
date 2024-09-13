@@ -68,9 +68,7 @@
         <div class="container-fluid page-body-wrapper">
             @include('StudentDashboard.ViewFile.sidebar')
             <div class="container">
-                <div class="timetable-img text-center mt-3">
-                    <h3>TIME TABLE</h3>
-                </div>
+               
                 <div class="table-responsive">
                     <table class="table table-bordered text-center">
                         <thead>
@@ -85,36 +83,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php
-                                // Get the unique time slots from the timetable
-                                $timeslots = $timetable->pluck('start_time')->unique();
-                                $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                            @endphp
+                            @foreach ($attendence as $att)
+                                <tr>
 
-                            @foreach ($timeslots as $time)
-                            <tr>
-                                <td class="align-middle">{{ $time}}</td>
-                                @foreach ($days as $day)
+                                    <td class="align-middle">{{ \Carbon\Carbon::parse($att->date)->format('h:i A') }}</td>
                                     @php
-                                        // Find the class for this time and day
-                                        $class = $timetable->where('start_time', $time)->where('day', $day)->first();
+                                        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                                     @endphp
-                                    <td>
-                                        @if ($class)
-                                        <span class="bg-warning padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom  font-size16 xs-font-size13">{{ $class->subject->subject_name }}</span>
-                                        <div class="margin-10px-top font-size14">{{ $class->start_time }} - {{ $class->end_time }}</div>
-                                            <div class="font-size13 text-light-gray">{{ $class->teacher->name }}</div>
-                                        @else
-                                            <span class="bg-light-gray">No Class</span>
-                                        @endif
-                                    </td>
-                                @endforeach
-                            </tr>
+
+                                    @foreach ($days as $day)
+                                        <td>
+                                            @if (\Carbon\Carbon::parse($att->date)->format('l') === $day)
+                                                <span class="bg-{{ $att->status == 'Present' ? 'green' : 'red' }} padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">
+                                                    {{ $att->status }}
+                                                </span>
+                                                <div class="margin-10px-top font-size14">{{ \Carbon\Carbon::parse($att->date)->format('h:i A') }}</div>
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+
+
         </div>
     </div>
     @include('StudentDashboard.ViewFile.script')

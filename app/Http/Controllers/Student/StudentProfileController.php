@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Student;
+use App\Models\StudentAttendance;
 use App\Models\TimeTable;
 use Illuminate\Http\Request;
 
@@ -30,9 +31,21 @@ class StudentProfileController extends Controller
         }
         $timetable = TimeTable::where('class_id', $user->class_id)
         ->where('section_id',$user->section_id)
-        ->first();
-        dd($timetable);
+        ->get();
         return view('StudentDashboard.Profile.timetable', compact('timetable'));
+    }
+    public function attendence(){
+        $user = auth()->guard('student')->user();
+        if (!$user) {
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
+        }
+        $currentMonth = now()->month;
+        $attendence = StudentAttendance::where('class_id', $user->class_id)
+        ->where('section_id',$user->section_id)
+        ->where('student_id',$user->id)
+        ->whereMonth('date', $currentMonth)
+        ->get();
+        return view('StudentDashboard.Profile.attendence', compact('attendence'));
     }
 
 }

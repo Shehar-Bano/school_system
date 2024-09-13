@@ -51,7 +51,7 @@
               <div class="card card-tale">
                 <div class="card-body">
                   <p class="mb-4">Students</p>
-                  <p class="fs-30 mb-2">{{$students}}</p>
+                  <p class="fs-30 mb-2">{{  $students}}</p>
 
                 </div>
               </div>

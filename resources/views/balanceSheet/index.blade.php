@@ -36,7 +36,7 @@
                 <td>{{ $entry['description'] }}</td>
                 <td>{{ $entry['type'] == 'debit' ? number_format($entry['amount']).' Rs/-': '-' }}</td>
                 <td>{{ $entry['type'] == 'credit' ? number_format($entry['amount']).' Rs/-' : '-' }}</td>
-                
+
                 <!-- Calculate the balance based on debits and credits -->
                 @php
             if ($entry['type'] == 'debit') {

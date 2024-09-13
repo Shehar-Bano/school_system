@@ -16,20 +16,19 @@
   </li>
 
     <li class="nav-item">
-        <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+        <a class="nav-link" href="{{route('timetable.student')}}" aria-expanded="false" aria-controls="tables">
           <i class="fas fa-clock menu-icon"></i>
           <span class="menu-title">TimeTable</span>
-          <i class="menu-arrow"></i>
         </a>
-        <div class="collapse" id="tables">
-          <ul class="nav flex-column sub-menu">
-            <li class="nav-item"> <a class="nav-link" href="{{route('timetable.student')}}">Class TimeTable</a></li>
-          </ul>
-        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('attendence.student')}}" aria-expanded="false" aria-controls="tables">
+          <i class="fas fa-clock menu-icon"></i>
+          <span class="menu-title">Attendence</span>
+        </a>
     </li>
 
 
-
-       
     </ul>
   </nav>
