@@ -18,6 +18,9 @@ use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeAuthController;
+use App\Http\Controllers\EmployeeDashboardController;
+use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
@@ -239,6 +242,9 @@ Route::group(['prefix'=>'report'],function(){
     Route::get('/resultReport',[ReportController::class,'resultReport'])->name('resultReport');
 
 });
+
+Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
+
 // Student login routes
 Route::get('student/login', [StudentAuthController::class, 'showLoginForm'])->name('student.login');
 Route::post('student/login', [StudentAuthController::class, 'login']);
@@ -255,5 +261,18 @@ Route::group(['prefix'=>'studentDashboard'],function(){
 
 
 });
-
-Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
+////////////////////////////employeeDashboard//////////////////////////////
+Route::prefix('employee-login')->controller(EmployeeAuthController::class)->group(function (){
+    Route::get('/','showLoginForm')->name('employee.login');
+    Route::post('/','login');
+    Route::any('/logout','logout')->name('employee.logout');
+});
+Route::middleware('auth:employee')->prefix('employee/dashboard')->controller(EmployeeDashboardController::class)->group(function(){
+    Route::get('/','index')->name('employee.dashboard');
+});
+Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)->group(function(){
+    
+    Route::get('/profile','profile')->name('profile.employee');
+    Route::get('/timetable','timetable')->name('timetable.employee');
+    Route::get('/attendence','attendance')->name('attendance.employee');
+});
