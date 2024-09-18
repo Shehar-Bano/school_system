@@ -6,58 +6,31 @@
     <title>Student Profile</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
+        /* Custom Table Styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
             margin-top: 20px;
         }
-        .bg-light-gray {
-            background-color: #f7f7f7;
-        }
-        .table-bordered thead td, .table-bordered thead th {
-            border-bottom-width: 2px;
-        }
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .table-bordered td, .table-bordered th {
-            border: 1px solid #dee2e6;
-        }
-        .bg-yellow.box-shadow {
-            box-shadow: 0px 5px 0px 0px #dcbf02;
-        }
-        .padding-15px-lr {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-        .padding-5px-tb {
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
-        .margin-10px-bottom {
-            margin-bottom: 10px;
-        }
-        .border-radius-5 {
-            border-radius: 5px;
-        }
-        .margin-10px-top {
-            margin-top: 10px;
-        }
-        .font-size14 {
+
+        th, td {
+            padding: 8px;
+            text-align: center;
             font-size: 14px;
         }
-        .text-light-gray {
-            color: #d6d5d5;
+
+        th {
+            background-color: #4536a0;
+            color: #fff;
+            font-weight: 600;
         }
-        .font-size13 {
-            font-size: 13px;
-        }
-        .table-bordered td, .table-bordered th {
-            border: 1px solid #dee2e6;
-        }
-        .table td, .table th {
-            padding: .75rem;
-            vertical-align: top;
-            border-top: 1px solid #dee2e6;
+
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -67,48 +40,71 @@
         @include('StudentDashboard.ViewFile.nav')
         <div class="container-fluid page-body-wrapper">
             @include('StudentDashboard.ViewFile.sidebar')
-            <div class="container">
-               
+
+            <!-- Attendance Table -->
+            <div>
+                <h5 class="card-title m-4" style="font-size: 16px; margin-bottom: 10px;">
+                    Attendance for {{ $months[$selectedMonth] }} {{ $selectedYear }}
+                </h5>
+
+                <!-- Month and Year Filter Form -->
+                <form method="GET" action="{{ route('attendence.student', $user->id) }}" class="mb-3">
+                    <div class="row m-3">
+                        <div class="col-md-4">
+                            <select name="month" class="form-control">
+                                @foreach($months as $key => $month)
+                                    <option value="{{ $key }}" {{ $key == $selectedMonth ? 'selected' : '' }}>
+                                        {{ $month }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select name="year" class="form-control">
+                                @for ($year = now()->year; $year >= 2000; $year--)
+                                    <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Attendance Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered text-center">
+                    <table class="table table-bordered table-striped">
                         <thead>
-                            <tr class="bg-light-gray">
-                                <th class="text-uppercase">Time</th>
-                                <th class="text-uppercase">Monday</th>
-                                <th class="text-uppercase">Tuesday</th>
-                                <th class="text-uppercase">Wednesday</th>
-                                <th class="text-uppercase">Thursday</th>
-                                <th class="text-uppercase">Friday</th>
-                                <th class="text-uppercase">Saturday</th>
+                            <tr>
+                                <th>Date</th>
+                                @foreach(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $dayOfWeek)
+                                    <th>{{ $dayOfWeek }}</th>
+                                @endforeach
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($attendence as $att)
+                            @for ($day = 1; $day <= cal_days_in_month(CAL_GREGORIAN, $selectedMonth, $selectedYear); $day++)
+                                <?php $date = $selectedYear . '-' . $selectedMonth . '-' . str_pad($day, 2, '0', STR_PAD_LEFT); ?>
                                 <tr>
-
-                                    <td class="align-middle">{{ \Carbon\Carbon::parse($att->date)->format('h:i A') }}</td>
-                                    @php
-                                        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                                    @endphp
-
-                                    @foreach ($days as $day)
-                                        <td>
-                                            @if (\Carbon\Carbon::parse($att->date)->format('l') === $day)
-                                                <span class="bg-{{ $att->status == 'Present' ? 'green' : 'red' }} padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">
-                                                    {{ $att->status }}
-                                                </span>
-                                                <div class="margin-10px-top font-size14">{{ \Carbon\Carbon::parse($att->date)->format('h:i A') }}</div>
-                                            @endif
+                                    <td>{{ date('d/m/Y', strtotime($date)) }}</td>
+                                    @foreach(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayOfWeek)
+                                        @php
+                                            $status = isset($attendanceData[$dayOfWeek][$day]) ? $attendanceData[$dayOfWeek][$day] : '';
+                                            $statusClass = strtolower(str_replace(' ', '-', $status)); // Class for color coding
+                                        @endphp
+                                        <td class="status-cell {{ $statusClass }}">
+                                            {{ $status }}
                                         </td>
                                     @endforeach
                                 </tr>
-                            @endforeach
+                            @endfor
                         </tbody>
                     </table>
                 </div>
             </div>
-
-
         </div>
     </div>
     @include('StudentDashboard.ViewFile.script')

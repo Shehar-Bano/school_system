@@ -9,12 +9,9 @@ use App\Models\EmployeeAttendance;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentAttendance;
-use App\Models\TeacherAttendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use PhpParser\Builder\Class_;
 
-use function PHPUnit\Framework\isEmpty;
 
 class AttendanceController extends Controller
 {
@@ -26,14 +23,14 @@ class AttendanceController extends Controller
         if($request->has('designation')){
             $query->where('designation_id', 'like', '%' . $request->input('designation') . '%');
         }
-       
+
     if ($request->has('id')) {
         $query->where('id', 'like', '%' . $request->input('id') . '%');
     }
 
     $employees=$query->paginate(3);
-       
-       
+
+
         return view('attendance.viewEmployee',compact('employees','designations'));
     }
 
@@ -42,17 +39,17 @@ class AttendanceController extends Controller
     public function showEmployeeAttendance(Request $request, $id)
     {
         $employee = Employee::find($id);
-    
+
         // Get the selected month and year from the request, or default to the current month and year
         $selectedMonth = $request->get('month', Carbon::now()->format('m'));
         $selectedYear = $request->get('year', Carbon::now()->format('Y'));
-    
+
         // Retrieve attendance records for the selected month and year
         $attendanceRecords = EmployeeAttendance::where('employee_id', $employee->id)
             ->whereMonth('date', $selectedMonth)
             ->whereYear('date', $selectedYear)
             ->get();
-    
+
         // Initialize an array to hold attendance data
         $attendanceData = [];
         $late = 0;
@@ -60,13 +57,13 @@ class AttendanceController extends Controller
         $present = 0;
         $absent = 0;
         $leave = 0;
-    
+
         // Loop through each record and populate the array
         foreach ($attendanceRecords as $record) {
             $date = Carbon::parse($record->date);
             $dayOfWeek = $date->format('D');
             $day = $date->day;
-    
+
             // Store the attendance status in the array
             if ($record->status == 'present') {
                 ++$present;
@@ -85,26 +82,26 @@ class AttendanceController extends Controller
                 $attendanceData[$dayOfWeek][$day] = 'EL';
             }
         }
-    
+
         // Define months for the dropdown
         $months = [
             '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
             '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
             '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December',
         ];
-    
+
         $totalLeave = $leave;
         $totalPresent = $present;
         $totalLateExcuse = $excusedLate;
         $totalLate = $late;
         $totalAbsent = $absent;
-    
+
         return view('attendance.employeeAttendance', compact(
             'employee', 'attendanceData', 'totalLeave', 'totalPresent', 'totalLateExcuse',
             'totalLate', 'totalAbsent', 'selectedMonth', 'selectedYear', 'months'
         ));
     }
-    
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +111,7 @@ class AttendanceController extends Controller
         // $attendaces=EmployeeAttendance::with('employee')->get();
         return view('attendance.addEmployee',compact('employees'));
     }
- ////////////////////////////////////////////////////////////////////////   
+ ////////////////////////////////////////////////////////////////////////
     public function employeeAttendanceStore(Request $request){
         $request->validate([
             'date' => 'required|date',
@@ -156,12 +153,12 @@ class AttendanceController extends Controller
     }
     public function studentAttendanceView(Request $request)
     {
-      
+
         $classes=classe::with('section')->get();
-        $sections=Section::with('classe','employee')->get();          
+        $sections=Section::with('classe','employee')->get();
         $query=Student::query();
         if($request->has('class')){
-            
+
             $query->where('class_id','like','%'. $request->input('class') . '%');
         }
         if($request->has('section')){
@@ -173,9 +170,9 @@ class AttendanceController extends Controller
     public function addStudentAttendanceView(Request $request){
         $classId=$request->class;
         $sectionId=$request->section;
-    
+
         $students=Student::where('class_id',$classId)->where('section_id',$sectionId)->get();
-    
+
   if( $students->isEmpty()){
     dd($students);
     return redirect()->back()->with('error','No student found in this class and section');
@@ -198,12 +195,12 @@ class AttendanceController extends Controller
                 $existingAttendance = StudentAttendance::where('student_id', $studentId)
                 ->where('date', $date)
                 ->first();
-    
+
             if ($existingAttendance) {
                 // Remove existing attendance record
                 $existingAttendance->delete();
             }
-    
+
                 $records[] = [
                     'student_id' => $studentId,
                     'date' => $date,
@@ -220,8 +217,8 @@ class AttendanceController extends Controller
                         $student=Student::find($id);
                         $attendances=StudentAttendance::where('student_id',$id)->get();
                         return view('attendance.viewStudentDetails',compact('student','attendances'));
-                        }   
-                        
+                        }
+
 public function classAttendanceView(Request $request){
 $classId=$request->class_id;
 $sectionId=$request->section_id;
@@ -233,29 +230,29 @@ return redirect()->back()->with(compact('classId','sectionId'));
 public function showStudentAttendance(Request $request, $id)
 {
     $student = Student::with('class', 'section')->find($id);
-    
+
     // Get the selected month and year from the request, or default to the current month and year
     $selectedMonth = $request->get('month', Carbon::now()->format('m'));
     $selectedYear = $request->get('year', Carbon::now()->format('Y'));
-    
+
     // Retrieve attendance records for the selected month and year
     $attendanceRecords = StudentAttendance::where('student_id', $student->id)
         ->whereMonth('date', $selectedMonth)
         ->whereYear('date', $selectedYear)
         ->get();
-    
+
     $attendanceData = [];
     $late = 0;
     $exculated = 0;
     $present = 0;
     $absent = 0;
     $leave = 0;
-    
+
     foreach ($attendanceRecords as $record) {
         $date = Carbon::parse($record->date);
         $dayOfWeek = $date->format('D');
         $day = $date->day;
-        
+
         if ($record->status == 'present') {
             ++$present;
             $attendanceData[$dayOfWeek][$day] = 'P';
@@ -273,20 +270,20 @@ public function showStudentAttendance(Request $request, $id)
             $attendanceData[$dayOfWeek][$day] = 'EL';
         }
     }
-    
- 
-    
+
+
+
     $months = [
         '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
         '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
         '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December',
     ];
 
-    $totalLeave = $leave;    
-    $totalPresent = $present;  
-    $totalLateExcuse = $exculated; 
-    $totalLate = $late;     
-    $totalAbsent = $absent; 
+    $totalLeave = $leave;
+    $totalPresent = $present;
+    $totalLateExcuse = $exculated;
+    $totalLate = $late;
+    $totalAbsent = $absent;
 
     return view('attendance.studentAttendance', compact(
         'student', 'attendanceData', 'totalLeave', 'totalPresent', 'totalLateExcuse',

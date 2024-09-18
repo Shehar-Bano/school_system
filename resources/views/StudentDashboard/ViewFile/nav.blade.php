@@ -1,5 +1,3 @@
-
-
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
       <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="{{asset('assesst/images/logo.svg')}}" class="mr-2" alt="logo"/></a>
@@ -70,9 +68,31 @@
             </a>
           </div>
         </li>
-       
-        <a href="{{route('student.login') }}" class="btn btn-danger m-2">Logout</a>
+        <li class="nav-item nav-profile dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+            <img src="{{asset('assesst/images/faces/face28.jpg')}}" alt="profile"/>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+            <a class="dropdown-item">
+              <form method="POST" action="{{ route('student.logout') }}">
+                  @csrf
+                  <x-dropdown-link :href="route('student.logout')"
+                          onclick="event.preventDefault();
+                                      this.closest('form').submit();" style="color: black">
+                       <i class="ti-power-off text-primary"></i> {{ __('Log Out') }}
+                  </x-dropdown-link>
+              </form>
+            </a>
+          </div>
+        </li>
+        <li class="nav-item nav-settings d-none d-lg-flex">
+          <a class="nav-link" href="#">
+            <i class="icon-ellipsis"></i>
+          </a>
+        </li>
       </ul>
-
+      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+        <span class="icon-menu"></span>
+      </button>
     </div>
   </nav>
