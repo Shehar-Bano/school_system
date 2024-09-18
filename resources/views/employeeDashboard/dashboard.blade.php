@@ -25,13 +25,13 @@
         <div class="col-md-6 grid-margin stretch-card">
           <div class="card tale-bg">
             <div class="card-people mt-auto">
-              <img src="{{asset('assesst/images/dashboard/people.svg')}}" alt="people">
+              <img src="{{asset('assesst/images/dashboard/8202589.jpg')}}" alt="people">
               <div class="weather-info">
                 <div class="d-flex">
                   {{-- <div>
                     <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
                   </div> --}}
-                  <div class="ml-2">
+                  <div class="ml-2 mt-2">
                     <h4 class="location font-weight-normal">It's School Time</h4>
                     <h6 class="font-weight-normal">Let's go</h6>
                   </div>
@@ -40,14 +40,14 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6 grid-margin transparent">
+        <div class="col-md-6 grid-margin transparent mt-3">
           <div class="row">
             <div class="col-md-6 mb-4 stretch-card transparent">
               <div class="card card-tale">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Presence</p>
-                  <p>Total Present: {{ $totalPresent }}</p>
+                  <p class="fs-30 mb-2">Presence:  {{ $totalPresent }}</p>
+                
                 </div>
               </div>
             </div>
@@ -55,8 +55,8 @@
               <div class="card card-dark-blue">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Absence</p>
-                  <p>Total Absent: {{ $totalAbsent }}</p>
+                  <p class="fs-30 mb-2">Absence: {{ $totalAbsent }}</p>
+                 
                 </div>
               </div>
             </div>
@@ -66,8 +66,7 @@
               <div class="card card-light-blue">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Leave's</p>
-                  <p>Total Leave: {{ $totalLeave }}</p>
+                  <p class="fs-30 mb-2">Leave's : {{ $totalLeave }}</p>
                 </div>
               </div>
             </div>
@@ -75,9 +74,8 @@
               <div class="card card-light-danger">
                 <div class="card-body">
                   <p class="mb-4">Current Year Attendence</p>
-                  <p class="fs-30 mb-2">Percentage</p>
-                  <p>Overall attendance: {{ number_format($attendancePercentage, 2) }}%
-                </p>
+                  <p style="font-size: 22px" class=" mb-2">Overall attendance: {{ number_format($attendancePercentage, 2) }}%</p>
+                
                 </div>
               </div>
             </div>

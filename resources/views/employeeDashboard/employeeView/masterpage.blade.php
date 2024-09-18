@@ -168,34 +168,63 @@
       <!--sidebar-->
       <div class="container-fluid page-body-wrapper">
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
-            <ul class="nav">
-                <!-- Dashboard Item -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dashboard') }}">
-                        <i class="icon-grid menu-icon"></i>
-                        <span class="menu-title">Dashboard</span>
-                    </a>
-                </li>
-                
-                <!-- Profile Item -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('profile.employee') }}">
-                        <i class="fas fa-user menu-icon"></i>
-                        <span class="menu-title">Profile</span>
-                    </a>
-                </li>
-                
-                <!-- Attendance Item -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('attendance.employee') }}">
-                        <i class="fas fa-calendar-check menu-icon"></i>
-                        <span class="menu-title">Attendance</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-   
-    
+          <ul class="nav">
+              <!-- Dashboard Item -->
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('employee.dashboard') }}">
+                      <i class="icon-grid menu-icon"></i>
+                      <span class="menu-title">Dashboard</span>
+                  </a>
+              </li>
+              
+              <!-- Profile Item -->
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('profile.employee') }}">
+                      <i class="fas fa-user menu-icon"></i>
+                      <span class="menu-title">Profile</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                  <i class="icon-layout menu-icon"></i>
+                  <span class="menu-title">Exam</span>
+                  <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="ui-basic">
+                  <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{route('employee.exams')}}">Exam</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('employee.exam.schedules')}}">Exam Schedule</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('result')}}">Result</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{route('result-list')}}">Result List</a></li>
+                  </ul>
+                </div>
+              </li>
+              <!-- Attendance Item -->
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('attendance.employee') }}">
+                      <i class="fas fa-calendar-check menu-icon"></i>
+                      <span class="menu-title">Attendance</span>
+                  </a>
+              </li>
+      
+              <!-- Time Table Item -->
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('timetable.employee') }}">
+                      <i class="fas fa-calendar-week menu-icon"></i>
+                      <span class="menu-title">Time Table</span>
+                  </a>
+              </li>
+      
+              <!-- Incentives Item -->
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ route('incentives.employee') }}">
+                      <i class="fas fa-award menu-icon"></i>
+                      <span class="menu-title">Incentives</span>
+                  </a>
+              </li>
+          </ul>
+      </nav>
+      
         
     @yield('content')
     </div>
@@ -231,6 +260,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
 <!-- jsPDF AutoTable Plugin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
 </body>

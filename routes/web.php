@@ -20,6 +20,7 @@ use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeAuthController;
 use App\Http\Controllers\EmployeeDashboardController;
+use App\Http\Controllers\EmployeeExamController;
 use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
@@ -276,4 +277,21 @@ Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)
     Route::get('/profile','profile')->name('profile.employee');
     Route::get('/timetable','timetable')->name('timetable.employee');
     Route::get('/attendence','attendance')->name('attendance.employee');
+    Route::get('/incentives','incentives')->name('incentives.employee');
+
+});
+Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->group(function(){
+    Route::get('/exam','index')->name('employee.exam.list');
+    Route::post('/eaxm','store')->name('employee.exam.add');
+    Route::get('/list-exam','list')->name('employee.exams');
+    Route::get('/exam/{id}/edit','edit')->name('employee.exam.edit');
+    Route::post('/exam/{id}/update','update')->name('employee.exam.update');
+    Route::delete('/exam/{id}/delete','delete')->name('employee.exam.delete');
+    ///////shedeulesss
+    Route::prefix('exam-schedule')->group(function(){
+        Route::get('/list','sheduleList')->name('employee.exam.schedules');
+        Route::get('/add','sheduleAdd')->name('employee.exam.schedules.add');
+        Route::post('/add','sheduleStore')->name('employee.exam.schedules.add');
+    });
+
 });

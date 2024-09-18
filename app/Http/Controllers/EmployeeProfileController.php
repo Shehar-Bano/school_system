@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\EmployeeAttendance;
+use App\Models\Finance_recode;
+use App\Models\TimeTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -96,5 +98,49 @@ class EmployeeProfileController extends Controller
             'totalLate', 'totalAbsent', 'selectedMonth', 'selectedYear', 'months'
         ));
     }
+
+    public function timeTable(){
+        $user = auth()->guard('employee')->user();
+        if (!$user) {
+            return redirect()->route('employee.login')->with('error', 'You need to log in first.');
+        }
+        $timetable = TimeTable::where('teacher_id', $user->id)->get();
+        return view('employeeDashboard.time_table', compact('timetable'));
+    }
     
+    public function incentives(Request $request)
+    {
+        // Get the authenticated employee
+        $user = auth()->guard('employee')->user();
+        if (!$user) {
+            return redirect()->route('employee.login')->with('error', 'You need to log in first.');
+        }
+    
+        $employees = Employee::get(); // This can be used for displaying employee details if needed
+        $query = Finance_recode::with('employee')
+            ->where('employee_id', $user->id); // Filter records for the logged-in employee
+        
+        if ($request->has('transaction_type')) {
+            $query->where('transaction_type', 'like', '%' . $request->input('transaction_type') . '%');
+        }
+    
+        if ($request->has('start_date') && $request->has('end_date') &&
+            $request->input('start_date') != '' && $request->input('end_date') != '') {
+            $query->whereBetween('transaction_date', [$request->input('start_date'), $request->input('end_date')]);
+        }
+    
+        // Fetch the records and ensure transaction_date is a Carbon instance
+        $recodes = $query->get()->each(function ($record) {
+            $record->transaction_date = \Carbon\Carbon::parse($record->transaction_date);
+        });
+    
+        // Calculate incentives based on transaction type
+        $incentives = $recodes->groupBy('transaction_type')->map(function ($records, $transactionType) {
+            return $records->sum('amount');
+        });
+    
+        return view('employeeDashboard.incentives', compact('recodes', 'employees', 'incentives'));
+    }
+    
+
 }
