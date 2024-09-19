@@ -7,8 +7,10 @@ use App\Models\DateSheet;
 use App\Models\Exam;
 use App\Models\ExamSchedule;
 use App\Models\Section;
+use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Models\Result;
 
 class EmployeeExamController extends Controller
 {
@@ -137,6 +139,18 @@ public function sheduleEdit($id)
         // Redirect back with a success message
         return redirect()->back()->with('message', 'Exam Schedule updated successfully!');
     }
+    ////////printlist
+    public function resultPrint($id){
+
+        $students = Student::with('class', 'section', 'exam')->get();
+        $examSchedule =ExamSchedule::find($id);
+        $results = Result::where('exam_id', $examSchedule->exam_id)
+        ->where('class_id',$examSchedule->class_id)
+        ->with(['subject', 'student','exam'])
+        ->get();
+        // dd($results);
+        return view('employeeDashboard.result.printList',compact('results','students','examSchedule'));
+    }
     ////////////////datesheet
     public function dateSheetAdd($id){
         $exam = ExamSchedule::find($id);
@@ -185,7 +199,6 @@ public function sheduleEdit($id)
     }
     public function dateSheetEdit($id){
         $exam = DateSheet::where('id', $id)->first();
-        dd($exam);
         $subjects = Subject::all(); 
 
         return view('employeeDashboard.dateSheet.edit',compact('exam','subjects'));

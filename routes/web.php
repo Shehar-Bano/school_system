@@ -295,6 +295,8 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
         Route::get('/edit/{id}','sheduleEdit')->name('employee.exam.schedules.edit');
         Route::post('/edit/{id}','sheduleUpdate')->name('employee.exam.schedules.update');
         Route::delete('/delete/{id}','sheduleDelete')->name('employee.exam.schedules.delete');
+        ////printlist
+        Route::get('/list/{id}','resultPrint')->name('employee.exam.schedules.print');
         ////datesheet
         Route::prefix('date-sheet')->group(function(){
             Route::get('/list/{id}','dateSheetList')->name('employee.exam.date-sheet');

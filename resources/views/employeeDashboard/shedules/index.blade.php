@@ -147,7 +147,7 @@
                                     <!-- Add Button -->
                                     <li>
 
-                                        <a class="dropdown-item text-primary" id="printResultBtn" title="Print" href="{{route('exam-result',['id'=>$exam->id])}}"> <i class="fas fa-print"></i> Print Result</a>
+                                        <a class="dropdown-item text-primary" id="printResultBtn" title="Print" href="{{route('employee.exam.schedules.print',['id'=>$exam->id])}}"> <i class="fas fa-print"></i> Print Result</a>
 
 
                                     </li>
