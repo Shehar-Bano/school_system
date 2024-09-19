@@ -34,6 +34,12 @@
           <span class="menu-title">Result</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('fee.student')}}" aria-expanded="false" aria-controls="tables">
+            <i class="fas fa-user-check menu-icon"></i>
+          <span class="menu-title">Fee Voucher</span>
+        </a>
+    </li>
 
 
 

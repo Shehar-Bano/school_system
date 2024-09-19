@@ -260,7 +260,7 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/timetable', [StudentProfileController::class, 'timetable'])->name('timetable.student');
     Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
     Route::get('/result', [StudentProfileController::class, 'result'])->name('result.student');
-    Route::post('/result', [StudentProfileController::class, 'result'])->name('result.student');
+    Route::get('/fee-reciept', [StudentProfileController::class, 'fee'])->name('fee.student');
 
 
 });
@@ -274,7 +274,7 @@ Route::middleware('auth:employee')->prefix('employee/dashboard')->controller(Emp
     Route::get('/','index')->name('employee.dashboard');
 });
 Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)->group(function(){
-    
+
     Route::get('/profile','profile')->name('profile.employee');
     Route::get('/timetable','timetable')->name('timetable.employee');
     Route::get('/attendence','attendance')->name('attendance.employee');

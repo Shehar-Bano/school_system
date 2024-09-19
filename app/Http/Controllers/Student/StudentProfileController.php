@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use App\Models\StudentAttendance;
 use App\Http\Controllers\Controller;
 use App\Models\ExamSchedule;
+use App\Models\StudentFee;
+use App\Models\StudentTransaction;
 
 class StudentProfileController extends Controller
 {
@@ -121,12 +123,66 @@ class StudentProfileController extends Controller
 
         return view('StudentDashboard.Profile.result', compact('result', 'user','exams'));
     }
-    public function fee(){
+    public function fee()
+    {
         $user = auth()->guard('student')->user();
         if (!$user) {
             return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
-        
+
+        // Fetch student fee, fines, and other related transactions
+        $fee = StudentFee::where('student_id', $user->id)->first();
+        $fines = StudentTransaction::where('student_id', $user->id)
+            ->where('transaction_type', 'fine')
+            ->get();
+
+        $funds = StudentTransaction::where('student_id', $user->id)
+            ->where('transaction_type', 'fund')
+            ->get();
+
+        // Static fee types
+        $feeTypes = [
+            'Admission' => 100,
+            'Other Activity' => 300,
+            'School Bus' => 50,
+            'Lunch' => 50,
+            'Diary' => 50,
+        ];
+
+        // Fees array to store all student fees (static + fines)
+        $studentFees = [];
+
+        foreach ($feeTypes as $feeType => $amount) {
+            $studentFees[] = [
+                'fee_type' => $feeType,
+                'amount' => $amount,
+                'paid' => 0, // Assuming no payment for now
+            ];
+        }
+
+        // Add tuition fee (assumed to be dynamic)
+        $studentFees[] = [
+            'fee_type' => 'Tuition Fee',
+            'amount' => $user->tution_fee ?? 0, // default to 0 if not set
+            'paid' => 0,
+        ];
+
+        // Add fines
+        foreach ($fines as $fine) {
+            $studentFees[] = [
+                'fee_type' => 'Fine',
+                'amount' => $fine->amount,
+                'paid' => $fine->paid_amount,
+            ];
+        }
+
+        // Calculate totals
+        $totalAmount = array_sum(array_column($studentFees, 'amount'));
+        $scholarship = $funds->sum('amount');
+        $totalDue = $totalAmount - $scholarship;
+
+        return view('StudentDashboard.Profile.fee', compact('studentFees', 'user', 'totalAmount', 'scholarship', 'totalDue'));
     }
+
 
 }
