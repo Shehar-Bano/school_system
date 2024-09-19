@@ -152,25 +152,25 @@
 
                                     </li>
                                     <li>
-                                        <a href="{{ route('date-sheet',['id'=>$exam->id]) }}" class="dropdown-item text-primary" title="Add">
+                                        <a href="{{ route('employee.exam.date-sheet.add',['id'=>$exam->id]) }}" class="dropdown-item text-primary" title="Add">
                                             <i class="fas fa-plus"></i> Add
                                         </a>
                                     </li>
                                     <!-- View Button -->
                                     <li>
-                                        <a href="{{ route('date-sheet-list',['id' => $exam->id]) }}" class="dropdown-item text-info" title="View">
+                                        <a href="{{ route('employee.exam.date-sheet',['id' => $exam->id]) }}" class="dropdown-item text-info" title="View">
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                     </li>
                                     <!-- Edit Button -->
                                     <li>
-                                        <a href="{{ route('exam-schedule-edit', ['id' => $exam->id]) }}" class="dropdown-item text-warning" title="Edit">
+                                        <a href="{{ route('employee.exam.schedules.edit', ['id' => $exam->id]) }}" class="dropdown-item text-warning" title="Edit">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                     </li>
                                     <!-- Delete Button -->
                                     <li>
-                                        <form action="{{ route('exam-schedule_delete', ['id' => $exam->id]) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('employee.exam.schedules.delete', ['id' => $exam->id]) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger" title="Delete">

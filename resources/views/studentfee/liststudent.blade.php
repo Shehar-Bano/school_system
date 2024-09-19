@@ -70,49 +70,46 @@
           <tbody>
             @php
                 $count = 0;
-                $total=0;
+                $totalFee=0;
             @endphp
-            @foreach ($studentData as $data)
-            
-            <tr>
+          @foreach ($studentData as $data)
+          <tr>
               <td>{{ ++$count }}</td>
-              <td>{{ \Carbon\Carbon::parse($data['date'])->format('j, M Y') }}</td>
- <!-- Date (current date) -->
+              <td>{{ \Carbon\Carbon::parse($data['date'])->format('j, M Y') }}</td> <!-- Date -->
               <td>{{ $data['student']->name }}</td> <!-- Student's Name -->
               <td>{{ number_format($data['tuitionFee']) }} Rs/-</td> <!-- Tuition Fee -->
               <td>{{ number_format($data['totalFund']) }} Rs/-</td> <!-- Fund (non-fine transactions) -->
               <td>{{ number_format($data['totalFine']) }} Rs/-</td> <!-- Fine -->
               <td>{{ number_format($data['examFee']) }} Rs/-</td> <!-- Exam Fee -->
+          
               <!-- Total Fee (Tuition + Fund + Fine + Exam) -->
               @php
-                $total += $data['tuitionFee'] + $data['totalFund'] +$data['examFee'];
+                  $totalFee = $data['tuitionFee'] + $data['totalFine'] + $data['examFee'] - $data['totalFund'];
               @endphp
-              <td>{{ number_format($total) }} Rs/-
-                
-              </td>
+              <td>{{ number_format($totalFee) }} Rs/-</td> <!-- Total Fee -->
+          
+              <!-- Payment Status -->
               @if (!StudentFee::where('student_id', $data['student_id'])->exists())
-             <td><span class="badge badge-danger">Pending</span></td>
-             @else
-             <td><span class="badge badge-success">Recived</span></td>               
-             @endif
-             
+                  <td><span class="badge badge-danger">Pending</span></td>
+              @else
+                  <td><span class="badge badge-success">Received</span></td>
+              @endif
+          
+              <!-- Actions -->
               <td>
-                @if (!StudentFee::where('student_id', $data['student_id'])->exists())
-                <a href="{{ route('fee.receive', ['id' => $data['student_id'], 'total' => $total]) }}" title='Confirm Receive' class="btn btn-sm btn-info">
-                  <i class="fas fa-money-bill-1"></i>
-              </a>
-              
-                @else
-                    <button class="btn btn-sm btn-secondary" disabled title="Fee Already Paid">
-                      <i class="fas fa-money-bill-1"></i>
-                    </button>
-                @endif
-                {{-- <a href="{{ route('salary.pdf', ['id' => $salary['employee_id']]) }}" class="btn btn-sm btn-warning" title='Print Receipt'>
-                    <i class="fas fa-print"></i>
-                </a> --}}
-            </td>
-            </tr>
-            @endforeach
+                  @if (!StudentFee::where('student_id', $data['student_id'])->exists())
+                      <a href="{{ route('fee.receive', ['id' => $data['student_id'], 'total' => $totalFee]) }}" title='Confirm Receive' class="btn btn-sm btn-info">
+                          <i class="fas fa-money-bill-1"></i>
+                      </a>
+                  @else
+                      <button class="btn btn-sm btn-secondary" disabled title="Fee Already Paid">
+                          <i class="fas fa-money-bill-1"></i>
+                      </button>
+                  @endif
+              </td>
+          </tr>
+          @endforeach
+          
           </tbody>
         </table>
       </div>

@@ -292,6 +292,19 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
         Route::get('/list','sheduleList')->name('employee.exam.schedules');
         Route::get('/add','sheduleAdd')->name('employee.exam.schedules.add');
         Route::post('/add','sheduleStore')->name('employee.exam.schedules.add');
+        Route::get('/edit/{id}','sheduleEdit')->name('employee.exam.schedules.edit');
+        Route::post('/edit/{id}','sheduleUpdate')->name('employee.exam.schedules.update');
+        Route::delete('/delete/{id}','sheduleDelete')->name('employee.exam.schedules.delete');
+        ////datesheet
+        Route::prefix('date-sheet')->group(function(){
+            Route::get('/list/{id}','dateSheetList')->name('employee.exam.date-sheet');
+            Route::get('/add/{id}','dateSheetAdd')->name('employee.exam.date-sheet.add');
+            Route::post('/add/{id}','dateSheetStore')->name('employee.exam.date-sheet.store');
+            Route::get('/edit/{id}','dateSheetEdit')->name('employee.exam.date-sheet.edit');
+            Route::post('/edit/{id}','dateSheetUpdate')->name('employee.exam.date-sheet.update');
+            Route::delete('/delete/{id}','dateSheetDelete')->name('employee.exam.date-sheet.delete');
+            });
+
     });
 
 });
