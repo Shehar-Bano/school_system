@@ -44,8 +44,8 @@
               <div class="card card-tale">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Presence</p>
-                  <p>Total Present: {{ $totalPresent }}</p>
+                  <p class="fs-20 mb-2">Total Presence</p>
+                  <p class="fs-30 "> {{ $totalPresent }}</p>
                 </div>
               </div>
             </div>
@@ -53,8 +53,8 @@
               <div class="card card-dark-blue">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Absence</p>
-                  <p>Total Absent: {{ $totalAbsent }}</p>
+                  <p class="fs-20 mb-2">Total Absence</p>
+                  <p class="fs-30 "> {{ $totalAbsent }}</p>
                 </div>
               </div>
             </div>
@@ -64,8 +64,8 @@
               <div class="card card-light-blue">
                 <div class="card-body">
                   <p class="mb-4">Current Month Attendence</p>
-                  <p class="fs-30 mb-2">Leave's</p>
-                  <p>Total Leave: {{ $totalLeave }}</p>
+                  <p class="fs-20 mb-2">Total Leave's</p>
+                  <p class="fs-30 "> {{ $totalLeave }}</p>
                 </div>
               </div>
             </div>
@@ -73,8 +73,8 @@
               <div class="card card-light-danger">
                 <div class="card-body">
                   <p class="mb-4">Current Year Attendence</p>
-                  <p class="fs-30 mb-2">Percentage</p>
-                  <p>Overall attendance: {{ number_format($attendancePercentage, 2) }}%
+                  <p class="fs-20 mb-2">Percentage</p>
+                  <p class="fs-30 "> {{ number_format($attendancePercentage, 2) }}%
                 </p>
                 </div>
               </div>

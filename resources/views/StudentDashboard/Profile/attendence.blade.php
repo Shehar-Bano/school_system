@@ -6,33 +6,41 @@
     <title>Student Profile</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Custom Table Styling */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        th {
+        /* Calendar Styling */
+        .table-bordered th {
             background-color: #4536a0;
-            color: #fff;
-            font-weight: 600;
+            color: white;
         }
 
-        
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            th, td {
-                font-size: 12px;
-            }
+        .table-bordered td {
+            height: 60px;
+            vertical-align: middle;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Status Colors */
+        .status-cell.present {
+            background-color: #4CAF50; /* Green for present */
+            color: white;
+        }
+
+        .status-cell.absent {
+            background-color: #F44336; /* Red for absent */
+            color: white;
+        }
+
+        .status-cell.leave {
+            background-color: #FFEB3B; /* Yellow for leave */
+            color: black;
+        }
+
+        .status-cell.excused-late {
+            background-color: #FF9800; /* Orange for excused late */
+            color: white;
         }
     </style>
+
 </head>
 <body>
     @include('StudentDashboard.ViewFile.head')
@@ -76,31 +84,47 @@
 
                 <!-- Attendance Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped text-center">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                @foreach(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $dayOfWeek)
+                                <th colspan="7">{{ $months[$selectedMonth] }} {{ $selectedYear }}</th>
+                            </tr>
+                            <tr>
+                                @foreach(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayOfWeek)
                                     <th>{{ $dayOfWeek }}</th>
                                 @endforeach
                             </tr>
                         </thead>
                         <tbody>
-                            @for ($day = 1; $day <= cal_days_in_month(CAL_GREGORIAN, $selectedMonth, $selectedYear); $day++)
-                                <?php $date = $selectedYear . '-' . $selectedMonth . '-' . str_pad($day, 2, '0', STR_PAD_LEFT); ?>
-                                <tr>
-                                    <td>{{ date('d/m/Y', strtotime($date)) }}</td>
-                                    @foreach(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $dayOfWeek)
-                                        @php
-                                            $status = isset($attendanceData[$dayOfWeek][$day]) ? $attendanceData[$dayOfWeek][$day] : '';
-                                            $statusClass = strtolower(str_replace(' ', '-', $status)); // Class for color coding
-                                        @endphp
+                            @php
+                                $firstDayOfMonth = date('w', strtotime("$selectedYear-$selectedMonth-01"));
+                                $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $selectedMonth, $selectedYear);
+                                $currentDay = 1;
+                            @endphp
+
+                            <!-- Generate Calendar Rows -->
+                            @for ($week = 0; $week < 6; $week++)
+                            <tr>
+                                @for ($day = 0; $day < 7; $day++)
+                                    @if ($week === 0 && $day < $firstDayOfMonth || $currentDay > $daysInMonth)
+                                        <td></td> <!-- Empty cell -->
+                                    @else
+                                        <?php
+                                            $status = isset($attendanceData[$currentDay]) ? $attendanceData[$currentDay] : '';
+                                            $statusClass = strtolower(str_replace(' ', '-', $status)); // Convert status to class
+                                        ?>
                                         <td class="status-cell {{ $statusClass }}">
-                                            {{ $status }}
+                                            {{ $currentDay }}
                                         </td>
-                                    @endforeach
-                                </tr>
-                            @endfor
+                                        @php $currentDay++; @endphp
+                                    @endif
+                                @endfor
+                            </tr>
+                            @if ($currentDay > $daysInMonth)
+                                @break
+                            @endif
+                        @endfor
+
                         </tbody>
                     </table>
                 </div>

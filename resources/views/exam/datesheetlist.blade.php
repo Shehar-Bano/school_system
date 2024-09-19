@@ -31,7 +31,7 @@
             <!-- Exams Table -->
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Date Sheet</h4> 
+                <h4 class="card-title">Date Sheet</h4>
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered" id="examsTable">
                     <thead>
@@ -58,7 +58,7 @@
                         <td>{{ $exam->date }}</td>
                         <td>
                            <!-- Edit Button -->
-                           <a href="{{ route('exam-schedule-date-edit', ['id' => $exam->exam_schedule_id ]) }}" class="btn btn-warning btn-sm" title="Edit">
+                           <a href="{{ route('exam-schedule-date-edit', ['id' => $exam->id ]) }}" class="btn btn-warning btn-sm" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
                           <form action="{{ route('exam-schedule-date_delete', ['id' => $exam->id]) }}" method="POST" style="display:inline;">

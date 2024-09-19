@@ -253,6 +253,7 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/timetable', [StudentProfileController::class, 'timetable'])->name('timetable.student');
     Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
     Route::get('/result', [StudentProfileController::class, 'result'])->name('result.student');
+    Route::post('/result', [StudentProfileController::class, 'result'])->name('result.student');
 
 
 });

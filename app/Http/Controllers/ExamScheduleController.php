@@ -142,8 +142,6 @@ class ExamScheduleController extends Controller
 
     public function datesheetlist($id){
         $exams = ExamSchedule::find($id);
-
-
         $datesheets = DateSheet::with('subject')->get();
         return view('exam.datesheetlist',compact('exams','datesheets'));
     }
@@ -153,16 +151,18 @@ class ExamScheduleController extends Controller
         $datesheet->delete();
         return redirect()->back()->with('message','deleted successfully');
     }
-    public function dateedit($id){
-
-
-    $exam = DateSheet::where('id', $id)->first();
-    $subjects = Subject::all(); // Assuming you have a Subject model to get all subjects
-     return view('exam.date_edit',compact('exam','subjects'));
-
+    public function dateedit($id)
+    {
+        $exam = DateSheet::where('id', $id)->first();
+        if (!$exam) {
+            dd('No exam schedule found for this ID.');
+        }
+        $subjects = Subject::all();
+        return view('exam.date_edit', compact('exam', 'subjects'));
     }
     public function dateupdateschedule(Request $request, $id) {
-        $exam = DateSheet::where('id', $id)->first();
+        $exam = DateSheet::where('exam_schedule_id ', $id)->first();
+
         $exam->date = $request->date;
         $exam->start_time = $request->start_time;
         $exam->end_time = $request->end_time;
