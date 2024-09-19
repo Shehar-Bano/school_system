@@ -18,6 +18,10 @@ use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeAuthController;
+use App\Http\Controllers\EmployeeDashboardController;
+use App\Http\Controllers\EmployeeExamController;
+use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
@@ -239,6 +243,9 @@ Route::group(['prefix'=>'report'],function(){
     Route::get('/resultReport',[ReportController::class,'resultReport'])->name('resultReport');
 
 });
+
+Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
+
 // Student login routes
 Route::get('student/login', [StudentAuthController::class, 'showLoginForm'])->name('student.login');
 Route::post('student/login', [StudentAuthController::class, 'login']);
@@ -257,5 +264,48 @@ Route::group(['prefix'=>'studentDashboard'],function(){
 
 
 });
+////////////////////////////employeeDashboard//////////////////////////////
+Route::prefix('employee-login')->controller(EmployeeAuthController::class)->group(function (){
+    Route::get('/','showLoginForm')->name('employee.login');
+    Route::post('/','login');
+    Route::any('/logout','logout')->name('employee.logout');
+});
+Route::middleware('auth:employee')->prefix('employee/dashboard')->controller(EmployeeDashboardController::class)->group(function(){
+    Route::get('/','index')->name('employee.dashboard');
+});
+Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)->group(function(){
+    
+    Route::get('/profile','profile')->name('profile.employee');
+    Route::get('/timetable','timetable')->name('timetable.employee');
+    Route::get('/attendence','attendance')->name('attendance.employee');
+    Route::get('/incentives','incentives')->name('incentives.employee');
 
-Route::get('/balanceSheet',[BalanceSheetController::class,'index'])->name('balanceSheet');
+});
+Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->group(function(){
+    Route::get('/exam','index')->name('employee.exam.list');
+    Route::post('/eaxm','store')->name('employee.exam.add');
+    Route::get('/list-exam','list')->name('employee.exams');
+    Route::get('/exam/{id}/edit','edit')->name('employee.exam.edit');
+    Route::post('/exam/{id}/update','update')->name('employee.exam.update');
+    Route::delete('/exam/{id}/delete','delete')->name('employee.exam.delete');
+    ///////shedeulesss
+    Route::prefix('exam-schedule')->group(function(){
+        Route::get('/list','sheduleList')->name('employee.exam.schedules');
+        Route::get('/add','sheduleAdd')->name('employee.exam.schedules.add');
+        Route::post('/add','sheduleStore')->name('employee.exam.schedules.add');
+        Route::get('/edit/{id}','sheduleEdit')->name('employee.exam.schedules.edit');
+        Route::post('/edit/{id}','sheduleUpdate')->name('employee.exam.schedules.update');
+        Route::delete('/delete/{id}','sheduleDelete')->name('employee.exam.schedules.delete');
+        ////datesheet
+        Route::prefix('date-sheet')->group(function(){
+            Route::get('/list/{id}','dateSheetList')->name('employee.exam.date-sheet');
+            Route::get('/add/{id}','dateSheetAdd')->name('employee.exam.date-sheet.add');
+            Route::post('/add/{id}','dateSheetStore')->name('employee.exam.date-sheet.store');
+            Route::get('/edit/{id}','dateSheetEdit')->name('employee.exam.date-sheet.edit');
+            Route::post('/edit/{id}','dateSheetUpdate')->name('employee.exam.date-sheet.update');
+            Route::delete('/delete/{id}','dateSheetDelete')->name('employee.exam.date-sheet.delete');
+            });
+
+    });
+
+});
