@@ -8,72 +8,75 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f5f6fa;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .table-container {
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container h3 {
+            color: #4c42bc;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .student-info h4,
+        .student-info h5 {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .table-responsive {
+            max-width: 100%; /* Ensures the table doesn't overflow */
+            overflow-x: auto; /* Adds horizontal scroll */
+        }
+
+        .table-bordered thead th {
+            background-color: #4c42bc;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        .table-bordered td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .result-summary {
+            text-align: right;
             margin-top: 20px;
         }
 
-        .receipt-main {
-            background: #ffffff;
-            border: 2px solid #dedede;
-            margin-top: 50px;
-            padding: 40px 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            color: #dc3545;
-        }
-
-        .receipt-header {
-            margin-bottom: 30px;
-        }
-
-        .receipt-header h3 {
-            font-size: 28px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .receipt-main thead th {
-            background-color: #4c42bc;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .receipt-main td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        .receipt-main td h2 {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .total-row td {
+        .result-summary p {
             font-size: 18px;
             font-weight: bold;
         }
 
-        .total-row .text-danger {
-            color: #dc3545 !important;
+        .result-summary .total-due {
+            color: #dc3545;
         }
 
-        .search-form {
-            background-color: #ffffff;
-            border: 2px solid #dedede;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 8px;
+        .btn-primary {
+            background-color: #4c42bc;
+            border-color: #4c42bc;
+            padding: 10px 20px;
         }
 
-        .search-form select {
-            border: 2px solid #ced4da;
-            border-radius: 4px;
-        }
-
-        .search-form .btn-primary {
-            border-radius: 4px;
-            padding: 8px 20px;
-            font-size: 16px;
+        @media (max-width: 508px) {
+            .table-container {
+                padding: 10px;
+            }
+            .table-container h3 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -86,76 +89,193 @@
             @include('StudentDashboard.ViewFile.sidebar')
 
             <div class="container">
-                <!-- Search Form -->
-                <div class="search-form  mt-3">
-                    <form id="searchForm" method="GET" action="">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label for="exam">Select Exam</label>
-                                    <select name="exam" id="exam" class="form-control">
-                                        <option value="">Select Exam</option>
-                                        <!-- Populate sections dynamically -->
-                                        @foreach ($exams as $exam)
-                                        <option value="{{ $exam->id }}" {{ $exam->id == request()->query('exam') ? 'selected' : '' }}>
-                                            {{ $exam->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary btn-block">Search</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <div class="table-container m-5">
+                    <div class="table-responsive ">
+                        <table class="table table-bordered table-hover ">
+                            <thead>
+                                <tr>
+                                    <td colspan="3">
+                                        <h3>Science Academy Girls High School Bhera</h3>
+                                        <div class="student-info">
+                                            <h4>Student Name: {{ $user->name }}</h4>
+                                            <h5>Class: {{ $user->class->name }} ({{ $user->section->name }})</h5>
+                                            <h5>Roll No: {{ $user->registration }}</h5>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Amount (Rs/-)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $totalAmount = 0;
+                                @endphp
 
-                <!-- Result Card -->
-                <div class="receipt-main">
-                    <div class="receipt-header">
-                        <h3>Student Result Card</h3>
+@if ($fee &&  $taxefee)
+@foreach ($taxes as $tax)
+<tr>
+    <td>Bus Tax</td>
+    <td class="text-center">{{ number_format($tax->bus_taxes) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Admission Fee</td>
+    <td class="text-center">{{ number_format($tax->admission_fee) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Canteen Tax</td>
+    <td class="text-center">{{ number_format($tax->lunch) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Library Tax</td>
+    <td class="text-center">{{ number_format($tax->library_tax) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Other Activities</td>
+    <td class="text-center">{{ number_format($tax->other_activity) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Other Fee</td>
+    <td class="text-center">{{ number_format($fee->total) }}   </td>
+    <td>Paid</td>
+</tr>
+@endforeach
+@elseif ($fee)
+@foreach ($taxes as $tax)
+<tr>
+    <td>Bus Tax</td>
+    <td class="text-center">{{ number_format($tax->bus_taxes) }}</td>
+    <td>Un-Paid</td>
+</tr>
+<tr>
+    <td>Admission Fee</td>
+    <td class="text-center">{{ number_format($tax->admission_fee) }}</td>
+    <td>Un-Paid</td>
+</tr>
+<tr>
+    <td>Canteen Tax</td>
+    <td class="text-center">{{ number_format($tax->lunch) }}</td>
+    <td>Un-Paid</td>
+</tr>
+<tr>
+    <td>Library Tax</td>
+    <td class="text-center">{{ number_format($tax->library_tax) }}</td>
+    <td>Un-Paid</td>
+</tr>
+<tr>
+    <td>Other Activities</td>
+    <td class="text-center">{{ number_format($tax->other_activity) }}</td>
+    <td>Un-Paid</td>
+</tr>
+<tr>
+    <td>Other Fee</td>
+    <td class="text-center">{{ number_format($fee->total) }}   </td>
+    <td>Paid</td>
+</tr>
+@endforeach
+@elseif ($taxefee)
+@foreach ($taxes as $tax)
+<tr>
+    <td>Bus Tax</td>
+    <td class="text-center">{{ number_format($tax->bus_taxes) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Admission Fee</td>
+    <td class="text-center">{{ number_format($tax->admission_fee) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Canteen Tax</td>
+    <td class="text-center">{{ number_format($tax->lunch) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Library Tax</td>
+    <td class="text-center">{{ number_format($tax->library_tax) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Other Activities</td>
+    <td class="text-center">{{ number_format($tax->other_activity) }}</td>
+    <td>Paid</td>
+</tr>
+<tr>
+    <td>Other Fee</td>
+    <td class="text-center">{{ number_format($fee->total) }}   </td>
+    <td>Un-Paid</td>
+</tr>
+@endforeach
+
+                        @elseif (!$fee && !$taxefee)
+
+
+
+                                @foreach ($taxes as $tax)
+                                    <tr>
+                                        <td>Bus Tax</td>
+                                        <td class="text-center">{{ number_format($tax->bus_taxes) }}</td>
+                                        <td>Un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Admission Fee</td>
+                                        <td class="text-center">{{ number_format($tax->admission_fee) }}</td>
+                                        <td>Un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Canteen Tax</td>
+                                        <td class="text-center">{{ number_format($tax->lunch) }}</td>
+                                        <td>Un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Library Tax</td>
+                                        <td class="text-center">{{ number_format($tax->library_tax) }}</td>
+                                        <td>Un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Activities</td>
+                                        <td class="text-center">{{ number_format($tax->other_activity) }}</td>
+                                        <td>Un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tuition Fee</td>
+                                        <td class="text-center">{{ number_format($class->tution_fee) }}</td>
+                                        <td>un-Paid</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Exam Fee</td>
+                                        <td class="text-center">{{ number_format($exam->exam->exam_fee) }}</td>
+                                        <td>un-Paid</td>
+                                    </tr>
+
+
+                                    @php
+                                        $totalAmount += $tax->bus_taxes + $tax->admission_fee + $tax->lunch + $tax->library_tax + $tax->other_activity + $user->tution_fee + $exam->exam->exam_fee;
+                                    @endphp
+                                    @endforeach
+                            </tbody>
+                            @endif
+                        </table>
                     </div>
 
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Subject</th>
-                                <th>Obtained Marks</th>
-                                <th>Total Marks</th>
-                                <th>Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                            $totalMarks = 0;
-                            @endphp
-
-                            @foreach($result as $res)
-                            <tr>
-                                <td>{{ $res->subject->subject_name }}</td>
-                                <td>{{ $res->obt_marks }}</td>
-                                <td>{{ $res->total }}</td>
-                                <td>{{ $res->grade }}</td>
-                            </tr>
-
-                            @php
-                            $totalMarks += $res->obt_marks
-                            @endphp
-                            @endforeach
-
-                            <tr class="total-row">
-                                <td colspan="3" class="text-right"><strong>Total Marks:</strong></td>
-                                <td class="text-danger"><strong>{{ $totalMarks }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Total Amount Display -->
+                    <div class="result-summary">
+                        <p>Total Amount Due: <span class="total-due">{{ number_format($totalAmount) }} Rs/-</span></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @include('StudentDashboard.ViewFile.script')
 
+
+    @include('StudentDashboard.ViewFile.script')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

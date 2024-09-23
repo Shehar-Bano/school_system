@@ -33,6 +33,8 @@ use App\Http\Controllers\InventorySubCategoryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Student\StudentProfileController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\TaxeController;
+use App\Http\Controllers\TaxeFeeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -163,6 +165,11 @@ Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name
 
 
 });
+
+
+Route::get('/select/class',[TaxeFeeController::class,'index'])->name('taxe.index');
+Route::get('/class/student-list/{id}',[TaxeFeeController::class,'listStudent'])->name('taxe.show.student');
+Route::get('/class/fee/recived/{id}',[TaxeFeeController::class,'feeRecive'])->name('taxe.receive');
 ////////////exam
 Route::get('/exam',[ExamController::class,'index'])->name('exam');
 Route::post('/exam',[ExamController::class,'store'])->name('store');
@@ -262,7 +269,7 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/timetable', [StudentProfileController::class, 'timetable'])->name('timetable.student');
     Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
     Route::get('/result', [StudentProfileController::class, 'result'])->name('result.student');
-    Route::post('/result', [StudentProfileController::class, 'result'])->name('result.student');
+    Route::get('/fee-reciept', [StudentProfileController::class, 'fee'])->name('fee.student');
 
 
 });
@@ -276,7 +283,7 @@ Route::middleware('auth:employee')->prefix('employee/dashboard')->controller(Emp
     Route::get('/','index')->name('employee.dashboard');
 });
 Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)->group(function(){
-    
+
     Route::get('/profile','profile')->name('profile.employee');
     Route::get('/timetable','timetable')->name('timetable.employee');
     Route::get('/attendence','attendance')->name('attendance.employee');
@@ -330,5 +337,7 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
 
 });
 
+////////////////////////////////taxe
 
-
+Route::get('/taxes/create', [TaxeController::class, 'create'])->name('taxes.create');
+Route::post('/taxes/store', [TaxeController::class, 'store'])->name('taxes.store');

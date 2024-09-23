@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Student;
 
 use Carbon\Carbon;
 use App\Models\Exam;
+use App\Models\Taxe;
 use App\Models\Result;
 use App\Models\Student;
 use App\Models\TimeTable;
+use App\Models\StudentFee;
+use App\Models\ExamSchedule;
 use Illuminate\Http\Request;
 use App\Models\StudentAttendance;
+use App\Models\StudentTransaction;
 use App\Http\Controllers\Controller;
-use App\Models\ExamSchedule;
+use App\Models\classe;
+use App\Models\TaxeFee;
 
 class StudentProfileController extends Controller
 {
@@ -121,12 +126,20 @@ class StudentProfileController extends Controller
 
         return view('StudentDashboard.Profile.result', compact('result', 'user','exams'));
     }
-    public function fee(){
+    public function fee()
+    {
         $user = auth()->guard('student')->user();
         if (!$user) {
             return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
-        
+       $fee = StudentFee::where('student_id', $user->id)->first();
+       $taxefee = TaxeFee::where('student_id', $user->id)->first();
+
+         $taxes = Taxe::get();
+         $exam = ExamSchedule::where('class_id',$user->class_id)->where('section_id',$user->section_id)->first();
+         $class = Classe::where('id',$user->class_id)->first();
+        return view('StudentDashboard.Profile.fee', compact('user','fee','taxefee','taxes','exam','class'));
     }
+
 
 }
