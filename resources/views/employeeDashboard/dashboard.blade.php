@@ -74,7 +74,39 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+       
+            <div class="container ">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow-lg">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Class Assigned</h4>
+                            </div>
+                            <div class="card-body">
+                                @if($assignedClass)
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3 text-center">
+                                            <i class="mdi mdi-school mdi-48px text-primary"></i>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <h5 class="font-weight-bold">Assigned Class: {{ $assignedClass->classe->name }} ({{ $assignedClass->name }})
+                                            </h5>
+                                            <p class="text-muted mb-0">You are the class teacher for this class.</p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning text-center" role="alert">
+                                        <i class="mdi mdi-alert-circle-outline"></i> You are not assigned to any class yet.
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+    
+
+  </div>
 
 @endsection

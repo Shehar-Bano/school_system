@@ -16,6 +16,7 @@ use App\Models\StudentTransaction;
 use App\Http\Controllers\Controller;
 use App\Models\classe;
 use App\Models\TaxeFee;
+use Illuminate\Support\Facades\Auth;
 
 class StudentProfileController extends Controller
 {
@@ -140,6 +141,26 @@ class StudentProfileController extends Controller
          $class = Classe::where('id',$user->class_id)->first();
         return view('StudentDashboard.Profile.fee', compact('user','fee','taxefee','taxes','exam','class'));
     }
+    public function notification(){
+        $student = Auth::guard('student')->user();
 
+        // Fetch all notifications for the logged-in employee
+        $notifications = $student->notifications;
+    
+        // Count the unread notifications
+        $unreadNotifications = $student->unreadNotifications;
+    
+        // Pass the data to the view
+        return view('StudentDashboard.notifications.index', compact('notifications', 'unreadNotifications'));
+    
+    }
 
+ public function readNotification($id){
+    $notification = auth()->guard('student')->user()->notifications()->findOrFail($id);
+    $notification->markAsRead();
+
+    // Redirect to the notifications page or wherever you want
+    return redirect()->back()->with('success', 'Notification marked as read.');
+
+ }
 }

@@ -38,6 +38,17 @@
                       <textarea name="message" class="form-control" rows="5" placeholder="Enter your message" required></textarea>
                     </div>
 
+                    <!-- Recipient Options as Select Dropdown -->
+                    <div class="form-group">
+                      <label for="recipient">Send To</label>
+                      <select name="recipient" id="recipient" class="form-control" required>
+                        <option value="" disabled selected>Select recipient</option>
+                        <option value="employee">employee</option>
+                        <option value="student">Student</option>
+                        <option value="both">Both</option>
+                      </select>
+                    </div>
+
                     <!-- Submit Button -->
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary btn-lg mt-3">Send Notification</button>
@@ -78,6 +89,16 @@
     .btn-primary {
       padding: 10px 30px;
       font-size: 1.2rem;
+    }
+
+    /* Custom styles for select dropdown */
+    select.form-control {
+      height: 45px;
+      font-size: 1.1rem;
+    }
+
+    select.form-control option {
+      font-size: 1rem;
     }
   </style>
 

@@ -270,6 +270,11 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
     Route::get('/result', [StudentProfileController::class, 'result'])->name('result.student');
     Route::get('/fee-reciept', [StudentProfileController::class, 'fee'])->name('fee.student');
+   // student.notifications
+   Route::get('/notification', [StudentProfileController::class, 'notification'])->name('student.notifications');
+   //student.notifications.read
+   Route::get('/read/{id}', [StudentProfileController::class, 'readNotification'])->name('student.notifications.read');
+
 
 
 });

@@ -223,16 +223,6 @@
               </a>
           </li>
 
-          <!-- Notifications Item -->
-          <li class="nav-item">
-              <a class="nav-link" href="{{ route('employee.notifications') }}">
-                  <i class="fas fa-bell menu-icon"></i>
-                  <span class="menu-title">Notifications</span>
-                  @if($unreadNotificationCount > 0)
-                    <span class="badge badge-danger">{{ $unreadNotificationCount }}</span>
-                  @endif
-              </a>
-          </li>
       </ul>
   </nav>
 

@@ -20,19 +20,26 @@ class NotificationController extends Controller
         $title = $request->input('title');
         $message = $request->input('message');
         $sender = Auth::user()->name;
+        $recipient = $request->input('recipient');
     
-        // Notify students
-        $students = Student::all();
-        foreach ($students as $student) {
-            $student->notify(new AdminNotification($title, $message, $sender));
+        // Notify based on recipient selection
+        if ($recipient === 'student' || $recipient === 'both') {
+            // Notify students
+            $students = Student::all();
+            foreach ($students as $student) {
+                $student->notify(new AdminNotification($title, $message, $sender));
+            }
         }
     
-        // Notify employees
-        $employees = Employee::all();
-        foreach ($employees as $employee) {
-            $employee->notify(new AdminNotification($title, $message, $sender));
+        if ($recipient === 'employee' || $recipient === 'both') {
+            // Notify employees
+            $employees = Employee::all();
+            foreach ($employees as $employee) {
+                $employee->notify(new AdminNotification($title, $message, $sender));
+            }
         }
     
-        return back()->with('success', 'Notification sent to students and employees.');
+        return back()->with('success', 'Notification sent successfully.');
     }
+    
 }

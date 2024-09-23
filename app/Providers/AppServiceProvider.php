@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
         // Define a view composer for employee's masterpage
         View::composer('employeeDashboard.employeeView.masterpage', function ($view) {
             $employee = Auth::guard('employee')->user();
+    
 
             if ($employee) {
                 $unreadNotifications = $employee->unreadNotifications;
@@ -23,5 +24,16 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('unreadNotifications', $unreadNotifications);
             }
         });
+           // Define a view composer for student's masterpage
+    View::composer('StudentDashboard.ViewFile.nav', function ($view) {
+        $student = Auth::guard('student')->user();
+        $unreadNotifications = collect(); // Initialize an empty collection
+
+        // If a student is authenticated, get their unread notifications
+        if ($student) {
+            $unreadNotifications = $student->unreadNotifications;
+            $view->with('unreadNotifications', $unreadNotifications);
+        }
+    });
     }
 }
