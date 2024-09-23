@@ -8,6 +8,7 @@ use App\Models\Finance_recode;
 use App\Models\TimeTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeProfileController extends Controller
 {
@@ -141,6 +142,28 @@ class EmployeeProfileController extends Controller
     
         return view('employeeDashboard.incentives', compact('recodes', 'employees', 'incentives'));
     }
+  
+
+    public function notificationsView(){
+    // Get the logged-in employee
+    $employee = Auth::guard('employee')->user();
+
+    // Fetch all notifications for the logged-in employee
+    $notifications = $employee->notifications;
+
+    // Count the unread notifications
+    $unreadNotificationCount = $employee->unreadNotifications->count();
+
+    // Pass the data to the view
+    return view('employeeDashboard.notifications.index', compact('notifications', 'unreadNotificationCount'));
+    }
+
+    public function markAsRead($id){
+        $notification = auth()->guard('employee')->user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
     
+        // Redirect to the notifications page or wherever you want
+        return redirect()->back()->with('success', 'Notification marked as read.');
+    }
 
 }

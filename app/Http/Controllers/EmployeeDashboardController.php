@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 class EmployeeDashboardController extends Controller
 {
     public function index(){
+        $employee = auth()->guard('employee')->user();
+
+        // Fetch unread notifications for the logged-in employee
+        $unreadNotifications = $employee->unreadNotifications;
+      $unreadNotificationCount=$employee->unreadNotifications->count();
+     
         $teacherId = auth()->guard('employee')->user()->id;
         $currentYear = now()->year;
         $teacherAttendance = EmployeeAttendance::where('employee_id', $teacherId)
@@ -21,7 +27,7 @@ class EmployeeDashboardController extends Controller
             ? ($totalPresent / $totalDays) * 100
             : 0;
         return view('employeeDashboard.dashboard', compact(
-            'teacherAttendance', 'totalPresent', 'totalAbsent', 'totalLeave', 'attendancePercentage'
+            'teacherAttendance', 'totalPresent', 'totalAbsent', 'totalLeave','unreadNotificationCount','unreadNotifications', 'attendancePercentage'
         ));
     }
 }

@@ -198,10 +198,9 @@ public function sheduleEdit($id)
         return redirect()->back()->with('message', 'Exam Schedule deleted successfully!');
     }
     public function dateSheetEdit($id){
-        $exam = DateSheet::where('id', $id)->first();
-        $subjects = Subject::all(); 
-
-        return view('employeeDashboard.dateSheet.edit',compact('exam','subjects'));
+        $exams = ExamSchedule::find($id);
+        $datesheets = DateSheet::with('subject')->get();
+        return view('employeeDashboard.dateSheet.edit',compact('exams','datesheets'));
 
     }
     public function dateSheetUpdate(Request $request, $id){            
@@ -211,6 +210,100 @@ public function sheduleEdit($id)
             $exam->end_time = $request->end_time;
             $exam->save();
         return redirect()->back()->with('success', 'Exam schedule updated successfully!');
+    }
+    /////////////////////Results
+    public function resultList(Request $request){
+        $classes = Classe::get();
+        $sections = Section::get();
+
+        $query = Student::with('class', 'section', 'exam');
+        if ($request->has('class') && !empty($request->input('class'))) {
+            $query->where('class_id', $request->input('class'));
+        }
+        if ($request->has('section') && !empty($request->input('section'))) {
+            $query->where('section_id', $request->input('section'));
+        }
+
+        $students = $query->get();
+
+
+        $exams = ExamSchedule::get();
+        return view('employeeDashboard.result.index', compact('students', 'exams', 'classes', 'sections'));
+    
+    }
+
+    public function resultAdd()   {
+        $exams = Exam::get();
+        $subjects = Subject::get();
+        $classe = Classe::get();
+        $sections =Section::get();
+        return view('employeeDashboard.result.add',compact('exams','subjects','classe','sections'));
+    }
+    public function resultStore(Request $request){
+        $examId = $request->exam;
+        $subjectId = $request->subject;
+        $classId = $request->class;
+        $sectionId = $request->section;
+        $results = [];
+        foreach ($request->students as $studentData) {
+
+            $obtMarks = $studentData['obt_marks'];
+            $totalMarks = $studentData['total'];
+            $grade = $this->determineGrade($obtMarks/$totalMarks * 100);
+            $results[] = [
+                'exam_id' => $examId,
+                'subject_id' => $subjectId,
+                'class_id' => $classId,
+                'section_id' => $sectionId,
+                'student_id' => $studentData['student_id'],
+                'obt_marks' => $obtMarks,
+                'total' =>  $totalMarks,
+                'grade' => $grade,
+            ];
+        }
+        Result::insert($results);
+        return redirect()->back()->with('message', 'Marks successfully added for all students');
+    }
+    private function determineGrade($totalMarks) {
+        if ($totalMarks >= 90) {
+            return 'A';
+        } elseif ($totalMarks >= 80) {
+            return 'B';
+        } elseif ($totalMarks >= 60) {
+            return 'C';
+        } elseif ($totalMarks >= 40) {
+            return 'D';
+        } else {
+            return 'F';
+        }
+    }
+    public function addstudent(Request $request){
+
+        $exam_id = $request->exam;
+        $subject_id = $request->subject;
+        $class_id =$request->class;
+        $section_id = $request->section;
+        $exam = Exam::find($exam_id);
+        $subject = Subject::find($subject_id);
+        $class =  Classe::find($class_id);
+        $section = Section::find($section_id);
+        $students = Student::where('class_id',$class->id)->where('section_id',$section->id)->get();
+        return view('employeeDashboard.result.addStudent',compact('exam','subject','class','section','students'));
+
+
+    }
+    public function viewResult(Request $request,$id){
+        $student=Student::find($id);
+        $exams=Exam::get();
+        $query = Result::where('student_id',$id)->with('exam','student','class','section');
+        if ($request->has('exam') && !empty($request->input('exam'))) {
+            $query->where('exam_id', $request->input('exam'));
+        }
+        $results = $query->get();
+
+
+        return view('employeeDashboard.result.viewResult',compact('results','exams','student'));
+
     }
 
 }

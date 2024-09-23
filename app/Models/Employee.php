@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Employee extends Model implements AuthenticatableContract
 {
-    use HasFactory, Authenticatable; // Use Authenticatable trait to satisfy the contract
+    use HasFactory, Authenticatable ,Notifiable; // Use Authenticatable trait to satisfy the contract
 
     // Relationships
     public function designation()
