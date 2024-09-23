@@ -32,6 +32,8 @@ use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\InventorySubCategoryController;
 use App\Http\Controllers\Student\StudentProfileController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\TaxeController;
+use App\Http\Controllers\TaxeFeeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -161,6 +163,11 @@ Route::get('/delete/{id}',[StudentTransactionController::class, 'delete'])->name
 
 
 });
+
+
+Route::get('/select/class',[TaxeFeeController::class,'index'])->name('taxe.index');
+Route::get('/class/student-list/{id}',[TaxeFeeController::class,'listStudent'])->name('taxe.show.student');
+Route::get('/class/fee/recived/{id}',[TaxeFeeController::class,'feeRecive'])->name('taxe.receive');
 ////////////exam
 Route::get('/exam',[ExamController::class,'index'])->name('exam');
 Route::post('/exam',[ExamController::class,'store'])->name('store');
@@ -309,3 +316,8 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
     });
 
 });
+
+////////////////////////////////taxe
+
+Route::get('/taxes/create', [TaxeController::class, 'create'])->name('taxes.create');
+Route::post('/taxes/store', [TaxeController::class, 'store'])->name('taxes.store');

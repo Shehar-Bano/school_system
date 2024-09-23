@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Student;
 
 use Carbon\Carbon;
 use App\Models\Exam;
+use App\Models\Taxe;
 use App\Models\Result;
 use App\Models\Student;
 use App\Models\TimeTable;
+use App\Models\StudentFee;
+use App\Models\ExamSchedule;
 use Illuminate\Http\Request;
 use App\Models\StudentAttendance;
-use App\Http\Controllers\Controller;
-use App\Models\ExamSchedule;
-use App\Models\StudentFee;
 use App\Models\StudentTransaction;
+use App\Http\Controllers\Controller;
+use App\Models\classe;
+use App\Models\TaxeFee;
 
 class StudentProfileController extends Controller
 {
@@ -129,59 +132,13 @@ class StudentProfileController extends Controller
         if (!$user) {
             return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
+       $fee = StudentFee::where('student_id', $user->id)->first();
+       $taxefee = TaxeFee::where('student_id', $user->id)->first();
 
-        // Fetch student fee, fines, and other related transactions
-        $fee = StudentFee::where('student_id', $user->id)->first();
-        $fines = StudentTransaction::where('student_id', $user->id)
-            ->where('transaction_type', 'fine')
-            ->get();
-
-        $funds = StudentTransaction::where('student_id', $user->id)
-            ->where('transaction_type', 'fund')
-            ->get();
-
-        // Static fee types
-        $feeTypes = [
-            'Admission' => 100,
-            'Other Activity' => 300,
-            'School Bus' => 50,
-            'Lunch' => 50,
-            'Diary' => 50,
-        ];
-
-        // Fees array to store all student fees (static + fines)
-        $studentFees = [];
-
-        foreach ($feeTypes as $feeType => $amount) {
-            $studentFees[] = [
-                'fee_type' => $feeType,
-                'amount' => $amount,
-                'paid' => 0, // Assuming no payment for now
-            ];
-        }
-
-        // Add tuition fee (assumed to be dynamic)
-        $studentFees[] = [
-            'fee_type' => 'Tuition Fee',
-            'amount' => $user->tution_fee ?? 0, // default to 0 if not set
-            'paid' => 0,
-        ];
-
-        // Add fines
-        foreach ($fines as $fine) {
-            $studentFees[] = [
-                'fee_type' => 'Fine',
-                'amount' => $fine->amount,
-                'paid' => $fine->paid_amount,
-            ];
-        }
-
-        // Calculate totals
-        $totalAmount = array_sum(array_column($studentFees, 'amount'));
-        $scholarship = $funds->sum('amount');
-        $totalDue = $totalAmount - $scholarship;
-
-        return view('StudentDashboard.Profile.fee', compact('studentFees', 'user', 'totalAmount', 'scholarship', 'totalDue'));
+         $taxes = Taxe::get();
+         $exam = ExamSchedule::where('class_id',$user->class_id)->where('section_id',$user->section_id)->first();
+         $class = Classe::where('id',$user->class_id)->first();
+        return view('StudentDashboard.Profile.fee', compact('user','fee','taxefee','taxes','exam','class'));
     }
 
 

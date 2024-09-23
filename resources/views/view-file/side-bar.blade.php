@@ -121,7 +121,8 @@
           <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.types') }}">Transaction Categories </a></li>
           <li class="nav-item"> <a class="nav-link" href="{{ route('transaction.view') }}">Manage Transactions </a></li>
           <li class="nav-item"> <a class="nav-link" href="{{ route('fee.index') }}">Manage Fee </a></li>
-
+          <li class="nav-item"> <a class="nav-link" href="{{ route('taxes.create') }}">Taxe's </a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('taxe.index') }}">Manage Taxe's </a></li>
         </ul>
       </div>
     </li>

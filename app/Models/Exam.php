@@ -11,4 +11,8 @@ class Exam extends Model
     public function result(){
         return $this->hasMany(Result::class);
     }
+    public function examschedule(){
+        return $this->hasMany(ExamSchedule::class);
+    }
+
 }
