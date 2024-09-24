@@ -60,170 +60,173 @@
       .dropdown-toggle::after {
         display: none;
     }
-
+    
 
 </style>
   </head>
 
 <body>
   <div class="container-scroller">
-    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-          <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="{{asset('assesst/images/logo.svg')}}" class="mr-2" alt="logo"/></a>
-          <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('assesst/images/logo-mini.svg')}}" alt="logo"/></a>
-        </div>
-        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="icon-menu"></span>
-          </button>
-          <ul class="navbar-nav mr-lg-2">
-            <li class="nav-item nav-search d-none d-lg-block">
+    {{-- navebar --}}
+<!-- Navbar with notifications -->
+<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+  <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+      <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="{{asset('assesst/images/logo.svg')}}" class="mr-2" alt="logo"/></a>
+      <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('assesst/images/logo-mini.svg')}}" alt="logo"/></a>
+  </div>
+  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+          <span class="icon-menu"></span>
+      </button>
+      <ul class="navbar-nav mr-lg-2">
+          <li class="nav-item nav-search d-none d-lg-block">
               <div class="input-group">
-                <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                  <span class="input-group-text" id="search">
-                    <i class="icon-search"></i>
-                  </span>
-                </div>
-                <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+                  <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                      <span class="input-group-text" id="search">
+                          <i class="icon-search"></i>
+                      </span>
+                  </div>
+                  <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
               </div>
-            </li>
-          </ul>
-          <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item dropdown">
-              <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                <i class="icon-bell mx-0"></i>
-                <span class="count"></span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                <a class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-success">
+          </li>
+      </ul>
+      <ul class="navbar-nav navbar-nav-right">
+<!-- Notifications -->
+<li class="nav-item dropdown">
+  <a class="nav-link count-indicator" id="notificationDropdown" href="{{ route('employee.notifications') }}">
+      <i class="icon-bell mx-0"></i>
+      <!-- Display the count of unread notifications in a red circular badge -->
+      @if($unreadNotifications->count() > 0)
+          <span class="badge badge-danger badge-pill position-absolute" style="top: 0; right: 0;">
+              {{ $unreadNotifications->count() }}
+          </span>
+      @endif
+  </a>
+  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+      <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+
+      <!-- Loop through the unread notifications -->
+      @forelse($unreadNotifications as $notification)
+          <a class="dropdown-item preview-item" href="{{ route('notifications.read', $notification->id) }}">
+              <div class="preview-thumbnail">
+                  <div class="preview-icon bg-success">
                       <i class="ti-info-alt mx-0"></i>
-                    </div>
                   </div>
-                  <div class="preview-item-content">
-                    <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                    <p class="font-weight-light small-text mb-0 text-muted">
-                      Just now
-                    </p>
-                  </div>
-                </a>
-                <a class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-warning">
-                      <i class="ti-settings mx-0"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <h6 class="preview-subject font-weight-normal">Settings</h6>
-                    <p class="font-weight-light small-text mb-0 text-muted">
-                      Private message
-                    </p>
-                  </div>
-                </a>
-                <a class="dropdown-item preview-item">
-                  <div class="preview-thumbnail">
-                    <div class="preview-icon bg-info">
-                      <i class="ti-user mx-0"></i>
-                    </div>
-                  </div>
-                  <div class="preview-item-content">
-                    <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                    <p class="font-weight-light small-text mb-0 text-muted">
-                      2 days ago
-                    </p>
-                  </div>
-                </a>
               </div>
-            </li>
-            <li class="nav-item nav-profile dropdown">
+              <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-normal">{{ $notification->data['title'] }}</h6>
+                  <p class="font-weight-light small-text mb-0 text-muted">
+                      {{ $notification->data['message'] }}
+                  </p>
+                  <small>Received: {{ $notification->created_at->diffForHumans() }}</small>
+              </div>
+          </a>
+      @empty
+          <a class="dropdown-item preview-item">
+              <div class="preview-item-content">
+                  <p class="font-weight-normal mb-0">No new notifications</p>
+              </div>
+          </a>
+      @endforelse
+  </div>
+</li>
+
+
+          <!-- Profile and Logout -->
+          <li class="nav-item nav-profile dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                <img src="{{asset('assesst/images/faces/face28.jpg')}}" alt="profile"/>
+                  <img src="{{asset('assesst/images/faces/face28.jpg')}}" alt="profile"/>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a class="dropdown-item">
-                  <form method="POST" action="{{ route('employee.logout') }}">
-                      @csrf
-                      <x-dropdown-link :href="route('employee.logout')"
+                  <a class="dropdown-item">
+                      <form method="POST" action="{{ route('employee.logout') }}">
+                          @csrf
+                          <x-dropdown-link :href="route('employee.logout')"
                               onclick="event.preventDefault();
                                           this.closest('form').submit();" style="color: black">
-                           <i class="ti-power-off text-primary"></i> {{ __('Log Out') }}
-                      </x-dropdown-link>
-                  </form>
-                </a>
+                              <i class="ti-power-off text-primary"></i> {{ __('Log Out') }}
+                          </x-dropdown-link>
+                      </form>
+                  </a>
               </div>
-            </li>
-            <li class="nav-item nav-settings d-none d-lg-flex">
+          </li>
+          <li class="nav-item nav-settings d-none d-lg-flex">
               <a class="nav-link" href="#">
-                <i class="icon-ellipsis"></i>
+                  <i class="icon-ellipsis"></i>
               </a>
-            </li>
-              
+          </li>
+      </ul>
+  </div>
+</nav>
 
-          </ul>
-        
-      </nav>
 
-      <!--sidebar-->
-      <div class="container-fluid page-body-wrapper">
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-              <!-- Dashboard Item -->
-              <li class="nav-item">
-                  <a class="nav-link" href="{{ route('employee.dashboard') }}">
-                      <i class="icon-grid menu-icon"></i>
-                      <span class="menu-title">Dashboard</span>
-                  </a>
-              </li>
-              
-              <!-- Profile Item -->
-              <li class="nav-item">
-                  <a class="nav-link" href="{{ route('profile.employee') }}">
-                      <i class="fas fa-user menu-icon"></i>
-                      <span class="menu-title">Profile</span>
-                  </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+  
+
+   <!--sidebar-->
+<div class="container-fluid page-body-wrapper">
+  <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <ul class="nav">
+          <!-- Dashboard Item -->
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('employee.dashboard') }}">
+                  <i class="icon-grid menu-icon"></i>
+                  <span class="menu-title">Dashboard</span>
+              </a>
+          </li>
+
+          <!-- Profile Item -->
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('profile.employee') }}">
+                  <i class="fas fa-user menu-icon"></i>
+                  <span class="menu-title">Profile</span>
+              </a>
+          </li>
+
+          <!-- Exam Item with Collapse -->
+          <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                   <i class="icon-layout menu-icon"></i>
                   <span class="menu-title">Exam</span>
                   <i class="menu-arrow"></i>
-                </a>
-                <div class="collapse" id="ui-basic">
+              </a>
+              <div class="collapse" id="ui-basic">
                   <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{route('employee.exams')}}">Exam</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{route('employee.exam.schedules')}}">Exam Schedule</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{route('result')}}">Result</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{route('result-list')}}">Result List</a></li>
+                      <li class="nav-item"><a class="nav-link" href="{{route('employee.exams')}}">Exam</a></li>
+                      <li class="nav-item"><a class="nav-link" href="{{route('employee.exam.schedules')}}">Exam Schedule</a></li>
+                      <li class="nav-item"><a class="nav-link" href="{{route('employee.exam.result.add')}}">Result</a></li>
+                      <li class="nav-item"><a class="nav-link" href="{{route('employee.exam.result')}}">Result List</a></li>
                   </ul>
-                </div>
-              </li>
-              <!-- Attendance Item -->
-              <li class="nav-item">
-                  <a class="nav-link" href="{{ route('attendance.employee') }}">
-                      <i class="fas fa-calendar-check menu-icon"></i>
-                      <span class="menu-title">Attendance</span>
-                  </a>
-              </li>
-      
-              <!-- Time Table Item -->
-              <li class="nav-item">
-                  <a class="nav-link" href="{{ route('timetable.employee') }}">
-                      <i class="fas fa-calendar-week menu-icon"></i>
-                      <span class="menu-title">Time Table</span>
-                  </a>
-              </li>
-      
-              <!-- Incentives Item -->
-              <li class="nav-item">
-                  <a class="nav-link" href="{{ route('incentives.employee') }}">
-                      <i class="fas fa-award menu-icon"></i>
-                      <span class="menu-title">Incentives</span>
-                  </a>
-              </li>
-          </ul>
-      </nav>
+              </div>
+          </li>
+
+          <!-- Attendance Item -->
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('attendance.employee') }}">
+                  <i class="fas fa-calendar-check menu-icon"></i>
+                  <span class="menu-title">Attendance</span>
+              </a>
+          </li>
+
+          <!-- Time Table Item -->
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('timetable.employee') }}">
+                  <i class="fas fa-calendar-week menu-icon"></i>
+                  <span class="menu-title">Time Table</span>
+              </a>
+          </li>
+
+          <!-- Incentives Item -->
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('incentives.employee') }}">
+                  <i class="fas fa-award menu-icon"></i>
+                  <span class="menu-title">Incentives</span>
+              </a>
+          </li>
+
+      </ul>
+  </nav>
+
+
       
         
     @yield('content')

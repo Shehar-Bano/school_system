@@ -16,6 +16,7 @@ use App\Models\StudentTransaction;
 use App\Http\Controllers\Controller;
 use App\Models\classe;
 use App\Models\TaxeFee;
+use Illuminate\Support\Facades\Auth;
 
 class StudentProfileController extends Controller
 {
@@ -139,23 +140,6 @@ class StudentProfileController extends Controller
          $exam = ExamSchedule::where('class_id',$user->class_id)->where('section_id',$user->section_id)->first();
          $class = Classe::where('id',$user->class_id)->first();
         return view('StudentDashboard.Profile.fee', compact('user','fee','taxefee','taxes','exam','class'));
-    }
-    public function showHistory()
-    {
-        $user = auth()->guard('student')->user();
-        if (!$user) {
-            return redirect()->route('student.login')->with('error', 'You need to log in first.');
-        }
-
-        // Fetch student's history
-        $attendance = StudentAttendance::where('student_id', $user->id)->get();
-        $grades =Result::where('student_id', $user->id)->get();
-        $payments = StudentFee::where('student_id', $user->id)->get();
-
-
-
-        // Return the admin view with all the data
-        return view('history.sub-student', compact( 'attendance', 'grades', 'payments','user'));
     }
 
 

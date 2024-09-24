@@ -33,13 +33,17 @@ use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\InventorySubCategoryController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\NotificationController;
+
 use App\Http\Controllers\Student\StudentProfileController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('admin/notification',[NotificationController::class,'index'])->name('admin.notification');
+Route::post('admin/send-notification',[NotificationController::class,'sendNotification'])->name('admin.sendNotification');
 Route::get('/dashboard',[DashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -269,6 +273,11 @@ Route::group(['prefix'=>'studentDashboard'],function(){
     Route::get('/attendence', [StudentProfileController::class, 'attendence'])->name('attendence.student');
     Route::get('/result', [StudentProfileController::class, 'result'])->name('result.student');
     Route::get('/fee-reciept', [StudentProfileController::class, 'fee'])->name('fee.student');
+   // student.notifications
+   Route::get('/notification', [StudentProfileController::class, 'notification'])->name('student.notifications');
+   //student.notifications.read
+   Route::get('/read/{id}', [StudentProfileController::class, 'readNotification'])->name('student.notifications.read');
+
 
 
 });
@@ -287,6 +296,11 @@ Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)
     Route::get('/timetable','timetable')->name('timetable.employee');
     Route::get('/attendence','attendance')->name('attendance.employee');
     Route::get('/incentives','incentives')->name('incentives.employee');
+    // Route for viewing notifications
+Route::get('/notifications', 'notificationsView')->name('employee.notifications');
+Route::get('/notifications/read/{id}', 'markAsRead')->name('notifications.read');
+
+
 
 });
 Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->group(function(){
@@ -304,15 +318,28 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
         Route::get('/edit/{id}','sheduleEdit')->name('employee.exam.schedules.edit');
         Route::post('/edit/{id}','sheduleUpdate')->name('employee.exam.schedules.update');
         Route::delete('/delete/{id}','sheduleDelete')->name('employee.exam.schedules.delete');
+        ////printlist
+        Route::get('/list/{id}','resultPrint')->name('employee.exam.schedules.print');
         ////datesheet
         Route::prefix('date-sheet')->group(function(){
-            Route::get('/list/{id}','dateSheetList')->name('employee.exam.date-sheet');
+            Route::get('/list','dateSheetList')->name('employee.exam.date-sheet');
             Route::get('/add/{id}','dateSheetAdd')->name('employee.exam.date-sheet.add');
             Route::post('/add/{id}','dateSheetStore')->name('employee.exam.date-sheet.store');
             Route::get('/edit/{id}','dateSheetEdit')->name('employee.exam.date-sheet.edit');
             Route::post('/edit/{id}','dateSheetUpdate')->name('employee.exam.date-sheet.update');
             Route::delete('/delete/{id}','dateSheetDelete')->name('employee.exam.date-sheet.delete');
             });
+            //results
+            Route::prefix('result')->group(function(){
+                Route::get('/list','resultList')->name('employee.exam.result');
+                Route::get('/add','resultAdd')->name('employee.exam.result.add');
+                Route::get('/add-student','addstudent')->name('employee.exam.result.addstudent');
+                Route::post('/add','resultStore')->name('employee.exam.result.store');
+                Route::get('/viewResult/{id}','viewResult')->name('employee.exam.result.viewResult');
+                Route::post('/edit/{id}','resultUpdate')->name('employee.exam.result.update');
+                Route::delete('/delete/{id}','resultDelete')->name('employee.exam.result.delete');
+                });
+
 
     });
 
