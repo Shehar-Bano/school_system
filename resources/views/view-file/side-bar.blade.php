@@ -142,6 +142,9 @@
       </div>
     </li>
     <li class="nav-item">
+      <a class="nav-link" href="{{route('admin.student')}}">
+        <i class="icon-paper menu-icon"></i>
+        <span class="menu-title">History</span>
       <a class="nav-link" href="{{ route('admin.notification') }}">
         <i class="icon-paper menu-icon"></i>
         <span class="menu-title">notifications</span>

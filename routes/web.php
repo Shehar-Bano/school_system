@@ -1,40 +1,43 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\TaxeController;
 use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ExpenceController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TaxeFeeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\BalanceSheetController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeAuthController;
-use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\EmployeeExamController;
-use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\FinanceRecodeController;
 use App\Http\Controllers\EmployeeSalaryController;
+use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\TransactionTypeController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\StudentTransactionController;
 use App\Http\Controllers\InventorySubCategoryController;
 use App\Http\Controllers\NotificationController;
+
 use App\Http\Controllers\Student\StudentProfileController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-use App\Http\Controllers\TaxeController;
-use App\Http\Controllers\TaxeFeeController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -302,7 +305,7 @@ Route::get('/notifications/read/{id}', 'markAsRead')->name('notifications.read')
 });
 Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->group(function(){
     Route::get('/exam','index')->name('employee.exam.list');
-    Route::post('/eaxm','store')->name('employee.exam.add');
+    Route::post('/exam','store')->name('employee.exam.add');
     Route::get('/list-exam','list')->name('employee.exams');
     Route::get('/exam/{id}/edit','edit')->name('employee.exam.edit');
     Route::post('/exam/{id}/update','update')->name('employee.exam.update');
@@ -341,8 +344,13 @@ Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->g
     });
 
 });
-
-////////////////////////////////taxe
-
 Route::get('/taxes/create', [TaxeController::class, 'create'])->name('taxes.create');
 Route::post('/taxes/store', [TaxeController::class, 'store'])->name('taxes.store');
+///////////////////////////////history
+Route::prefix('history')->controller(HistoryController::class)->group(function(){
+    Route::get('/admin', [HistoryController::class, 'index'])->name('admin.student');
+
+    Route::get('/admin/student-history/{student_id}', [HistoryController::class, 'showHistory'])->name('admin.student.history');
+
+    Route::get('/student/history', [StudentProfileController::class, 'showHistory'])->name('student.history');
+});
