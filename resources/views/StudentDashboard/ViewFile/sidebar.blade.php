@@ -40,6 +40,12 @@
           <span class="menu-title">Fee Voucher</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{route('student.history')}}">
+          <i class="icon-paper menu-icon"></i>
+          <span class="menu-title">History</span>
+        </a>
+      </li>
 
 
 

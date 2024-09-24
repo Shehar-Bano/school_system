@@ -140,6 +140,23 @@ class StudentProfileController extends Controller
          $class = Classe::where('id',$user->class_id)->first();
         return view('StudentDashboard.Profile.fee', compact('user','fee','taxefee','taxes','exam','class'));
     }
+    public function showHistory()
+    {
+        $user = auth()->guard('student')->user();
+        if (!$user) {
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
+        }
+
+        // Fetch student's history
+        $attendance = StudentAttendance::where('student_id', $user->id)->get();
+        $grades =Result::where('student_id', $user->id)->get();
+        $payments = StudentFee::where('student_id', $user->id)->get();
+
+
+
+        // Return the admin view with all the data
+        return view('history.sub-student', compact( 'attendance', 'grades', 'payments','user'));
+    }
 
 
 }

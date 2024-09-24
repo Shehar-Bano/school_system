@@ -142,9 +142,9 @@
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="pages/documentation/documentation.html">
+      <a class="nav-link" href="{{route('admin.student')}}">
         <i class="icon-paper menu-icon"></i>
-        <span class="menu-title">Documentation</span>
+        <span class="menu-title">History</span>
       </a>
     </li>
      <!-- Add Balance Sheet li -->
