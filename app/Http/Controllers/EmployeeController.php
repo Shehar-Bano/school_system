@@ -26,7 +26,7 @@ class EmployeeController extends Controller
                 'name'=>$request->name,
                
                 
-                ]); 
+                ]);
                 return redirect()->back()->with('message','Designation Added Successfully');
     }
     public function designationDelete($id){
