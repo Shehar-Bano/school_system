@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class storeEmployeeRequest extends FormRequest
+class StoreEmployeeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,7 +33,7 @@ class storeEmployeeRequest extends FormRequest
             'image' => 'required|image|max:2048',
             'joining_date' => 'required|date|before_or_equal:today',
             'salary' => 'required|numeric',
-            'status' => 'nullable|string|in:active,inactive,suspended',
+
         ];
     }
 }

@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionType extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
-        'description'
+        'description',
     ];
+
     public function studentTransactions()
     {
         return $this->hasMany(StudentTransaction::class);

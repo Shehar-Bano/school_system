@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\controllersV2;
+namespace App\Http\Controllers\V1;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
 use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\Catch_;
-use Symfony\Component\Console\Input\Input;
 
 class EmployeeController extends Controller
 {
@@ -21,17 +19,35 @@ class EmployeeController extends Controller
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
             $name = $request->input('name');
-            $joining_date=$request->input('joining_date');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
             $limit = $this->getValue($request->input('limit'));
+            $columns = [
+                'id',
+                'name',
+                'email',
+                'phone',
+                'address',
+                'designation_id',
+                'status',
+                'salary',
+                'joining_date',
+                'password',
+                'image',
+                'religion',
+            ];
 
-            $employees = Employee::JoiningDate($joining_date)
-                ->searchName(term: $name)->DateBetween($startDate, $endDate)->StatusActive()->paginate($limit)->with('designation');
-            
-                if ($employees) {
+            $employees = Employee::with('designation')->select($columns)
+                ->searchName(term: $name)
+                ->joiningDate($startDate, $endDate)
+                ->statusActive()->paginate($limit);
+
+            if ($employees) {
                 return ResponseHelper::success($employees, 200);
             } else {
                 return ResponseHelper::error('No data found', 404);
             }
+
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while fetching designations.', 500, $e->getMessage());
         }
@@ -43,19 +59,17 @@ class EmployeeController extends Controller
     public function store(EmployeeRequest $request)
     {
         try {
-            // The request is already validated at this point
+
             $validated = $request->validated();
-    
-            // Handle image upload and store the image path
+
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('images', 'public');
                 $validated['image'] = $imagePath; // Add image path to validated data
             }
-    
-           
+
             // Create the employee
             Employee::create($validated);
-    
+
             return ResponseHelper::success('Employee created successfully', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while creating employee.', 500, $e->getMessage());
@@ -68,10 +82,28 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         try {
+            $columns = [
+                'id',
+                'name',
+                'email',
+                'phone',
+                'address',
+                'designation_id',
+                'status',
+                'salary',
+                'joining_date',
+                'password',
+                'image',
+                'religion',
+            ];
+
             $employee = Employee::find($id);
-            if (!$employee) {
+           
+            if (! $employee) {
+
                 return ResponseHelper::error('Employee not found', 404);
             }
+
             return ResponseHelper::success($employee, 200);
 
         } catch (\Exception $e) {
@@ -85,23 +117,24 @@ class EmployeeController extends Controller
      */
     public function update(EmployeeRequest $request, string $id)
     {
+
         try {
+
             $validated = $request->validated();
 
             if ($request->image) {
                 $imagePath = $request->file('image')->store('images', 'public');
                 $validated['image'] = $imagePath;
             }
-          
 
-            Employee::findOrFail($id)->update($validated);
+            $employee = Employee::findOrFail($id);
+            $employee->update($validated);
+
             return ResponseHelper::success('Employee updated successfully', 200);
+
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while updating employee.', 500, $e->getMessage());
         }
-
-
-
     }
 
     /**
@@ -111,10 +144,11 @@ class EmployeeController extends Controller
     {
         try {
             $employee = Employee::findOrFail($id);
-            if (!$employee) {
+            if (! $employee) {
                 return ResponseHelper::error('Employee not found', 404);
             }
             $employee->delete();
+
             return ResponseHelper::success('Employee deleted successfully', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while deleting employee.', 500, $e->getMessage());

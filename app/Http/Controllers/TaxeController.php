@@ -23,7 +23,7 @@ class TaxeController extends Controller
             'library_tax' => 'required|string',
         ]);
 
-        $tax = new Taxe();
+        $tax = new Taxe;
         $tax->bus_taxes = $request->bus_taxes;
         $tax->admission_fee = $request->admission_fee;
         $tax->other_activity = $request->other_activity;

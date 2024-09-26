@@ -1,18 +1,18 @@
 <?php
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Messages\DatabaseMessage;
 
 class AdminNotification extends Notification
 {
     use Queueable;
 
     protected $title;
+
     protected $message;
+
     protected $sender;
 
     public function __construct($title, $message, $sender)
@@ -24,7 +24,7 @@ class AdminNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];  
+        return ['database'];
     }
 
     public function toDatabase($notifiable)
@@ -33,7 +33,7 @@ class AdminNotification extends Notification
             'title' => $this->title,
             'message' => $this->message,
             'sender' => $this->sender,
-            'url' => route('admin.notification'), 
+            'url' => route('admin.notification'),
         ];
     }
 }

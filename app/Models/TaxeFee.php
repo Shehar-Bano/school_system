@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TaxeFee extends Model
 {
     use HasFactory;
-    protected $fillable = ['student_id','date','total'];
+
+    protected $fillable = ['student_id', 'date', 'total'];
 }

@@ -12,7 +12,6 @@ use App\Models\StudentAttendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-
 class AttendanceController extends Controller
 {
     //////////Employees/////////////
@@ -22,19 +21,17 @@ class AttendanceController extends Controller
         $designations = Designation::get();
 
         if ($request->has('designation')) {
-            $query->where('designation_id', 'like', '%' . $request->input('designation') . '%');
+            $query->where('designation_id', 'like', '%'.$request->input('designation').'%');
         }
 
         if ($request->has('id')) {
-            $query->where('id', 'like', '%' . $request->input('id') . '%');
+            $query->where('id', 'like', '%'.$request->input('id').'%');
         }
 
         $employees = $query->paginate(3);
 
-
         return view('attendance.viewEmployee', compact('employees', 'designations'));
     }
-
 
     ///////////////////////////////////////////////////////////////////////////
     public function showEmployeeAttendance(Request $request, $id)
@@ -67,19 +64,19 @@ class AttendanceController extends Controller
 
             // Store the attendance status in the array
             if ($record->status == 'present') {
-                ++$present;
+                $present++;
                 $attendanceData[$dayOfWeek][$day] = 'P';
             } elseif ($record->status == 'absent') {
-                ++$absent;
+                $absent++;
                 $attendanceData[$dayOfWeek][$day] = 'A';
             } elseif ($record->status == 'leave') {
-                ++$leave;
+                $leave++;
                 $attendanceData[$dayOfWeek][$day] = 'LV';
             } elseif ($record->status == 'late') {
-                ++$late;
+                $late++;
                 $attendanceData[$dayOfWeek][$day] = 'L';
             } elseif ($record->status == 'excused_late') {
-                ++$excusedLate;
+                $excusedLate++;
                 $attendanceData[$dayOfWeek][$day] = 'EL';
             }
         }
@@ -120,15 +117,14 @@ class AttendanceController extends Controller
         ));
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////////
     public function addAttendanceView()
     {
         $employees = Employee::get();
-        
+
         return view('attendance.addEmployee', compact('employees'));
     }
+
     ////////////////////////////////////////////////////////////////////////
     public function employeeAttendanceStore(Request $request)
     {
@@ -150,8 +146,8 @@ class AttendanceController extends Controller
         }
 
         EmployeeAttendance::insert($records);
-        return redirect()->back()->with('message', 'Attendance added successfully!');
 
+        return redirect()->back()->with('message', 'Attendance added successfully!');
 
     }
 
@@ -171,6 +167,7 @@ class AttendanceController extends Controller
 
         return view('attendance.attendanceClass', compact('classes', 'sections', 'students'));
     }
+
     public function studentAttendanceView(Request $request)
     {
 
@@ -179,14 +176,16 @@ class AttendanceController extends Controller
         $query = Student::query();
         if ($request->has('class')) {
 
-            $query->where('class_id', 'like', '%' . $request->input('class') . '%');
+            $query->where('class_id', 'like', '%'.$request->input('class').'%');
         }
         if ($request->has('section')) {
-            $query->where('section_id', 'like', '%' . $request->input('section') . '%');
+            $query->where('section_id', 'like', '%'.$request->input('section').'%');
         }
         $students = $query->paginate(4);
+
         return view('attendance.viewStudent', compact('students', 'classes', 'sections'));
     }
+
     public function addStudentAttendanceView(Request $request)
     {
         $classId = $request->class;
@@ -196,13 +195,16 @@ class AttendanceController extends Controller
 
         if ($students->isEmpty()) {
             dd($students);
+
             return redirect()->back()->with('error', 'No student found in this class and section');
         }
         $classes = classe::get();
         $sections = Section::get();
+
         return view('attendance.addStudent', compact('students', 'classes', 'sections'));
 
     }
+
     public function studentAttendanceStore(Request $request)
     {
         $request->validate([
@@ -228,16 +230,19 @@ class AttendanceController extends Controller
                 'date' => $date,
                 'status' => $status,
                 'class_id' => $request->class,
-                'section_id' => $request->section
+                'section_id' => $request->section,
             ];
         }
         StudentAttendance::insert($records);
+
         return redirect()->back()->with('message', 'Student Attendance added successfully!');
     }
+
     public function studentAttendanceViewDetails($id)
     {
         $student = Student::find($id);
         $attendances = StudentAttendance::where('student_id', $id)->get();
+
         return view('attendance.viewStudentDetails', compact('student', 'attendances'));
     }
 
@@ -245,6 +250,7 @@ class AttendanceController extends Controller
     {
         $classId = $request->class_id;
         $sectionId = $request->section_id;
+
         return redirect()->back()->with(compact('classId', 'sectionId'));
 
     }
@@ -277,24 +283,22 @@ class AttendanceController extends Controller
             $day = $date->day;
 
             if ($record->status == 'present') {
-                ++$present;
+                $present++;
                 $attendanceData[$dayOfWeek][$day] = 'P';
             } elseif ($record->status == 'absent') {
-                ++$absent;
+                $absent++;
                 $attendanceData[$dayOfWeek][$day] = 'A';
             } elseif ($record->status == 'leave') {
-                ++$leave;
+                $leave++;
                 $attendanceData[$dayOfWeek][$day] = 'LV';
             } elseif ($record->status == 'late') {
-                ++$late;
+                $late++;
                 $attendanceData[$dayOfWeek][$day] = 'L';
             } elseif ($record->status == 'excused_late') {
-                ++$exculated;
+                $exculated++;
                 $attendanceData[$dayOfWeek][$day] = 'EL';
             }
         }
-
-
 
         $months = [
             '01' => 'January',
@@ -330,9 +334,4 @@ class AttendanceController extends Controller
             'months'
         ));
     }
-
-
-
-
-
 }

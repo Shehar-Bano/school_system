@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Traits\Filterable;
 
 class Employee extends Model implements AuthenticatableContract
 {
-    use HasFactory, Authenticatable ,Notifiable,Filterable; // Use Authenticatable trait to satisfy the contract
-    protected $fillable=[
+    use Authenticatable, Filterable ,HasFactory,Notifiable; // Use Authenticatable trait to satisfy the contract
+
+    protected $fillable = [
         'name',
         'gender',
         'date_of_birth',
@@ -25,31 +26,39 @@ class Employee extends Model implements AuthenticatableContract
         'salary',
         'joining_date',
         'image',
-        'religion'
+        'religion',
 
     ];
-    public function scopeJoiningDate($query,$joining_date)
+
+    public function scopeJoiningDate($query, $startDate, $endDate)
     {
-        if($joining_date !=''){
-        return $query->where('joining_date',$joining_date);
+
+        if (($startDate && $endDate) && $startDate != '' && $endDate != '') {
+
+            return $query->whereBetween('joining_date', [$startDate, $endDate]);
         }
+
         return $query;
     }
+
     // Relationships
     public function designation()
     {
-        return $this->belongsTo(Designation::class);
+        return $this->belongsTo(Designation::class)->select('id', 'name');
     }
 
-    public function class(){
+    public function class()
+    {
         return $this->hasMany(Classe::class);
     }
 
-    public function section(){
+    public function section()
+    {
         return $this->hasMany(Section::class);
     }
 
-    public function subjects(){
+    public function subjects()
+    {
         return $this->hasMany(Subject::class);
     }
 

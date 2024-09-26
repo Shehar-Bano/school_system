@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Filterable;
+
 class Designation extends Model
 {
-    use HasFactory, Filterable;
-    protected $fillable=['name'];
+    use Filterable, HasFactory;
+
+    protected $fillable = ['name'];
+
     public function employees()
     {
         return $this->hasMany(Employee::class);

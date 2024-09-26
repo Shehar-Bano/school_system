@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id(); // Primary key
             $table->string('name');
             $table->string('note');
-    $table->timestamps();
+            $table->timestamps();
         });
     }
 

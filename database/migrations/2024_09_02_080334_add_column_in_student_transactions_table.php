@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('student_transactions', function (Blueprint $table) {
-            $table->enum('trasaction_type',['fine','scholarship','grant','fund'])->after('transaction_id');
+            $table->enum('trasaction_type', ['fine', 'scholarship', 'grant', 'fund'])->after('transaction_id');
         });
     }
 

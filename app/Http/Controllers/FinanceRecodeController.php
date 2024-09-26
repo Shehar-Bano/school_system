@@ -13,10 +13,10 @@ class FinanceRecodeController extends Controller
         $employees = Employee::get();
         $query = Finance_recode::with('employee');
         if ($request->has('employee_id')) {
-            $query->where('employee_id', 'like', '%' . $request->input('employee_id') . '%');
+            $query->where('employee_id', 'like', '%'.$request->input('employee_id').'%');
         }
         if ($request->has('transaction_type')) {
-            $query->where('transaction_type', 'like', '%' . $request->input('transaction_type') . '%');
+            $query->where('transaction_type', 'like', '%'.$request->input('transaction_type').'%');
         }
 
         if (
@@ -27,14 +27,17 @@ class FinanceRecodeController extends Controller
 
         }
         $recodes = $query->get();
+
         return view('finance.recode', compact('recodes', 'employees'));
     }
 
     public function addFinanceRecordView()
     {
         $employees = Employee::get();
+
         return view('finance.add', compact('employees'));
     }
+
     public function storeFinanceRecord(Request $request)
     {
 
@@ -45,22 +48,22 @@ class FinanceRecodeController extends Controller
             'description' => 'required|string|max:255',
             'transaction_type' => 'required',
             'transaction_date' => 'required',
-            'due_date' => 'required|date'
+            'due_date' => 'required|date',
 
         ]);
 
         Finance_recode::create($validated);
+
         return redirect()->back()->with('success', 'Finance record added successfully');
     }
-
 
     public function deleteFinanceRecord($id)
     {
         $recodeId = Finance_recode::findOrFail($id);
         $recodeId->status = 'deleted';
         $recodeId->save();
-        return redirect()->back()->with('success', 'Finance record deleted successfully');
 
+        return redirect()->back()->with('success', 'Finance record deleted successfully');
 
     }
 
@@ -68,11 +71,11 @@ class FinanceRecodeController extends Controller
     {
         $employees = Employee::get();
         $recode = Finance_recode::with('employee')->findOrFail($id);
+
         return view('finance.edit', compact('recode', 'employees'));
 
-
-
     }
+
     public function updateFinanceRecord(Request $request, $id)
     {
         $validated = $request->validate([
@@ -82,15 +85,13 @@ class FinanceRecodeController extends Controller
             'description' => 'required|string|max:255',
             'transaction_type' => 'required',
             'transaction_date' => 'required',
-            'due_date' => 'required|date'
-
+            'due_date' => 'required|date',
 
         ]);
         $recode = Finance_recode::findOrFail($id);
         $recode->update($validated);
+
         return redirect()->back()->with('success', 'Finance record updated successfully');
-
-
 
     }
 }

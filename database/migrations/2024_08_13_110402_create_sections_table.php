@@ -19,15 +19,15 @@ return new class extends Migration
             // Define the foreign key columns
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')  // Correctly reference the 'employ' column
-                  ->references('id')
-                  ->on('employees')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('employees')
+                ->cascadeOnDelete();
 
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')  // Correctly reference the 'class' column
-                  ->references('id')
-                  ->on('classes')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('classes')
+                ->cascadeOnDelete();
 
             $table->string('note')->nullable();
             $table->timestamps();

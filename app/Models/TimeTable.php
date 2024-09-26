@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TimeTable extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'day',
         'start_time',
         'end_time',
@@ -19,23 +20,25 @@ class TimeTable extends Model
         'class_id',
         'room',
 
-
     ];
 
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
+
     public function class()
     {
         return $this->belongsTo(classe::class);
     }
+
     public function section()
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function teacher(){
+    public function teacher()
+    {
         return $this->belongsTo(Employee::class);
     }
 }

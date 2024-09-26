@@ -75,11 +75,11 @@ return [
         ],
         'students' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Student::class
+            'model' => App\Models\Student::class,
         ],
         'employees' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Employee::class
+            'model' => App\Models\Employee::class,
         ],
 
     ],

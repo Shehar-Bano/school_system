@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('finance_recodes', function (Blueprint $table) {
-        $table->date('due_date')->nullable()->after("transaction_date");
+            $table->date('due_date')->nullable()->after('transaction_date');
         });
     }
 

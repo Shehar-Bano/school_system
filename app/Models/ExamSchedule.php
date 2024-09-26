@@ -8,23 +8,36 @@ use Illuminate\Database\Eloquent\Model;
 class ExamSchedule extends Model
 {
     use HasFactory;
+
     protected $fillable = ['class_id', 'exam_id', 'section_id', 'start_date', 'end_date'];
-    public function class(){
+
+    public function class()
+    {
         return $this->belongsTo(Classe::class);
     }
-    public function section(){
+
+    public function section()
+    {
         return $this->belongsTo(Section::class);
     }
-    public function subject(){
+
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
-    public function exam(){
+
+    public function exam()
+    {
         return $this->belongsTo(Exam::class);
     }
-    public function employee(){
+
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
     }
-    public function datesheet(){
+
+    public function datesheet()
+    {
         return $this->belongsTo(DateSheet::class);
     }
 }

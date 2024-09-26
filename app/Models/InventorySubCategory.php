@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class InventorySubCategory extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'category_id',
         'name',
-        'description'
+        'description',
     ];
+
     public function category()
     {
         return $this->belongsTo(InventoryCategory::class);

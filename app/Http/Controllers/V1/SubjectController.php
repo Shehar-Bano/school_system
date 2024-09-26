@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\controllersV2;
+namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class SubjectController extends Controller
@@ -11,10 +10,7 @@ class SubjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        
-    }
+    public function index() {}
 
     /**
      * Store a newly created resource in storage.
