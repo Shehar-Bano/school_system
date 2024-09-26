@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class EmployeeRequest extends FormRequest
 {
@@ -24,7 +26,7 @@ class EmployeeRequest extends FormRequest
     public function rules()
     {
         // Determine if it's an update request
-        $employeeId = $this->route('employee'); // Get the employee ID from the route parameter (assumed 'employee')
+        $employeeId = $this->route('id'); // Assuming 'id' is the route parameter for employee ID
 
         return [
             'name' => 'required|string|max:30',
@@ -33,7 +35,7 @@ class EmployeeRequest extends FormRequest
             'designation_id' => 'required|integer',
 
             // For email, exclude the current employee ID if it's an update request
-            'email' => 'required|email|unique:employees,email,'.$employeeId,
+            'email' => 'required|email|unique:employees,email,' . $employeeId,
 
             'phone' => 'required|string',
             'address' => 'required|string|max:100',
@@ -61,5 +63,22 @@ class EmployeeRequest extends FormRequest
             'password.min' => 'The password must be at least 8 characters long.',
             // Add more custom messages if needed
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  Validator  $validator
+     * @return void
+     *
+     * @throws HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => 'Validation errors occurred.',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

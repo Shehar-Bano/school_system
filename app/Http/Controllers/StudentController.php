@@ -55,8 +55,9 @@ class StudentController extends Controller
         }
 
         $imagePath = $request->hasFile('image')
-                   ? $request->file('image')->store('students', 'public')
-                   : null;
+            ? $request->file('image')->store('students', 'public')
+            : null;
+
         // Create the student
         Student::create([
             'name' => $request->input('name'),

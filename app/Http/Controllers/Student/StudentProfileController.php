@@ -22,7 +22,7 @@ class StudentProfileController extends Controller
     {
         $user = auth()->guard('student')->user();
         if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
         $student = Student::where('id', $user->id)
             ->with('class', 'section')
@@ -39,7 +39,7 @@ class StudentProfileController extends Controller
     {
         $user = auth()->guard('student')->user();
         if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
         $timetable = TimeTable::where('class_id', $user->class_id)
             ->where('section_id', $user->section_id)
@@ -52,7 +52,7 @@ class StudentProfileController extends Controller
     {
         $user = auth()->guard('student')->user();
         if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
 
         $selectedMonth = $request->get('month', Carbon::now()->format('m'));
@@ -95,18 +95,9 @@ class StudentProfileController extends Controller
         }
 
         $months = [
-            '01' => 'January',
-            '02' => 'February',
-            '03' => 'March',
-            '04' => 'April',
-            '05' => 'May',
-            '06' => 'June',
-            '07' => 'July',
-            '08' => 'August',
-            '09' => 'September',
-            '10' => 'October',
-            '11' => 'November',
-            '12' => 'December',
+            '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
+            '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
+            '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December',
         ];
 
         $totalLeave = $leave;
@@ -117,15 +108,9 @@ class StudentProfileController extends Controller
 
         return view('StudentDashboard.Profile.attendence', compact(
             'attendanceData',
-            'totalLeave',
-            'totalPresent',
-            'totalLateExcuse',
-            'totalLate',
-            'totalAbsent',
-            'selectedMonth',
-            'selectedYear',
-            'months',
-            'user'
+            'totalLeave', 'totalPresent', 'totalLateExcuse',
+            'totalLate', 'totalAbsent', 'selectedMonth',
+            'selectedYear', 'months', 'user'
         ));
     }
 
@@ -133,7 +118,7 @@ class StudentProfileController extends Controller
     {
         $user = auth()->guard('student')->user();
         if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
         $exams = Exam::get();
         $query = Result::where('student_id', $user->id)
@@ -152,31 +137,15 @@ class StudentProfileController extends Controller
     {
         $user = auth()->guard('student')->user();
         if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
+            return redirect()->route('student.login')->with('error', 'You need to log in first.');
         }
         $fee = StudentFee::where('student_id', $user->id)->first();
         $taxefee = TaxeFee::where('student_id', $user->id)->first();
+
         $taxes = Taxe::get();
         $exam = ExamSchedule::where('class_id', $user->class_id)->where('section_id', $user->section_id)->first();
         $class = Classe::where('id', $user->class_id)->first();
 
         return view('StudentDashboard.Profile.fee', compact('user', 'fee', 'taxefee', 'taxes', 'exam', 'class'));
-    }
-
-    public function showHistory()
-    {
-        $user = auth()->guard('student')->user();
-        if (! $user) {
-            return redirect()->route('student.login')->with('error', 'constant.ERROR');
-        }
-
-        // Fetch student's history
-        $attendance = StudentAttendance::where('student_id', $user->id)->get();
-        $grades = Result::where('student_id', $user->id)->get();
-        $payments = StudentFee::where('student_id', $user->id)->get();
-
-        // Return the admin view with all the data
-        return view('history.sub-student', compact('user', 'attendance', 'grades', 'payments'));
-
     }
 }

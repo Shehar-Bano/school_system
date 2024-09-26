@@ -30,10 +30,12 @@ class Employee extends Model implements AuthenticatableContract
 
     ];
 
-    public function scopeJoiningDate($query, $joining_date)
+    public function scopeJoiningDate($query, $startDate, $endDate)
     {
-        if ($joining_date != '') {
-            return $query->where('joining_date', $joining_date);
+
+        if (($startDate && $endDate) && $startDate != '' && $endDate != '') {
+
+            return $query->whereBetween('joining_date', [$startDate, $endDate]);
         }
 
         return $query;
@@ -42,7 +44,7 @@ class Employee extends Model implements AuthenticatableContract
     // Relationships
     public function designation()
     {
-        return $this->belongsTo(Designation::class);
+        return $this->belongsTo(Designation::class)->select('id', 'name');
     }
 
     public function class()
