@@ -14,7 +14,7 @@ class HistoryController extends Controller
 {
     public function index(Request $request)
     {
-        // $students  = Student::all();
+      
         $classes = Classe::get();
         $sections = Section::get();
 
