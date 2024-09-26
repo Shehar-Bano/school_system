@@ -14,7 +14,7 @@ abstract class Controller
      */
     public function getValue($value)
     {
-        return (is_null($value) || ! is_numeric($value) || (int) $value <= 0)
+        return (is_null($value) || !is_numeric($value) || (int) $value <= 0)
             ? self::DEFAULT_VALUE
             : (int) $value;
     }

@@ -83,9 +83,18 @@ class AttendanceController extends Controller
 
         // Define months for the dropdown
         $months = [
-            '01' => 'January', '02' => 'February', '03' => 'March', '04' => 'April',
-            '05' => 'May', '06' => 'June', '07' => 'July', '08' => 'August',
-            '09' => 'September', '10' => 'October', '11' => 'November', '12' => 'December',
+            '01' => 'January',
+            '02' => 'February',
+            '03' => 'March',
+            '04' => 'April',
+            '05' => 'May',
+            '06' => 'June',
+            '07' => 'July',
+            '08' => 'August',
+            '09' => 'September',
+            '10' => 'October',
+            '11' => 'November',
+            '12' => 'December',
         ];
 
         $totalLeave = $leave;
@@ -95,8 +104,16 @@ class AttendanceController extends Controller
         $totalAbsent = $absent;
 
         return view('attendance.employeeAttendance', compact(
-            'employee', 'attendanceData', 'totalLeave', 'totalPresent', 'totalLateExcuse',
-            'totalLate', 'totalAbsent', 'selectedMonth', 'selectedYear', 'months'
+            'employee',
+            'attendanceData',
+            'totalLeave',
+            'totalPresent',
+            'totalLateExcuse',
+            'totalLate',
+            'totalAbsent',
+            'selectedMonth',
+            'selectedYear',
+            'months'
         ));
     }
 
@@ -214,12 +231,107 @@ class AttendanceController extends Controller
                 'date' => $date,
                 'status' => $status,
                 'class_id' => $request->class,
-                'section_id' => $request->section,
+                'section_id' => $request->section
             ];
         }
         StudentAttendance::insert($records);
-
         return redirect()->back()->with('message', 'Student Attendance added successfully!');
+    }
+    public function studentAttendanceViewDetails($id)
+    {
+        $student = Student::find($id);
+        $attendances = StudentAttendance::where('student_id', $id)->get();
+        return view('attendance.viewStudentDetails', compact('student', 'attendances'));
+    }
+
+    public function classAttendanceView(Request $request)
+    {
+        $classId = $request->class_id;
+        $sectionId = $request->section_id;
+        return redirect()->back()->with(compact('classId', 'sectionId'));
+
+    }
+
+    //////to show attendance
+    public function showStudentAttendance(Request $request, $id)
+    {
+        $student = Student::with('class', 'section')->find($id);
+
+        // Get the selected month and year from the request, or default to the current month and year
+        $selectedMonth = $request->get('month', Carbon::now()->format('m'));
+        $selectedYear = $request->get('year', Carbon::now()->format('Y'));
+
+        // Retrieve attendance records for the selected month and year
+        $attendanceRecords = StudentAttendance::where('student_id', $student->id)
+            ->whereMonth('date', $selectedMonth)
+            ->whereYear('date', $selectedYear)
+            ->get();
+
+        $attendanceData = [];
+        $late = 0;
+        $exculated = 0;
+        $present = 0;
+        $absent = 0;
+        $leave = 0;
+
+        foreach ($attendanceRecords as $record) {
+            $date = Carbon::parse($record->date);
+            $dayOfWeek = $date->format('D');
+            $day = $date->day;
+
+            if ($record->status == 'present') {
+                ++$present;
+                $attendanceData[$dayOfWeek][$day] = 'P';
+            } elseif ($record->status == 'absent') {
+                ++$absent;
+                $attendanceData[$dayOfWeek][$day] = 'A';
+            } elseif ($record->status == 'leave') {
+                ++$leave;
+                $attendanceData[$dayOfWeek][$day] = 'LV';
+            } elseif ($record->status == 'late') {
+                ++$late;
+                $attendanceData[$dayOfWeek][$day] = 'L';
+            } elseif ($record->status == 'excused_late') {
+                ++$exculated;
+                $attendanceData[$dayOfWeek][$day] = 'EL';
+            }
+        }
+
+
+
+        $months = [
+            '01' => 'January',
+            '02' => 'February',
+            '03' => 'March',
+            '04' => 'April',
+            '05' => 'May',
+            '06' => 'June',
+            '07' => 'July',
+            '08' => 'August',
+            '09' => 'September',
+            '10' => 'October',
+            '11' => 'November',
+            '12' => 'December',
+        ];
+
+        $totalLeave = $leave;
+        $totalPresent = $present;
+        $totalLateExcuse = $exculated;
+        $totalLate = $late;
+        $totalAbsent = $absent;
+
+        return view('attendance.studentAttendance', compact(
+            'student',
+            'attendanceData',
+            'totalLeave',
+            'totalPresent',
+            'totalLateExcuse',
+            'totalLate',
+            'totalAbsent',
+            'selectedMonth',
+            'selectedYear',
+            'months'
+        ));
     }
 
     public function studentAttendanceViewDetails($id)

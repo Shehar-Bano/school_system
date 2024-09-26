@@ -9,16 +9,19 @@ use Illuminate\Http\Request;
 
 class DesignationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         try {
 
+            $searchTerm = $request->input('name');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+
             $limit = $this->getValue($request->input('limit'));
 
-            $designations = Designation::paginate($limit);
+            $designations = Designation::SearchName($searchTerm)->DateBetween($startDate,$endDate)->paginate($limit);
 
             if ($designations->isEmpty()) {
                 return ResponseHelper::error('No designations found.', 404); // 404 Not Found
@@ -54,7 +57,19 @@ class DesignationController extends Controller
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while storing designations.', 500, $e->getMessage());
         }
+
+        // If validation passes, create the new designation
+        Designation::create($validated);
+
+        // Return a success response
+        return ResponseHelper::success('Designation created successfully', 200);
+
+    } catch (\Exception $e) {
+        // Return an error response if something goes wrong
+        return ResponseHelper::error('An error occurred while storing designation.', 500, $e->getMessage());
     }
+}
+
 
     /**
      * Display the specified resource.

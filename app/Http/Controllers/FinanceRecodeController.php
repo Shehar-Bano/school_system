@@ -25,7 +25,6 @@ class FinanceRecodeController extends Controller
 
         }
         $recodes = $query->get();
-
         return view('finance.recode', compact('recodes', 'employees'));
     }
 
