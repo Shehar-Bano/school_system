@@ -8,15 +8,28 @@ use Illuminate\Database\Eloquent\Model;
 class classe extends Model
 {
     use HasFactory;
-    public function employee(){
+
+    protected $fillable = [
+        'name',
+        'tution_fee',
+        'note', // Ensure this is included
+    ];
+
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
     }
-    public function section(){
+
+    public function section()
+    {
         return $this->hasMany(Section::class);
     }
-    public function student(){
+
+    public function student()
+    {
         return $this->hasMany(Student::class);
     }
+
     public function subjects()
     {
         return $this->hasMany(Subject::class);
@@ -26,14 +39,14 @@ class classe extends Model
     {
         return $this->hasMany(Assignment::class);
     }
-    public function examschedule(){
+
+    public function examschedule()
+    {
         return $this->hasMany(ExamSchedule::class);
     }
 
     public function classsubject()
-
     {
         return $this->belongsToMany(Subject::class, 'classes_subjects', 'class_id', 'subject_id');
     }
-
 }

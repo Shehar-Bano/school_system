@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Exam extends Model
 {
     use HasFactory;
-    public function result(){
+
+    public function result()
+    {
         return $this->hasMany(Result::class);
     }
-    public function examschedule(){
+
+    public function examschedule()
+    {
         return $this->hasMany(ExamSchedule::class);
     }
-
 }

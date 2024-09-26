@@ -21,7 +21,6 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
 
-          
             // Status of the salary payment
             $table->enum('status', ['paid', 'unpaid', 'deleted'])->default('unpaid');
 
@@ -29,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

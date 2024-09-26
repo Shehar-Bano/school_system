@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudentAttendance;
-use Illuminate\Http\Request;
 
 class StudentDashboardController extends Controller
 {
@@ -13,8 +12,8 @@ class StudentDashboardController extends Controller
 
         // Fetch unread notifications for the logged-in employee
         $unreadNotifications = $student->unreadNotifications;
-        $unreadNotificationCount=$student->unreadNotifications->count();
-   
+        $unreadNotificationCount = $student->unreadNotifications->count();
+
         $studentId = auth()->guard('student')->user()->id;
         $currentYear = now()->year;
         $studentAttendance = StudentAttendance::where('student_id', $studentId)
@@ -29,9 +28,7 @@ class StudentDashboardController extends Controller
             : 0;
 
         return view('StudentDashboard.dashboard', compact(
-            'studentAttendance', 'totalPresent', 'totalAbsent', 'totalLeave','unreadNotificationCount','unreadNotifications', 'attendancePercentage'
+            'studentAttendance', 'totalPresent', 'totalAbsent', 'totalLeave', 'unreadNotificationCount', 'unreadNotifications', 'attendancePercentage'
         ));
     }
-
-
 }

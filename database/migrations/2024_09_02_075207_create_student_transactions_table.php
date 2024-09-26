@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('description');
             $table->date('transaction_date');
             $table->date('due_date');
-            $table->enum('status',['active','inactive','deleted'])->default('inactive');
+            $table->enum('status', ['active', 'inactive', 'deleted'])->default('inactive');
             $table->unsignedBigInteger('issued_by');
             $table->foreign('issued_by')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();

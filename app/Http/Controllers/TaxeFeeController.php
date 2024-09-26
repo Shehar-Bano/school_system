@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Exam;
-use App\Models\Taxe;
 use App\Models\classe;
 use App\Models\Section;
 use App\Models\Student;
+use App\Models\Taxe;
 use App\Models\TaxeFee;
-use App\Models\StudentFee;
 use Illuminate\Http\Request;
-use App\Models\StudentTransaction;
 
 class TaxeFeeController extends Controller
 {
-    public function index(){
-        $sections=Section::with('classe')->get();
-        $classes=classe::get();
-        return view('studentfee.taxe-index',compact('sections','classes'));
-    }
+    public function index()
+    {
+        $sections = Section::with('classe')->get();
+        $classes = classe::get();
 
+        return view('studentfee.taxe-index', compact('sections', 'classes'));
+    }
 
     public function listStudent($id)
     {
@@ -34,7 +32,7 @@ class TaxeFeeController extends Controller
         $studentData = $students->map(function ($student) use ($taxeFees) {
 
             // Calculate total fee using fees from the TaxeFee
-            $totalFee =   $taxeFees->bus_taxes
+            $totalFee = $taxeFees->bus_taxes
                         + $taxeFees->other_activity
                         + $taxeFees->lunch
                         + $taxeFees->admission_fee
@@ -58,7 +56,7 @@ class TaxeFeeController extends Controller
         return view('studentfee.taxe-list', [
             'studentData' => $studentData,
             'section' => $section,
-            'taxeFees' => $taxeFees
+            'taxeFees' => $taxeFees,
         ]);
     }
 
@@ -71,11 +69,9 @@ class TaxeFeeController extends Controller
         TaxeFee::create([
             'student_id' => $student->id,
             'total' => $total,
-            'date' => now()
+            'date' => now(),
         ]);
-       
 
         return redirect()->back()->with('success', 'Fee received successfully');
     }
-
 }

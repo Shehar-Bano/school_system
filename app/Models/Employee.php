@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Employee extends Model implements AuthenticatableContract
 {
-    use HasFactory, Authenticatable ,Notifiable; // Use Authenticatable trait to satisfy the contract
+    use Authenticatable, HasFactory ,Notifiable; // Use Authenticatable trait to satisfy the contract
 
     // Relationships
     public function designation()
@@ -18,15 +18,18 @@ class Employee extends Model implements AuthenticatableContract
         return $this->belongsTo(Designation::class);
     }
 
-    public function class(){
+    public function class()
+    {
         return $this->hasMany(Classe::class);
     }
 
-    public function section(){
+    public function section()
+    {
         return $this->hasMany(Section::class);
     }
 
-    public function subjects(){
+    public function subjects()
+    {
         return $this->hasMany(Subject::class);
     }
 

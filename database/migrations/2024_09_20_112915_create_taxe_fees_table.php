@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')->references('id')->on('students')->cascadeOnDelete();
-            $table->decimal('total',11);
+            $table->decimal('total', 11);
             $table->date('date');
             $table->timestamps();
         });

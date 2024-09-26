@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('time_tables', function (Blueprint $table) {
-            $table->enum('slot_status',['allocated','available','reserved'])->default('allocated')->after('end_time');
+            $table->enum('slot_status', ['allocated', 'available', 'reserved'])->default('allocated')->after('end_time');
         });
     }
 

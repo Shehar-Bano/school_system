@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('inventory_categories')->cascadeOnDelete();
             $table->unsignedBigInteger('sub_category_id');
             $table->foreign('sub_category_id')->references('id')->on('inventory_sub_categories')->cascadeOnDelete();
-            $table->decimal('amount',11);
+            $table->decimal('amount', 11);
             $table->string('description');
             $table->date('date');
             $table->timestamps();

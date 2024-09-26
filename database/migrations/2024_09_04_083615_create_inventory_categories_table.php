@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('inventory_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name',30);
-            $table->enum('status',['active','inactive','deleted'])->default('active');
+            $table->string('name', 30);
+            $table->enum('status', ['active', 'inactive', 'deleted'])->default('active');
             $table->timestamps();
         });
     }

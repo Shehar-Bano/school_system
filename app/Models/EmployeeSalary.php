@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeSalary extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'employee_id',
         'base_salary',
@@ -15,15 +16,16 @@ class EmployeeSalary extends Model
         'bonus',
         'deduction',
         'gross_salary',
-        'net_salary'
+        'net_salary',
     ];
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);
     }
+
     public function financeRecodes()
     {
         return $this->belongsTo(Finance_recode::class);
     }
-    
 }

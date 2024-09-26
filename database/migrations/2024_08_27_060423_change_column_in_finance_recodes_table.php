@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('finance_recodes', function (Blueprint $table) {
-            $table->enum('status',['active','inactive','deleted'])->default('inactive')->change();
+            $table->enum('status', ['active', 'inactive', 'deleted'])->default('inactive')->change();
         });
     }
 
