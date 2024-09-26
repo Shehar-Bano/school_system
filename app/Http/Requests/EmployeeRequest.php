@@ -31,16 +31,16 @@ class EmployeeRequest extends FormRequest
             'gender' => 'required',
             'date_of_birth' => 'required|date',
             'designation_id' => 'required|integer',
-            
+
             // For email, exclude the current employee ID if it's an update request
-            'email' => 'required|email|unique:employees,email,' . $employeeId,
-            
+            'email' => 'required|email|unique:employees,email,'.$employeeId,
+
             'phone' => 'required|string',
             'address' => 'required|string|max:100',
-            
+
             // Password is required only for creation, but can be nullable for updates
             'password' => $this->isMethod('post') ? 'required|string|min:8' : 'nullable|string|min:8',
-            
+
             'salary' => 'required|numeric',
             'joining_date' => 'required|date',
             'image' => $this->isMethod('post') ? 'required|image' : 'nullable|image',
