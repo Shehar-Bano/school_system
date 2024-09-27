@@ -29,6 +29,23 @@ class Employee extends Model implements AuthenticatableContract
         'religion',
 
     ];
+    public function scopeWhereDesignation($query, $designationId)
+{
+    if ($designationId) {
+        // Check if the designation exists
+        $exists = Designation::where('id', $designationId)->exists();
+        
+        // If designation exists, filter by designation_id, otherwise return empty
+        if ($exists) {
+            return $query->where('designation_id', $designationId);
+        } else {
+            return $query; // Returns an empty result set
+        }
+    }
+
+    return $query; // If no designationId is provided, return the original query
+}
+
 
     public function scopeJoiningDate($query, $startDate, $endDate)
     {

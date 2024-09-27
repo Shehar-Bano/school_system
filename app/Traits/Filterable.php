@@ -9,11 +9,11 @@ trait Filterable
     /**
      * Filter results by active status.
      */
-    public function scopeStatusActive($query)
+    public function scopeStatusActive($query,$status)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', $status);
     }
-
+ 
     /**
      * Filter results by term
      */

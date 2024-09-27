@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateEmployeeRequest extends FormRequest
 {
     /**
@@ -34,5 +35,22 @@ class UpdateEmployeeRequest extends FormRequest
             'joining_date' => 'required|date|before_or_equal:today',
             'status' => 'nullable|string|in:active,inactive,suspended',
         ];
+    }
+    
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  Validator  $validator
+     * @return void
+     *
+     * @throws HttpResponseException
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => 'Validation errors occurred.',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

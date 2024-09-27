@@ -8,6 +8,8 @@ use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
+use function Laravel\Prompts\select;
+
 class EmployeeController extends Controller
 {
     /**
@@ -16,6 +18,7 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         try {
+            $designationId=$request->input('designation_id');
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
             $name = $request->input('name');
@@ -39,6 +42,7 @@ class EmployeeController extends Controller
 
             $employees = Employee::with('designation')->select($columns)
                 ->searchName(term: $name)
+                ->whereDesignation($designationId)
                 ->joiningDate($startDate, $endDate)
                 ->statusActive()->paginate($limit);
 
@@ -97,7 +101,7 @@ class EmployeeController extends Controller
                 'religion',
             ];
 
-            $employee = Employee::find($id);
+            $employee = Employee::where('id',$id)->select($columns)->with('designation')->first();
            
             if (! $employee) {
 
@@ -149,7 +153,7 @@ class EmployeeController extends Controller
             }
             $employee->delete();
 
-            return ResponseHelper::success('Employee deleted successfully', 200);
+            return ResponseHelper::successMessage('Employee deleted successfully', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while deleting employee.', 500, $e->getMessage());
         }

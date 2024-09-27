@@ -63,7 +63,7 @@ Route::get('employee/show/{id}', [EmployeeController::class, 'showEmployee'])->n
 Route::get('employee/edit/{id}', [EmployeeController::class, 'editEmployee'])->name('employees_edit');
 Route::post('employee/update/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees_update');
 Route::delete('employee/delete{id}', [EmployeeController::class, 'deleteEmployee'])->name('employees_delete');
-////////////subjact
+////////////subject
 Route::get('/subject/view', [SubjectController::class, 'subjectView'])->name('subject_show');
 Route::get('/subject/add', [SubjectController::class, 'addSubjectView'])->name('add_subject');
 Route::post('/subject/store', [SubjectController::class, 'subjectStore'])->name('subject_store');
