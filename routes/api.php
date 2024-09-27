@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\V1\TimeTableController;
 use Illuminate\Http\Request;
 use App\Models\ClassesSubject;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +22,4 @@ Route::apiResource('classes', ClasseController::class);
 Route::apiResource('employees', EmployeeController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('classes_subjects', ClasseSubjectController::class);
+Route::apiResource('time_tables', TimeTableController::class);
