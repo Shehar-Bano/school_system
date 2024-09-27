@@ -9,6 +9,12 @@ class classe extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'tution_fee',
+        'note', // Ensure this is included
+    ];
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

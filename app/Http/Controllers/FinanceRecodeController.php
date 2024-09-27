@@ -19,10 +19,8 @@ class FinanceRecodeController extends Controller
             $query->where('transaction_type', 'like', '%'.$request->input('transaction_type').'%');
         }
 
-        if (
-            $request->has('start_date') && $request->has('end_date') &&
-            $request->input('start_date') != '' && $request->input('end_date') != ''
-        ) {
+        if ($request->has('start_date') && $request->has('end_date') &&
+        $request->input('start_date') != '' && $request->input('end_date') != '') {
             $query->whereBetween('transaction_date', [$request->input('start_date'), $request->input('end_date')]);
 
         }
