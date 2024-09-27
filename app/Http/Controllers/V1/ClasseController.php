@@ -19,13 +19,13 @@ class ClasseController extends Controller
 
             $limit = $this->getValue($request->input('limit'));
 
-            $classes = classe::paginate($limit);
+            $classes = classe::select('id','name','tution_fee','note')->paginate($limit);
 
             if ($classes->isEmpty()) {
-                return ResponseHelper::error('No classes found.', 404); // 404 Not Found
+                return ResponseHelper::error(0,'No classes found.', 404); // 404 Not Found
             }
 
-            return ResponseHelper::success($classes, 'classes retrieved successfully', 200); // 200 OK
+            return ResponseHelper::success( $classes,'classes retrieved successfully', 200); // 200 OK
 
         } catch (\Exception $e) {
             return ResponseHelper::error('An error occurred while fetching students.', 500, $e->getMessage()); // 500 Internal Server Error
@@ -45,7 +45,7 @@ class ClasseController extends Controller
             classe::create($validated);
 
             // Return success response
-            return ResponseHelper::success('Class created successfully', 200);
+            return ResponseHelper::successMessage('Class created successfully', 200);
 
         } catch (\Exception $e) {
             // Handle any exception and return an error response
