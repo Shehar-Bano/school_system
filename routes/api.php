@@ -1,14 +1,15 @@
 <?php
 
 
-use App\Http\Controllers\V1\TimeTableController;
 use Illuminate\Http\Request;
-use App\Models\ClassesSubject;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\ClasseController;
+use App\Http\Controllers\V1\FilterController;
+use App\Http\Controllers\V1\ReportController;
 use App\Http\Controllers\V1\StudentController;
 use App\Http\Controllers\V1\SubjectController;
 use App\Http\Controllers\V1\EmployeeController;
+use App\Http\Controllers\V1\TimeTableController;
 use App\Http\Controllers\V1\DesignationController;
 use App\Http\Controllers\V1\ClasseSubjectController;
 
@@ -23,3 +24,7 @@ Route::apiResource('employees', EmployeeController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('classes_subjects', ClasseSubjectController::class);
 Route::apiResource('time_tables', TimeTableController::class);
+Route::apiResource('time_tables', TimeTableController::class);
+// routes/api.php
+Route::get('/report/income-expense', [ReportController::class, 'index']);
+Route::get('/report/filter', [FilterController::class, 'index']);

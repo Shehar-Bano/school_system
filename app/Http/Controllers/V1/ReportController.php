@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Resources\ReportResource;
+use App\Models\Expence;
+use App\Models\TaxeFee;
+use App\Models\StudentFee;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
@@ -12,7 +18,34 @@ class ReportController extends Controller
      */
     public function index()
     {
-        
+        $expences = Expence::select('category_id')
+        ->selectRaw('SUM(amount) as total_amount')
+        ->groupBy('category_id')
+        ->get();
+       $studentFee = StudentFee::sum('total');
+       $taxe= TaxeFee::sum('total');
+       $categorizedIncome = [
+        'student_fees' => [
+            'category' => 'Student Fees',
+            'total' => $studentFee,
+        ],
+        'taxes' => [
+            'category' => 'Taxes',
+            'total' => $taxe,
+        ],
+    ];
+    $totalIncome = $studentFee + $taxe;
+    // Optionally, include the total income in the categorized array
+    $categorizedIncome['total_income'] = [
+        'category' => 'Total Income',
+        'total' => $totalIncome,
+    ];
+    return ResponseHelper::success([
+        'expenses' => ReportResource::collection($expences),
+        'categorized_income' => $categorizedIncome,
+    ], 200);
+
+
     }
 
     /**
