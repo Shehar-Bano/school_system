@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'subject_name',
+        'type', // optional or mandatory
+        'pass_marks',
+        'final_marks',
+        'sub_code', // subject code
+    ];
+
 
     public function teacher()
     {

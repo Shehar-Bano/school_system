@@ -38,15 +38,19 @@ class TimeTable extends Model
             ->first();
     }
     
-   public function scopeShowStatus($query, $statuses)
+   public function scopeShowStatus($query, $status)
 {
-    if (is_array($statuses)) {
-        // If multiple statuses are provided as an array, use whereIn
-        return $query->whereIn('slot_status', $statuses);
-    }
+   if($status =='allocated'){
+    return $query->where('slot_status', $status);
+   }
+   elseif($status == 'available'){
+    return $query->where('slot_status', $status);
+   }else
+   {
+    return $query;
+   }
 
-    // If only a single status is provided, use where
-    return $query->where('slot_status', $statuses);
+   
 }
 
     public function scopeWhereClass($query,$classId){

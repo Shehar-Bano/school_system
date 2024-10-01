@@ -21,6 +21,7 @@ class TimeTableController extends Controller
             $section = $request->input('section_id');
             $teacher = $request->input('teacher_id');
             $subject = $request->input('subject_id');
+            $status= $request->input('status');
             $limit = $this->getValue($request->input('limit'));
             $columns = [
                 'id',
@@ -37,7 +38,7 @@ class TimeTableController extends Controller
 
             $data = TimeTable::with(['subject', 'class', 'section', 'teacher'])
                 ->select($columns)->whereClass($class)->whereSubject($subject)
-                ->whereTeacher($teacher)->whereSection($section)->showStatus(['available','allocated'])
+                ->whereTeacher($teacher)->whereSection($section)->showStatus($status)
                 ->paginate($limit);
                 
                 if(!$data){

@@ -19,12 +19,11 @@ class TimeTableResource extends JsonResource
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'slot_status' => $this->slot_status,
+            'class_name' => $this->class->name,
+            'section_name'=>$this->section->name,
+            'subject_name'=>$this->subject->subject_name,
+            'teacher_name'=>$this->teacher->name,
 
-            // Relationships
-            'class' => new ClassResource($this->whenLoaded('class')),
-            'section' => new SectionResource($this->whenLoaded('section')),
-            'subject' => new SubjectResource($this->whenLoaded('subject')),
-            'teacher' => new TeacherResource($this->whenLoaded('teacher')),
         ];
     }
 }

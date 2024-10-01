@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\V1\ExamReportController;
 use App\Http\Controllers\V1\TimeTableController;
 use Illuminate\Http\Request;
 use App\Models\ClassesSubject;
@@ -11,6 +12,7 @@ use App\Http\Controllers\V1\SubjectController;
 use App\Http\Controllers\V1\EmployeeController;
 use App\Http\Controllers\V1\DesignationController;
 use App\Http\Controllers\V1\ClasseSubjectController;
+use App\Http\Controllers\V1\EmployeeAttendanceController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,3 +25,5 @@ Route::apiResource('employees', EmployeeController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('classes_subjects', ClasseSubjectController::class);
 Route::apiResource('time_tables', TimeTableController::class);
+Route::apiResource('employee_attendances',EmployeeAttendanceController::class);
+Route::post('exam-report',[ExamReportController::class,'generateReport']);

@@ -2,12 +2,17 @@
 
 namespace App\Providers;
 
+use App\Repositories\EmployeeAttendanceRepository;
+use App\Repositories\EmployeeAttendanceRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function register(){
+        $this->app->bind(EmployeeAttendanceRepositoryInterface::class,EmployeeAttendanceRepository::class);
+    }
     /**
      * Bootstrap any application services.
      */
