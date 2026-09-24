@@ -2,303 +2,354 @@
 <html lang="en">
 
 @include('view-file/head')
+
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
 
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Exam Button -->
-            <div class="mb-4">
-              <a href="{{ route('student') }}" class="btn btn-primary">Add New Student</a>
-            </div>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-user-graduate text-primary"></i>
+                  Student Directory
+                </h3>
+                <p class="erp-table-subtitle">Manage active student admissions, registration numbers, classroom sections, and tuition fees</p>
+              </div>
 
-            <!-- Filter Inputs -->
-            <div class="mb-4">
-              <div class="row">
-                <div class="col-md-6">
-                    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-                    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-                </div>
-                <div class="col-md-2">
-                  <input type="text" id="filterName" class="form-control" placeholder="Filter by Name">
-                  <!-- Hidden Suggestion List for Name -->
-                  <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-                    <!-- Suggestions will be populated here dynamically -->
-                  </ul>
-                </div>
-                <div class="col-md-2">
-                  <input type="text" id="filterClass" class="form-control" placeholder="Filter by Class">
-                  <!-- Hidden Suggestion List for Class -->
-                  <ul id="classSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-                    <!-- Suggestions will be populated here dynamically -->
-                  </ul>
-                </div>
-                <div class="col-md-2">
-                  <input type="text" id="filterSection" class="form-control" placeholder="Filter by Section">
-                  <!-- Hidden Suggestion List for Section -->
-                  <ul id="sectionSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-                    <!-- Suggestions will be populated here dynamically -->
-                  </ul>
-                </div>
+              <!-- Top Action: Add New Student Button -->
+              <div>
+                <a href="{{ route('student') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-user-plus mr-1"></i> Add New Student
+                </a>
               </div>
             </div>
 
-            <!-- Student Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Student List</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered " id="examsTable">
-                    <thead>
-                      <tr>
-                        <th>Sr.no</th>
-                        <th>Name</th>
-                        <th>Class</th>
-                        
-                        <th>Registration No</th>
-                        <th>Section</th>
-                        
-                        <th>Tution Fee</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $count=0;
-                        @endphp
-                        @foreach ($students as $student)
-                        <tr>
-                            <td>{{ ++$count }}</td>
-                            <td><img src="{{asset('storage/'. $student->image)}}" style="width: 25px;height:25px">{{ $student->name }}</td>
-                            <td> {{$student->class->name}}
-                           </td>
-                           
-                            <td>{{$student->registration}}</td>
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
 
-                            <td> {{$student->section->name}} ,{{$student->section->classe->name}}</td>
-                            <td>{{number_format($student->tution_fee)}} Rs/-</td>
-                            <td>{{ $student->status }}</td>
-                            <td>
-                                <!-- Edit Button -->
-                                <a href="{{ route('student-edit', ['id' => $student->id]) }}" class="btn btn-warning btn-sm" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('student_delete', ['id' => $student->id]) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                  </table>
+              <!-- Right: Search & Filter Controls -->
+              <div class="erp-filter-group">
+                <div class="erp-input-icon-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="filterStudentName" placeholder="Search student name..." autocomplete="off">
                 </div>
+
+                <div class="erp-input-icon-wrapper" style="width: 130px;">
+                  <i class="fas fa-school"></i>
+                  <input type="text" id="filterClass" placeholder="Filter class..." autocomplete="off">
+                </div>
+
+                <div class="erp-input-icon-wrapper" style="width: 130px;">
+                  <i class="fas fa-layer-group"></i>
+                  <input type="text" id="filterSection" placeholder="Filter section..." autocomplete="off">
+                </div>
+
+                <button type="button" id="btnFilterSearch" class="erp-btn-filter-action erp-btn-filter-primary">
+                  <i class="fas fa-filter"></i> Search
+                </button>
+
+                <button type="button" id="btnFilterReset" class="erp-btn-filter-action erp-btn-filter-reset">
+                  <i class="fas fa-rotate-left"></i> Reset
+                </button>
               </div>
             </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="studentsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 25%;">Student Profile</th>
+                    <th style="width: 14%;" class="text-center">Registration No</th>
+                    <th style="width: 14%;">Class</th>
+                    <th style="width: 14%;">Section</th>
+                    <th style="width: 14%;" class="text-center">Tuition Fee</th>
+                    <th style="width: 10%;" class="text-center">Status</th>
+                    <th style="width: 100px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsTableBody">
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($students as $student)
+                  <tr data-name="{{ strtolower($student->name) }}" data-class="{{ strtolower($student->class->name ?? '') }}" data-section="{{ strtolower($student->section->name ?? '') }}">
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        @if($student->image && $student->image !== 'default.png')
+                          <img src="{{ asset('storage/'. $student->image) }}" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;" alt="avatar">
+                        @else
+                          <div class="erp-user-avatar" style="width: 28px; height: 28px; font-size: 10.5px;">
+                            {{ strtoupper(substr($student->name, 0, 2)) }}
+                          </div>
+                        @endif
+                        <div>
+                          <span class="font-weight-semibold text-dark">{{ $student->name }}</span>
+                          <small class="d-block text-muted" style="font-size: 10.5px;">{{ $student->email }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <span class="erp-code-pill">{{ $student->registration ?? 'N/A' }}</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-primary">
+                        <i class="fas fa-school text-xs mr-1"></i> {{ $student->class->name ?? 'Unassigned' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-purple">
+                        <i class="fas fa-layer-group text-xs mr-1"></i> {{ $student->section->name ?? 'Section' }}
+                      </span>
+                    </td>
+                    <td class="text-center font-weight-semibold text-dark">
+                      Rs. {{ number_format($student->tution_fee ?? 0) }}
+                    </td>
+                    <td class="text-center">
+                      <span class="badge badge-soft-success">
+                        <span class="dot" style="width: 5px; height: 5px; border-radius: 50%; background-color: #10b981; display: inline-block;"></span>
+                        {{ ucfirst($student->status ?? 'Active') }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- Edit Button -->
+                        <a href="{{ route('student-edit', ['id' => $student->id]) }}" class="erp-action-btn edit" title="Edit Student">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-student-{{ $student->id }}" action="{{ route('student_delete', ['id' => $student->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Student" onclick="confirmDelete({{ $student->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr id="emptyRow">
+                    <td colspan="8" class="text-center py-4 text-muted">
+                      <i class="fas fa-user-graduate mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No student records found. Click <strong>"Add New Student"</strong> to register admissions.
+                    </td>
+                  </tr>
+                  @endforelse
+                  <tr id="noResultsRow" style="display: none;">
+                    <td colspan="8" class="text-center py-4 text-muted">
+                      <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching students found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info" id="tableRecordInfo">
+                Showing 1 to {{ count($students) }} of {{ count($students) }} students
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
+
   @include('view-file.script')
 
-  <!-- Filter and Suggestion Script -->
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
-    // Filter by Class with Suggestions
-    const filterClassInput = document.getElementById('filterClass');
-    const classSuggestionList = document.getElementById('classSuggestionList');
-
-    filterClassInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      classSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-
-      rows.forEach(row => {
-        const className = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-        if (className.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = className;
-          suggestionItem.addEventListener('click', function() {
-            filterClassInput.value = className;
-            classSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const cn = r.querySelector('td:nth-child(3)').textContent.toLowerCase();
-              r.style.display = cn === className ? '' : 'none';
-            });
-          });
-          classSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
+    function confirmDelete(studentId) {
+      Swal.fire({
+        title: 'Delete Student?',
+        text: "This action will permanently delete the student profile and academic record.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-student-' + studentId).submit();
         }
       });
+    }
+  </script>
 
-      classSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
+  <!-- Filter & Export Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nameInput = document.getElementById('filterStudentName');
+      const classInput = document.getElementById('filterClass');
+      const sectionInput = document.getElementById('filterSection');
+      const searchBtn = document.getElementById('btnFilterSearch');
+      const resetBtn = document.getElementById('btnFilterReset');
+      const tableRows = document.querySelectorAll('#studentsTableBody tr[data-name]');
+      const noResultsRow = document.getElementById('noResultsRow');
+      const infoText = document.getElementById('tableRecordInfo');
+      const totalCount = tableRows.length;
 
-    // Filter by Section with Suggestions
-    const filterSectionInput = document.getElementById('filterSection');
-    const sectionSuggestionList = document.getElementById('sectionSuggestionList');
+      function filterTable() {
+        const queryName = nameInput.value.trim().toLowerCase();
+        const queryClass = classInput.value.trim().toLowerCase();
+        const querySection = sectionInput.value.trim().toLowerCase();
+        let visibleCount = 0;
 
-    filterSectionInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      sectionSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
+        tableRows.forEach(row => {
+          const rowName = row.getAttribute('data-name') || '';
+          const rowClass = row.getAttribute('data-class') || '';
+          const rowSection = row.getAttribute('data-section') || '';
 
-      rows.forEach(row => {
-        const sectionName = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-        if (sectionName.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = sectionName;
-          suggestionItem.addEventListener('click', function() {
-            filterSectionInput.value = sectionName;
-            sectionSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const sn = r.querySelector('td:nth-child(5)').textContent.toLowerCase();
-              r.style.display = sn === sectionName ? '' : 'none';
-            });
-          });
-          sectionSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
+          const matchName = !queryName || rowName.includes(queryName);
+          const matchClass = !queryClass || rowClass.includes(queryClass);
+          const matchSection = !querySection || rowSection.includes(querySection);
 
-      sectionSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-
-    // Filter by Name with Suggestions
-    const filterNameInput = document.getElementById('filterName');
-    const nameSuggestionList = document.getElementById('nameSuggestionList');
-
-    filterNameInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-
-      rows.forEach(row => {
-        const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        if (name.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = name;
-          suggestionItem.addEventListener('click', function() {
-            filterNameInput.value = name;
-            nameSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
-              r.style.display = n === name ? '' : 'none';
-            });
-          });
-          nameSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-
-    // Hide suggestion lists when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterNameInput.contains(event.target)) {
-        nameSuggestionList.style.display = 'none';
-      }
-      if (!filterClassInput.contains(event.target)) {
-        classSuggestionList.style.display = 'none';
-      }
-      if (!filterSectionInput.contains(event.target)) {
-        sectionSuggestionList.style.display = 'none';
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
-
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
-          text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+          if (matchName && matchClass && matchSection) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
           }
+        });
+
+        if (noResultsRow) {
+          noResultsRow.style.display = (visibleCount === 0 && totalCount > 0) ? '' : 'none';
+        }
+
+        if (infoText) {
+          infoText.innerText = (visibleCount === totalCount)
+            ? `Showing 1 to ${totalCount} of ${totalCount} students`
+            : `Showing ${visibleCount} of ${totalCount} filtered students`;
+        }
+      }
+
+      nameInput.addEventListener('input', filterTable);
+      classInput.addEventListener('input', filterTable);
+      sectionInput.addEventListener('input', filterTable);
+      searchBtn.addEventListener('click', filterTable);
+
+      resetBtn.addEventListener('click', function () {
+        nameInput.value = '';
+        classInput.value = '';
+        sectionInput.value = '';
+        filterTable();
+      });
+
+      // Export functionality
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            return document.getElementById('studentsTable').innerText;
+          }
+        }).on('success', function () {
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: 'Students table copied', showConfirmButton: false, timer: 2000
+          });
         });
       }
 
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#studentsTable tr:not(#noResultsRow)');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
+              }
+              csv.push(rowData.join(','));
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'students_list.csv';
+          link.click();
         });
       }
 
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('studentsTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Students' });
+          XLSX.writeFile(wb, 'students_list.xlsx');
         });
       }
 
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Student Directory", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#studentsTable',
+              startY: 45,
+              columns: [0, 1, 2, 3, 4, 5, 6],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('students_list.pdf');
+          }
         });
       }
     });
   </script>
 </body>
-
 </html>

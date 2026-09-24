@@ -8,10 +8,13 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Employee extends Model implements AuthenticatableContract
 {
-    use Authenticatable, Filterable ,HasFactory,Notifiable; // Use Authenticatable trait to satisfy the contract
+    use Authenticatable, Filterable, HasFactory, Notifiable, HasRoles;
+
+    protected $guard_name = 'employee';
 
     protected $fillable = [
         'name',

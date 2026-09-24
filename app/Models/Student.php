@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Student extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
+
+    protected $guard_name = 'student';
 
     protected $fillable = [
         'name', 'gurdian', 'admissiondate', 'dob', 'gender', 'religion',

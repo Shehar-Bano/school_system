@@ -1,298 +1,271 @@
-
-
-
-
 <!DOCTYPE html>
-
-
-
 <html lang="en">
-    <style>
-        /* Add space between student results when printing */
-        .d-none {
-    display: none !important;
-}
-
-/* Show the table only during printing */
-@media print {
-    .d-none {
-        display: block !important;
-    }
-
-    .d-print-block {
-        display: block !important;
-    }
-}
-      </style>
 
 @include('view-file/head')
+
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
 
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Exam Button -->
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-square-poll-vertical text-primary"></i>
+                  Student Examination Results
+                </h3>
+                <p class="erp-table-subtitle">View and print student academic transcripts, grades, and mark sheets</p>
+              </div>
 
-            <!-- Filter Inputs -->
-            <div class="mb-4">
-              <div class="row">
-                <div class="col-md-6">
-                  <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                  <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-                  <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                  <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
+              <!-- Top Action: Enter Marks Button -->
+              <div>
+                <a href="{{ route('result') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus mr-1"></i> Enter New Results
+                </a>
+              </div>
+            </div>
+
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
+
+              <!-- Right: Search & Filter Controls -->
+              <form id="searchForm" method="GET" action="" class="m-0">
+                <div class="erp-filter-group">
+                  <select name="class" id="class" class="erp-filter-select">
+                    <option value="">All Classes</option>
+                    @foreach ($classes as $class)
+                      <option value="{{ $class->id }}" {{ $class->id == request()->query('class') ? 'selected' : '' }}>
+                        {{ $class->name }}
+                      </option>
+                    @endforeach
+                  </select>
+
+                  <select name="section" id="section" class="erp-filter-select">
+                    <option value="">All Sections</option>
+                    @foreach ($sections as $section)
+                      <option value="{{ $section->id }}" {{ $section->id == request()->query('section') ? 'selected' : '' }}>
+                        {{ $section->name }} ({{ $section->classe->name ?? '' }})
+                      </option>
+                    @endforeach
+                  </select>
+
+                  <button type="submit" class="erp-btn-filter-action erp-btn-filter-primary">
+                    <i class="fas fa-filter"></i> Search
+                  </button>
+
+                  <a href="{{ url()->current() }}" class="erp-btn-filter-action erp-btn-filter-reset text-decoration-none">
+                    <i class="fas fa-rotate-left"></i> Reset
+                  </a>
                 </div>
-                <div class="col-md-6">
-                    <form id="searchForm" method="GET" action="" class="mb-4">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <div class="form-group">
+              </form>
+            </div>
 
-                              <select name="class" id="class" class="form-control">
-                                <option value="">Select Section</option>
-
-                                <!-- Populate classes dynamically -->
-                                @foreach ($classes as $class)
-                                  <option value="{{ $class->id }}"
-                                      {{ $class->id == request()->query('class') ? 'selected' : '' }}>
-                                      {{ $class->name }}
-                                  </option>
-                                @endforeach
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-md-4">
-                            <div class="form-group">
-
-                              <select name="section" id="section" class="form-control">
-                                <option value="">Select Section</option>
-                                <!-- Populate sections dynamically -->
-                                @foreach ($sections as $section)
-                                  <option value="{{ $section->id }}"
-                                      {{ $section->id == request()->query('section') ? 'selected' : '' }}>
-                                      {{ $section->name }}, {{$section->classe->name}}
-                                  </option>
-                                @endforeach
-                              </select>
-                            </div>
-                          </div>
-
-                          <div class="col-md-4">
-                            <div class="mt-1"></span>
-                            <button type="submit" class="btn btn-primary">Search</button>
-                          </div>
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="resultsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 30%;">Student Profile</th>
+                    <th style="width: 22%;">Class</th>
+                    <th style="width: 22%;">Section</th>
+                    <th style="width: 110px;" class="text-center">Mark Sheet</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($students as $student)
+                  <tr>
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="erp-user-avatar" style="width: 28px; height: 28px; font-size: 11px;">
+                          {{ strtoupper(substr($student->name, 0, 2)) }}
                         </div>
-                      </form>
-                </div>
-              </div>
+                        <div>
+                          <span class="font-weight-semibold text-dark">{{ $student->name }}</span>
+                          <small class="d-block text-muted" style="font-size: 10.5px;">Reg: {{ $student->registration ?? 'N/A' }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-primary">
+                        {{ $student->class->name ?? 'Class' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-purple">
+                        {{ $student->section->name ?? 'Section' }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      @php
+                        $examFound = false;
+                      @endphp
+                      @foreach ($exams as $exam)
+                        @if($exam->class_id == $student->class_id && $exam->section_id == $student->section_id)
+                          <a href="{{ route('result-view', ['id' => $student->id]) }}" class="btn btn-xs btn-outline-primary font-weight-semibold" title="View Result Sheet">
+                            <i class="fas fa-file-lines mr-1"></i> View Result
+                          </a>
+                          @php
+                            $examFound = true;
+                            break;
+                          @endphp
+                        @endif
+                      @endforeach
+
+                      @if (!$examFound)
+                        <a href="{{ route('not_Found') }}" class="btn btn-xs btn-outline-secondary font-weight-medium" title="No Results Entered">
+                          <i class="fas fa-circle-question mr-1"></i> Not Available
+                        </a>
+                      @endif
+                    </td>
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                      <i class="fas fa-square-poll-vertical mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No student results found for this class and section.
+                    </td>
+                  </tr>
+                  @endforelse
+                </tbody>
+              </table>
             </div>
 
-            <!-- Exams Table -->
-            <div class="card mt-5">
-              <div class="card-body">
-                <h4 class="card-title">Result</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center">
-                    <thead>
-                      <tr>
-                        <th>Sr.no</th>
-                        <th>Student Name</th>
-                        <th>Class</th>
-                        <th>Section</th>
-                        <th>View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $count = 0;
-                        @endphp
-                        @foreach ($students as $student)
-                            <tr>
-                                <td>{{ ++$count }}</td>
-                                <td>{{ $student->name }}</td>
-                                <td>{{ $student->class->name }}</td>
-                                <td>{{ $student->section->name }} , {{$student->section->classe->name}}</td>
-                                <td>
-                                    @php
-                                        $examFound = false;
-                                    @endphp
-                                    @foreach ($exams as $exam)
-                                        @if($exam->class_id == $student->class_id && $exam->section_id == $student->section_id)
-                                            <a href="{{ route('result-view', ['id' => $student->id]) }}" class="dropdown-item text-info" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            @php
-                                                $examFound = true;
-                                                break; // Exit the loop once an exam is found
-                                            @endphp
-                                        @endif
-                                    @endforeach
-
-                                    @if (!$examFound)
-                                    <a href="{{ route('not_Found') }}" class="dropdown-item text-info" title="View">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    @endif
-                                </td>
-                            </tr>
-
-                        @endforeach
-                    </tbody>
-                  </table>
-
-                 
-                <!-- Add a class to hide the table by default -->
-
-
-
-                </div>
-
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info">
+                Showing 1 to {{ count($students) }} of {{ count($students) }} students
               </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
             </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
+
     </div>
   </div>
+
   @include('view-file.script')
 
-  <!-- Filter and Suggestion Script -->
+  <!-- Export Functionality -->
   <script>
-    function filterTable(inputElement, columnIndex, suggestionListId) {
-      const filter = inputElement.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      const suggestionList = document.getElementById(suggestionListId);
-      suggestionList.innerHTML = '';
-      let hasSuggestions = false;
-
-      rows.forEach(row => {
-        const cellText = row.querySelector(`td:nth-child(${columnIndex})`).textContent.toLowerCase();
-        if (cellText.includes(filter)) {
-          row.style.display = '';
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = cellText;
-          suggestionItem.addEventListener('click', function() {
-            inputElement.value = cellText;
-            suggestionList.style.display = 'none';
-            rows.forEach(r => {
-              const name = r.querySelector(`td:nth-child(${columnIndex})`).textContent.toLowerCase();
-              r.style.display = name === cellText ? '' : 'none';
-            });
-          });
-          suggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      suggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    }
-
-    document.getElementById('filterClass').addEventListener('keyup', function() {
-      filterTable(this, 3, 'classSuggestionList');
-    });
-
-    document.getElementById('filterSection').addEventListener('keyup', function() {
-      filterTable(this, 4, 'sectionSuggestionList');
-    });
-
-    document.addEventListener('click', function(event) {
-      ['filterClass', 'filterSection'].forEach(id => {
-        const inputElement = document.getElementById(id);
-        const suggestionList = document.getElementById(inputElement.nextElementSibling.id);
-        if (!inputElement.contains(event.target)) {
-          suggestionList.style.display = 'none';
-        }
-      });
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
 
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
-          text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            return document.getElementById('resultsTable').innerText;
           }
+        }).on('success', function () {
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: 'Results table copied', showConfirmButton: false, timer: 2000
+          });
         });
       }
 
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#resultsTable tr');
+          rows.forEach(row => {
+            let cols = row.querySelectorAll('th, td');
+            let rowData = [];
+            for (let i = 0; i < cols.length - 1; i++) {
+              rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+            csv.push(rowData.join(','));
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'results_sheet.csv';
+          link.click();
         });
       }
 
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('resultsTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Results' });
+          XLSX.writeFile(wb, 'results_sheet.xlsx');
         });
       }
 
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Student Examination Results", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#resultsTable',
+              startY: 45,
+              columns: [0, 1, 2, 3],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('results_sheet.pdf');
+          }
         });
       }
     });
   </script>
-  {{-- ////////////////////////for print --}}
-<script>
-  document.getElementById('printResultBtn').addEventListener('click', function () {
-  var printContents = document.getElementById('examsTable').outerHTML;
-  var originalContents = document.body.innerHTML;
-  document.body.innerHTML = printContents;
-  window.print();
-  document.body.innerHTML = originalContents;
-});
 
-</script>
-
-  <!-- SweetAlert Error Message -->
   @if(session('message'))
   <script>
-      Swal.fire({
-          title: 'Error!',
-          text: "{{ session('message') }}",
-          icon: 'error',
-          confirmButtonText: 'OK'
-      });
+    Swal.fire({
+      title: 'Notice',
+      text: "{{ session('message') }}",
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
   </script>
   @endif
 </body>

@@ -12,11 +12,13 @@ namespace PHPUnit\Framework\MockObject\Rule;
 use function count;
 use function sprintf;
 use Exception;
+use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsAnything;
 use PHPUnit\Framework\Constraint\IsEqual;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\Invocation as BaseInvocation;
+use PHPUnit\Util\Test;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -40,7 +42,7 @@ final class Parameters implements ParametersRule
     public function __construct(array $parameters)
     {
         foreach ($parameters as $parameter) {
-            if (!($parameter instanceof Constraint)) {
+            if (!$parameter instanceof Constraint) {
                 $parameter = new IsEqual(
                     $parameter,
                 );
@@ -89,7 +91,7 @@ final class Parameters implements ParametersRule
         }
 
         if ($this->invocation === null) {
-            throw new ExpectationFailedException('Mocked method does not exist.');
+            throw new ExpectationFailedException('Doubled method does not exist.');
         }
 
         if (count($this->invocation->parameters()) < count($this->parameters)) {
@@ -104,17 +106,26 @@ final class Parameters implements ParametersRule
                 $message .= "\nTo allow 0 or more parameters with any value, omit ->with() or use ->withAnyParameters() instead.";
             }
 
+            $this->incrementAssertionCount();
+
             throw new ExpectationFailedException(
                 sprintf($message, $this->invocation->toString()),
             );
         }
 
         foreach ($this->parameters as $i => $parameter) {
+            if ($parameter instanceof Callback && $parameter->isVariadic()) {
+                $other = $this->invocation->parameters();
+            } else {
+                $other = $this->invocation->parameters()[$i];
+            }
+
+            $this->incrementAssertionCount();
+
             $parameter->evaluate(
-                $this->invocation->parameters()[$i],
+                $other,
                 sprintf(
-                    'Parameter %s for invocation %s does not match expected ' .
-                    'value.',
+                    'Parameter %s for invocation %s does not match expected value.',
                     $i,
                     $this->invocation->toString(),
                 ),
@@ -134,5 +145,10 @@ final class Parameters implements ParametersRule
         }
 
         return (bool) $this->parameterVerificationResult;
+    }
+
+    private function incrementAssertionCount(): void
+    {
+        Test::currentTestCase()->addToAssertionCount(1);
     }
 }

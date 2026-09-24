@@ -9,307 +9,332 @@
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
       
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Employee Button -->
-            <div class="mb-4">
-              <a href="{{ route('employees_create') }}" class="btn btn-primary">Add New Employee</a>
-            </div>
-          <!-- Filter Inputs -->
-<div class="mb-3 row">
-  <div class="col-6">
-    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-  </div>
-  <div class="col-md-2">
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary" placeholder="Filter by Name">
-    <!-- Hidden Suggestion List -->
-    <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
-  <div class="col-md-2">
-    <input type="text" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Role"> 
-    <!-- Hidden Suggestion List -->
-    <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
-  <div class="col-md-2">
-    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
-  </div>
-</div>
-            <!-- Employees Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Employees List</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center" id="examsTable">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Jioning</th>
-                       
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                       
-                        <th><i class="fa fa-ellipsis-h"></i></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Example Row, you can dynamically generate rows using Blade templates -->
-                      @php
-                          $count=0;
-                      @endphp
-                      @foreach ($employees as $employee)
-                      <tr>
-                        <td>{{ ++$count }}</td>
-                        <td>{{ $employee->joining_date }}</td>
-                       
-                        <td><img src="{{ asset('storage/' . $employee->image) }}" alt="Employee Image" style="width: 25px; height: auto;margin-right:4px">{{$employee->name  }}</td>
-                        <td>{{$employee->email }}</td>
-                        <td>{{$employee->designation->name  }}</td>
-                        <td><a class='btn btn-sm btn-success '>{{ $employee->status }}</a></td>
-                      
-                        <td>
-                          <!-- View Button -->
-                          <a href="{{ route('employees_show',['id' => $employee->id] ) }}" class="btn btn-info btn-sm" title="View">
-                            <i class="fas fa-eye"></i>
-                          </a>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-users text-primary"></i>
+                  Employees & Staff Directory
+                </h3>
+                <p class="erp-table-subtitle">Manage faculty profiles, employee designations, contact details, and employment statuses</p>
+              </div>
 
-                          <!-- Edit Button -->
-                          <a href="{{ route('employees_edit',  ['id' => $employee->id]) }}" class="btn btn-warning btn-sm" title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </a>
-
-                          <!-- Delete Button -->
-                          <form id="delete-form-{{ $employee->id }}" action="{{ route('employees_delete', ['id' => $employee->id]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $employee->id }})">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                          
-                        </td>
-                      </tr>
-                      @endforeach
-                      
-                      <!-- Add more rows here -->
-                    </tbody>
-                  </table>
-                </div>
+              <!-- Top Action: Add New Employee Button -->
+              <div>
+                <a href="{{ route('employees_create') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-user-plus mr-1"></i> Add New Employee
+                </a>
               </div>
             </div>
+
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
+
+              <!-- Right: Search & Filter Controls -->
+              <div class="erp-filter-group">
+                <div class="erp-input-icon-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="filterEmployeeName" placeholder="Search employee..." autocomplete="off">
+                </div>
+
+                <div class="erp-input-icon-wrapper" style="width: 150px;">
+                  <i class="fas fa-id-badge"></i>
+                  <input type="text" id="filterDesignation" placeholder="Filter role/title..." autocomplete="off">
+                </div>
+
+                <button type="button" id="btnFilterSearch" class="erp-btn-filter-action erp-btn-filter-primary">
+                  <i class="fas fa-filter"></i> Search
+                </button>
+
+                <button type="button" id="btnFilterReset" class="erp-btn-filter-action erp-btn-filter-reset">
+                  <i class="fas fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="employeesTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 25%;">Employee Profile</th>
+                    <th style="width: 20%;">Email Address</th>
+                    <th style="width: 16%;">Designation / Role</th>
+                    <th style="width: 13%;" class="text-center">Joining Date</th>
+                    <th style="width: 12%;" class="text-center">Status</th>
+                    <th style="width: 110px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="employeesTableBody">
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($employees as $employee)
+                  <tr data-name="{{ strtolower($employee->name) }}" data-role="{{ strtolower($employee->designation->name ?? '') }}">
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        @if($employee->image && $employee->image !== 'default.png')
+                          <img src="{{ asset('storage/' . $employee->image) }}" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;" alt="{{ $employee->name }}">
+                        @else
+                          <div class="erp-user-avatar" style="width: 28px; height: 28px; font-size: 11px;">
+                            {{ strtoupper(substr($employee->name, 0, 2)) }}
+                          </div>
+                        @endif
+                        <span class="font-weight-semibold text-dark">{{ $employee->name }}</span>
+                      </div>
+                    </td>
+                    <td class="text-secondary text-xs">
+                      {{ $employee->email }}
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-primary font-weight-medium">
+                        {{ $employee->designation->name ?? 'Staff' }}
+                      </span>
+                    </td>
+                    <td class="text-center text-xs text-muted">
+                      {{ $employee->joining_date ?? '—' }}
+                    </td>
+                    <td class="text-center">
+                      <span class="badge badge-soft-success">
+                        <span class="dot" style="width: 5px; height: 5px; border-radius: 50%; background-color: #10b981; display: inline-block;"></span>
+                        {{ ucfirst($employee->status ?? 'Active') }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- View Profile Button -->
+                        <a href="{{ route('employees_show', ['id' => $employee->id]) }}" class="erp-action-btn view" title="View Profile">
+                          <i class="fas fa-eye"></i>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <a href="{{ route('employees_edit', ['id' => $employee->id]) }}" class="erp-action-btn edit" title="Edit Employee">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-employee-{{ $employee->id }}" action="{{ route('employees_delete', ['id' => $employee->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Employee" onclick="confirmDelete({{ $employee->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr id="emptyRow">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-users mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No employees added yet. Click <strong>"Add New Employee"</strong> to register staff.
+                    </td>
+                  </tr>
+                  @endforelse
+                  <tr id="noResultsRow" style="display: none;">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching employee records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info" id="tableRecordInfo">
+                Showing 1 to {{ count($employees) }} of {{ count($employees) }} employees
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
+
   @include('view-file.script')
+
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
     function confirmDelete(employeeId) {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Delete Employee?',
+        text: "This action will permanently delete the employee profile.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
-          document.getElementById('delete-form-' + employeeId).submit();
+          document.getElementById('delete-employee-' + employeeId).submit();
         }
-      })
+      });
     }
-
- // Filter by Date
-const filterDateInput = document.getElementById('filterDate');
-
-filterDateInput.addEventListener('input', function() {
-  const filterDate = this.value;
-  const rows = document.querySelectorAll('#examsTable tbody tr');
-
-  rows.forEach(row => {
-    const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
-    const dateParts = date.split('-');
-    const dateObject = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-
-    if (filterDate) {
-      const filterDateObject = new Date(filterDate);
-      if (dateObject.getTime() >= filterDateObject.getTime()) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    } else {
-      row.style.display = '';
-    }
-  });
-});
   </script>
- <!-- Filter and Suggestion Script -->
-<script>
-  // Filter by Name with Suggestions
-  const filterNameInput = document.getElementById('filterName');
-  const nameSuggestionList = document.getElementById('nameSuggestionList');
 
-  filterNameInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
+  <!-- Filter & Export Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nameInput = document.getElementById('filterEmployeeName');
+      const roleInput = document.getElementById('filterDesignation');
+      const searchBtn = document.getElementById('btnFilterSearch');
+      const resetBtn = document.getElementById('btnFilterReset');
+      const tableRows = document.querySelectorAll('#employeesTableBody tr[data-name]');
+      const noResultsRow = document.getElementById('noResultsRow');
+      const infoText = document.getElementById('tableRecordInfo');
+      const totalCount = tableRows.length;
 
-    rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
-      if (name.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = name;
-        suggestionItem.addEventListener('click', function() {
-          filterNameInput.value = name;
-          nameSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
-            r.style.display = n === name ? '' : 'none';
-          });
-        });
-        nameSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
+      function filterTable() {
+        const queryName = nameInput.value.trim().toLowerCase();
+        const queryRole = roleInput.value.trim().toLowerCase();
+        let visibleCount = 0;
 
-    nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
+        tableRows.forEach(row => {
+          const rowName = row.getAttribute('data-name') || '';
+          const rowRole = row.getAttribute('data-role') || '';
 
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterNameInput.contains(event.target)) {
-      nameSuggestionList.style.display = 'none';
-    }
-  });
+          const matchName = !queryName || rowName.includes(queryName);
+          const matchRole = !queryRole || rowRole.includes(queryRole);
 
-  // Filter by Designation with Suggestions
-  const filterDesignationInput = document.getElementById('filterDesignation');
-  const designationSuggestionList = document.getElementById('designationSuggestionList');
-
-  filterDesignationInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    designationSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
-
-    rows.forEach(row => {
-      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
-      if (designation.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = designation;
-        suggestionItem.addEventListener('click', function() {
-          filterDesignationInput.value = designation;
-          designationSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
-            r.style.display = d === designation ? '' : 'none';
-          });
-        });
-        designationSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-    designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
-
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterDesignationInput.contains(event.target)) {
-      designationSuggestionList.style.display = 'none';
-    }
-  });
-</script>
-    <script>
-      // Filter by ID
-   
-  
-      document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
-  
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
-          text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+          if (matchName && matchRole) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
           }
         });
+
+        if (noResultsRow) {
+          noResultsRow.style.display = (visibleCount === 0 && totalCount > 0) ? '' : 'none';
+        }
+
+        if (infoText) {
+          infoText.innerText = (visibleCount === totalCount)
+            ? `Showing 1 to ${totalCount} of ${totalCount} employees`
+            : `Showing ${visibleCount} of ${totalCount} filtered employees`;
+        }
       }
-  
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+
+      nameInput.addEventListener('input', filterTable);
+      roleInput.addEventListener('input', filterTable);
+      searchBtn.addEventListener('click', filterTable);
+
+      resetBtn.addEventListener('click', function () {
+        nameInput.value = '';
+        roleInput.value = '';
+        filterTable();
+      });
+
+      // Export functionality
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            return document.getElementById('employeesTable').innerText;
+          }
+        }).on('success', function () {
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: 'Employees table copied', showConfirmButton: false, timer: 2000
+          });
+        });
+      }
+
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#employeesTable tr:not(#noResultsRow)');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
+              }
+              csv.push(rowData.join(','));
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'employees_list.csv';
+          link.click();
         });
       }
-  
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('employeesTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Employees' });
+          XLSX.writeFile(wb, 'employees_list.xlsx');
         });
       }
-  
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Employees Directory", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#employeesTable',
+              startY: 45,
+              columns: [0, 1, 2, 3, 4, 5],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('employees_list.pdf');
+          }
         });
       }
     });
-    </script>
-  
+  </script>
 </body>
-
 </html>

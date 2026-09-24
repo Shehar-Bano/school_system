@@ -1,98 +1,118 @@
-<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      <a class="navbar-brand brand-logo mr-5" href="index.html"><img src="{{asset('assesst/images/logo.svg')}}" class="mr-2" alt="logo"/></a>
-      <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('assesst/images/logo-mini.svg')}}" alt="logo"/></a>
-    </div>
-    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-      <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-        <span class="icon-menu"></span>
-      </button>
-      <ul class="navbar-nav mr-lg-2">
-        <li class="nav-item nav-search d-none d-lg-block">
-          <div class="input-group">
-            <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-              <span class="input-group-text" id="search">
-                <i class="icon-search"></i>
-              </span>
+<nav class="navbar p-0 fixed-top d-flex flex-row">
+    <!-- Brand Logo Area -->
+    <div class="navbar-brand-wrapper d-flex align-items-center justify-content-start">
+        <a class="erp-brand" href="{{ route('dashboard') }}">
+            <div class="erp-brand-logo">
+                <i class="fas fa-graduation-cap"></i>
             </div>
-            <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
-          </div>
-        </li>
-      </ul>
-      <ul class="navbar-nav navbar-nav-right">
-        <li class="nav-item dropdown">
-          <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-            <i class="icon-bell mx-0"></i>
-            <span class="count"></span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-            <a class="dropdown-item preview-item">
-              <div class="preview-thumbnail">
-                <div class="preview-icon bg-success">
-                  <i class="ti-info-alt mx-0"></i>
-                </div>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                <p class="font-weight-light small-text mb-0 text-muted">
-                  Just now
-                </p>
-              </div>
-            </a>
-            <a class="dropdown-item preview-item">
-              <div class="preview-thumbnail">
-                <div class="preview-icon bg-warning">
-                  <i class="ti-settings mx-0"></i>
-                </div>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject font-weight-normal">Settings</h6>
-                <p class="font-weight-light small-text mb-0 text-muted">
-                  Private message
-                </p>
-              </div>
-            </a>
-            <a class="dropdown-item preview-item">
-              <div class="preview-thumbnail">
-                <div class="preview-icon bg-info">
-                  <i class="ti-user mx-0"></i>
-                </div>
-              </div>
-              <div class="preview-item-content">
-                <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                <p class="font-weight-light small-text mb-0 text-muted">
-                  2 days ago
-                </p>
-              </div>
-            </a>
-          </div>
-        </li>
-        <li class="nav-item nav-profile dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-            <img src="{{asset('assesst/images/faces/face28.jpg')}}" alt="profile"/>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-            <a class="dropdown-item">
-              <form method="POST" action="{{ route('logout') }}">
-                  @csrf
-                  <x-dropdown-link :href="route('logout')"
-                          onclick="event.preventDefault();
-                                      this.closest('form').submit();" style="color: black">
-                       <i class="ti-power-off text-primary"></i> {{ __('Log Out') }}
-                  </x-dropdown-link>
-              </form>
-            </a>
-          </div>
-        </li>
-        <li class="nav-item nav-settings d-none d-lg-flex">
-          <a class="nav-link" href="#">
-            <i class="icon-ellipsis"></i>
-          </a>
-        </li>
-      </ul>
-      <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-        <span class="icon-menu"></span>
-      </button>
+            <div class="erp-brand-text">
+                <span class="erp-brand-title">EduSuite</span>
+                <span class="erp-brand-subtitle">School ERP</span>
+            </div>
+        </a>
     </div>
-  </nav>
+
+    <!-- Header Actions & Navigation Menu Wrapper -->
+    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
+        <!-- Left: Toggle Button & Breadcrumbs -->
+        <div class="d-flex align-items-center">
+            <button class="erp-toggle-btn navbar-toggler align-self-center mr-2" type="button" data-toggle="minimize" title="Toggle Sidebar">
+                <i class="fas fa-bars-staggered"></i>
+            </button>
+
+            <div class="erp-breadcrumbs d-none d-md-flex">
+                <a href="{{ route('dashboard') }}"><i class="fas fa-home mr-1"></i> Dashboard</a>
+                <span class="divider"><i class="fas fa-chevron-right"></i></span>
+                <span class="current">Administration Portal</span>
+            </div>
+        </div>
+
+        <!-- Center: Global Quick Search Input -->
+        <div class="d-none d-lg-block">
+            <div class="erp-header-search">
+                <i class="fas fa-magnifying-glass search-icon"></i>
+                <input type="text" id="global-erp-search" placeholder="Search students, teachers, records..." autocomplete="off">
+                <span class="search-badge">⌘K</span>
+            </div>
+        </div>
+
+        <!-- Right: Actions, Term Badge, Notifications & Profile -->
+        <div class="erp-header-actions">
+            <!-- Academic Term Badge -->
+            <div class="erp-term-badge d-none d-sm-inline-flex">
+                <span class="dot"></span>
+                <span>Session 2026-27</span>
+            </div>
+
+            <!-- Notifications Dropdown -->
+            <div class="dropdown">
+                <button class="erp-icon-btn dropdown-toggle" type="button" id="erpNotificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list p-2 shadow-sm" style="width: 290px; border-radius: 8px; border: 1px solid #e2e8f0;" aria-labelledby="erpNotificationDropdown">
+                    <div class="d-flex align-items-center justify-content-between px-2 py-1 mb-2 border-bottom">
+                        <span class="font-weight-bold text-xs text-uppercase text-muted">Notifications</span>
+                        <a href="{{ route('admin.notification') }}" class="text-xs font-weight-bold">View All</a>
+                    </div>
+                    <a class="dropdown-item py-2 px-2 d-flex align-items-start gap-2 rounded" href="{{ route('admin.notification') }}">
+                        <div class="erp-stat-icon-wrapper success" style="width: 28px; height: 28px; font-size: 11px;">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="lh-sm">
+                            <p class="mb-0 font-weight-semibold text-xs text-dark">New Admission Registered</p>
+                            <small class="text-muted" style="font-size: 10px;">5 mins ago</small>
+                        </div>
+                    </a>
+                    <a class="dropdown-item py-2 px-2 d-flex align-items-start gap-2 rounded" href="{{ route('admin.notification') }}">
+                        <div class="erp-stat-icon-wrapper warning" style="width: 28px; height: 28px; font-size: 11px;">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="lh-sm">
+                            <p class="mb-0 font-weight-semibold text-xs text-dark">Fee Collection Recorded</p>
+                            <small class="text-muted" style="font-size: 10px;">1 hour ago</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- User Profile Chip & Dropdown -->
+            <div class="dropdown">
+                <div class="erp-user-chip dropdown-toggle" id="erpProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="erp-user-avatar">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'SA', 0, 2)) }}
+                    </div>
+                    <div class="erp-user-info d-none d-md-flex">
+                        <span class="erp-user-name">{{ Auth::user()->name ?? 'Super Admin' }}</span>
+                        <span class="erp-user-role">{{ ucfirst(Auth::user()->usertype ?? 'Administrator') }}</span>
+                    </div>
+                    <i class="fas fa-chevron-down ml-1 text-muted" style="font-size: 9px;"></i>
+                </div>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown shadow-sm p-1" style="border-radius: 8px; border: 1px solid #e2e8f0; min-width: 170px;" aria-labelledby="erpProfileDropdown">
+                    <div class="px-3 py-2 border-bottom mb-1">
+                        <div class="font-weight-semibold text-xs text-dark">{{ Auth::user()->name ?? 'Super Admin' }}</div>
+                        <div class="text-muted" style="font-size: 10.5px;">{{ Auth::user()->email ?? 'admin@admin.com' }}</div>
+                    </div>
+                    <a class="dropdown-item py-2 px-3 text-xs d-flex align-items-center gap-2 rounded" href="{{ route('profile.edit') }}">
+                        <i class="fas fa-user-gear text-muted" style="width: 14px;"></i> My Profile
+                    </a>
+                    <a class="dropdown-item py-2 px-3 text-xs d-flex align-items-center gap-2 rounded" href="{{ route('admin.notification') }}">
+                        <i class="fas fa-bell text-muted" style="width: 14px;"></i> System Alerts
+                    </a>
+                    <div class="dropdown-divider my-1"></div>
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="dropdown-item py-2 px-3 text-xs text-danger d-flex align-items-center gap-2 rounded font-weight-medium">
+                            <i class="fas fa-arrow-right-from-bracket" style="width: 14px;"></i> Log Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Mobile Drawer Toggler -->
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center er-toggle-btn ml-1" type="button" data-toggle="offcanvas">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>

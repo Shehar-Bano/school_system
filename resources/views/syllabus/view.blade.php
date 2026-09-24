@@ -9,329 +9,309 @@
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
       
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Employee Button -->
-            <div class="mb-4">
-              <a href="{{ route('add_syllabus') }}" class="btn btn-primary">Add New Syllabus</a>
-            </div>
-          <!-- Filter Inputs -->
-<div class="mb-3 row">
-  <div class="col-6">
-    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-  </div>
-  <div class="col-1 text-primary mt-2">
-    Filter By:
-  </div>
-  <div class="col-md-2">
-    
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
-    <!-- Hidden Suggestion List -->
-    <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
-  <div class="col-md-2">
-    <input type="date" id="filterDate" class="form-control btn btn-light btn-outline-primary" placeholder="Filter Date">
-  </div>
-  </div>
- 
-</div>
-            <!-- Employees Table -->
-            <div class="card ">
-              <div class="card-body">
-                <h4 class="card-title">Employees List</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center table-sm" id="examsTable">
-                    <thead >
-                      <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                       
-                      
-                            <th><i class="fa fa-ellipsis-h"></i></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Example Row, you can dynamically generate rows using Blade templates -->
-                      @php
-                          $count=0;
-                      @endphp
-                      @foreach ($syllabuses as $syllabus)
-                      <tr>
-                        <td>{{ ++$count }}</td>
-                        <td>{{$syllabus->date }}</td>
-                        <td>{{ $syllabus->title}}</td>
-                        <td>{{$syllabus->description  }}</td>
-                      
-                        
-                        <td>
-                         
-                              
-                            <!-- View Button -->
-                          <a href="{{ route('syllabus_detail',['id' => $syllabus->id] ) }}" class="btn btn-info btn-sm" title="View">
-                            <i class="fas fa-eye"></i>
-                          </a>
-                       </div>
-                          <!-- Edit Button -->
-                          <a href="{{ route('edit_syllabus',  ['id' => $syllabus->id]) }}" class="btn btn-warning btn-sm" title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </a>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-file-lines text-primary"></i>
+                  Academic Syllabus
+                </h3>
+                <p class="erp-table-subtitle">Manage class syllabus documents, course outlines, terms, and curriculum attachments</p>
+              </div>
 
-                          <!-- Delete Button -->
-                          <form id="delete-form-{{ $syllabus->id }}" action="{{ route('syllabus_delete', ['id' => $syllabus->id]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $syllabus->id }})">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                          
-                        </td>
-                      </tr>
-                      @endforeach
-                      
-                      <!-- Add more rows here -->
-                    </tbody>
-                  </table>
-                </div>
+              <!-- Top Action: Add New Syllabus Button -->
+              <div>
+                <a href="{{ route('add_syllabus') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus mr-1"></i> Add New Syllabus
+                </a>
               </div>
             </div>
+
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
+
+              <!-- Right: Search & Filter Controls -->
+              <div class="erp-filter-group">
+                <div class="erp-input-icon-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="filterSyllabusTitle" placeholder="Search title..." autocomplete="off">
+                </div>
+
+                <input type="date" id="filterDate" class="form-control" style="height: 34px; width: 140px; font-size: 12px;">
+
+                <button type="button" id="btnFilterSearch" class="erp-btn-filter-action erp-btn-filter-primary">
+                  <i class="fas fa-filter"></i> Search
+                </button>
+
+                <button type="button" id="btnFilterReset" class="erp-btn-filter-action erp-btn-filter-reset">
+                  <i class="fas fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="syllabusTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 15%;" class="text-center">Publish Date</th>
+                    <th style="width: 25%;">Title / Topic</th>
+                    <th style="width: 40%;">Description & Objectives</th>
+                    <th style="width: 120px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="syllabusTableBody">
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($syllabuses as $syllabus)
+                  <tr data-title="{{ strtolower($syllabus->title) }}" data-date="{{ $syllabus->date }}">
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td class="text-center">
+                      <span class="badge badge-soft-primary font-weight-medium">
+                        <i class="fas fa-calendar-day mr-1 text-xs"></i> {{ $syllabus->date }}
+                      </span>
+                    </td>
+                    <td class="font-weight-semibold text-dark">
+                      {{ $syllabus->title }}
+                    </td>
+                    <td class="text-secondary text-xs">
+                      {{ \Illuminate\Support\Str::limit($syllabus->description, 100) }}
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- View Detail Button -->
+                        <a href="{{ route('syllabus_detail', ['id' => $syllabus->id]) }}" class="erp-action-btn view" title="View Syllabus Details">
+                          <i class="fas fa-eye"></i>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <a href="{{ route('edit_syllabus', ['id' => $syllabus->id]) }}" class="erp-action-btn edit" title="Edit Syllabus">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-syllabus-{{ $syllabus->id }}" action="{{ route('syllabus_delete', ['id' => $syllabus->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Syllabus" onclick="confirmDelete({{ $syllabus->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr id="emptyRow">
+                    <td colspan="5" class="text-center py-4 text-muted">
+                      <i class="fas fa-file-lines mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No syllabus published yet. Click <strong>"Add New Syllabus"</strong> to upload course material.
+                    </td>
+                  </tr>
+                  @endforelse
+                  <tr id="noResultsRow" style="display: none;">
+                    <td colspan="5" class="text-center py-4 text-muted">
+                      <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching syllabus records found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info" id="tableRecordInfo">
+                Showing 1 to {{ count($syllabuses) }} of {{ count($syllabuses) }} records
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
-  @include('view-file.script')
- 
 
-<script>
-  function downloadFile(file) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/download_file/${file}`, true);
-    xhr.responseType = 'blob';
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        const blob = xhr.response;
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file;
-        a.click();
-      }
-    };
-    xhr.send();
-  }
-</script>
+  @include('view-file.script')
+
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
-    function confirmDelete(employeeId) {
+    function confirmDelete(syllabusId) {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Delete Syllabus?',
+        text: "This action will permanently delete this syllabus outline.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
-          document.getElementById('delete-form-' + employeeId).submit();
-        }
-      })
-    }
-
- 
-</script>
-<script>
-  // Filter by Date
-  const filterDateInput = document.getElementById('filterDate');
-
-  filterDateInput.addEventListener('change', function() {
-    const filterDate = this.value;
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-
-    if (filterDate) {
-      rows.forEach(row => {
-        const date = row.querySelector('td:nth-child(2)').textContent; // assuming date is in 2nd column
-        const filterDateObj = new Date(filterDate);
-        const dateObj = new Date(date);
-
-        if (dateObj.toDateString() === filterDateObj.toDateString()) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
+          document.getElementById('delete-syllabus-' + syllabusId).submit();
         }
       });
-    } else {
-      // If filter date is cleared, show all rows
-      rows.forEach(row => {
-        row.style.display = '';
-      });
     }
-  });
-</script>
- <!-- Filter and Suggestion Script -->
-<script>
-  // Filter by Name with Suggestions
-  const filterNameInput = document.getElementById('filterName');
-  const nameSuggestionList = document.getElementById('nameSuggestionList');
+  </script>
 
-  filterNameInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
+  <!-- Filter & Export Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const titleInput = document.getElementById('filterSyllabusTitle');
+      const dateInput = document.getElementById('filterDate');
+      const searchBtn = document.getElementById('btnFilterSearch');
+      const resetBtn = document.getElementById('btnFilterReset');
+      const tableRows = document.querySelectorAll('#syllabusTableBody tr[data-title]');
+      const noResultsRow = document.getElementById('noResultsRow');
+      const infoText = document.getElementById('tableRecordInfo');
+      const totalCount = tableRows.length;
 
-    rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase(); // assuming name is in 4th column
-      if (name.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = name;
-        suggestionItem.addEventListener('click', function() {
-          filterNameInput.value = name;
-          nameSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(3)').textContent.toLowerCase();
-            r.style.display = n === name ? '' : 'none';
-          });
-        });
-        nameSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
+      function filterTable() {
+        const queryTitle = titleInput.value.trim().toLowerCase();
+        const queryDate = dateInput.value;
+        let visibleCount = 0;
 
-    nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
+        tableRows.forEach(row => {
+          const rowTitle = row.getAttribute('data-title') || '';
+          const rowDate = row.getAttribute('data-date') || '';
 
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterNameInput.contains(event.target)) {
-      nameSuggestionList.style.display = 'none';
-    }
-  });
+          const matchTitle = !queryTitle || rowTitle.includes(queryTitle);
+          const matchDate = !queryDate || rowDate === queryDate;
 
-  // Filter by Designation with Suggestions
-  const filterDesignationInput = document.getElementById('filterDesignation');
-  const designationSuggestionList = document.getElementById('designationSuggestionList');
-
-  filterDesignationInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    designationSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
-
-    rows.forEach(row => {
-      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
-      if (designation.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = designation;
-        suggestionItem.addEventListener('click', function() {
-          filterDesignationInput.value = designation;
-          designationSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
-            r.style.display = d === designation ? '' : 'none';
-          });
-        });
-        designationSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-    designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
-
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterDesignationInput.contains(event.target)) {
-      designationSuggestionList.style.display = 'none';
-    }
-  });
-</script>
-    <script>
-      // Filter by ID
-   
-  
-      document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
-  
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
-          text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+          if (matchTitle && matchDate) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
           }
         });
+
+        if (noResultsRow) {
+          noResultsRow.style.display = (visibleCount === 0 && totalCount > 0) ? '' : 'none';
+        }
+
+        if (infoText) {
+          infoText.innerText = (visibleCount === totalCount)
+            ? `Showing 1 to ${totalCount} of ${totalCount} records`
+            : `Showing ${visibleCount} of ${totalCount} filtered records`;
+        }
       }
-  
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+
+      titleInput.addEventListener('input', filterTable);
+      dateInput.addEventListener('change', filterTable);
+      searchBtn.addEventListener('click', filterTable);
+
+      resetBtn.addEventListener('click', function () {
+        titleInput.value = '';
+        dateInput.value = '';
+        filterTable();
+      });
+
+      // Export functionality
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            return document.getElementById('syllabusTable').innerText;
+          }
+        }).on('success', function () {
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: 'Syllabus table copied', showConfirmButton: false, timer: 2000
+          });
+        });
+      }
+
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#syllabusTable tr:not(#noResultsRow)');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
+              }
+              csv.push(rowData.join(','));
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'syllabus_list.csv';
+          link.click();
         });
       }
-  
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('syllabusTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Syllabus' });
+          XLSX.writeFile(wb, 'syllabus_list.xlsx');
         });
       }
-  
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Syllabus List", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#syllabusTable',
+              startY: 45,
+              columns: [0, 1, 2, 3],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('syllabus_list.pdf');
+          }
         });
       }
     });
-    </script>
-  
+  </script>
 </body>
-
 </html>

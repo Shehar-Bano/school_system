@@ -1,31 +1,159 @@
-<!-- plugins:js -->
-<script src="{{asset('assesst/vendors/js/vendor.bundle.base.js')}}"></script>
-<!-- endinject -->
-<!-- Plugin js for this page -->
-<script src="{{asset('assesst/vendors/chart.js/Chart.min.js')}}"></script>
-<script src="{{asset('assesst/vendors/datatables.net/jquery.dataTables.js')}}"></script>
-<script src="{{asset('assesst/vendors/datatables.net-bs4/dataTables.bootstrap4.js')}}"></script>
-<script src="{{asset('js/dataTables.select.min.js')}}"></script>
+<!-- Core Vendor Bundle -->
+<script src="{{ asset('assesst/vendors/js/vendor.bundle.base.js') }}"></script>
 
-<!-- End plugin js for this page -->
-<!-- inject:js -->
-<script src="{{asset('assesst/js/off-canvas.js')}}"></script>
-<script src="{{asset('assesst/js/hoverable-collapse.js')}}"></script>
-<script src="{{asset('assesst/js/template.js')}}"></script>
-<script src="{{asset('assesst/js/settings.js')}}"></script>
-<script src="{{asset('assesst/js/todolist.js')}}"></script>
-<!-- endinject -->
-<!-- Custom js for this page-->
-<script src="{{asset('assesst/js/dashboard.js')}}"></script>
-<script src="{{asset('assesst/js/Chart.roundedBarCharts.js')}}"></script>
-<!-- End custom js for this page-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-<!-- jsPDF -->
+<!-- Vendor Plugins -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+<!-- Template Scripts -->
+<script src="{{ asset('assesst/js/off-canvas.js') }}"></script>
+<script src="{{ asset('assesst/js/hoverable-collapse.js') }}"></script>
+<script src="{{ asset('assesst/js/template.js') }}"></script>
+
+<!-- Optional Export Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- SheetJS (Excel) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
-<!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
-<!-- jsPDF AutoTable Plugin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Modern ERP Dashboard Charts Initialization -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Financial Performance Bar / Line Chart
+    const revenueCanvas = document.getElementById('revenue-chart');
+    if (revenueCanvas) {
+        const ctxRev = revenueCanvas.getContext('2d');
+        const income = {{ isset($income) ? (int)$income : 0 }};
+        const expenses = {{ isset($expence) ? (int)$expence : 0 }};
+        const salaries = {{ isset($totalSalary) ? (int)$totalSalary : 0 }};
+        const netSurplus = Math.max(0, income - (expenses + salaries));
+
+        new Chart(ctxRev, {
+            type: 'bar',
+            data: {
+                labels: ['Fee Inflow', 'Staff Salaries', 'Operating Expenses', 'Net Balance'],
+                datasets: [{
+                    label: 'Amount (PKR)',
+                    data: [income, salaries, expenses, netSurplus],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.85)', // Emerald
+                        'rgba(79, 70, 229, 0.85)',  // Indigo
+                        'rgba(239, 68, 68, 0.85)',   // Rose
+                        'rgba(245, 158, 11, 0.85)'   // Amber
+                    ],
+                    borderColor: [
+                        '#10b981',
+                        '#4f46e5',
+                        '#ef4444',
+                        '#f59e0b'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    barThickness: 28
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 12, weight: '600', family: 'Plus Jakarta Sans' },
+                        bodyFont: { size: 11, family: 'Plus Jakarta Sans' },
+                        padding: 8,
+                        cornerRadius: 6,
+                        callbacks: {
+                            label: function(context) {
+                                return ' Rs. ' + Number(context.raw).toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#64748b',
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: '500' }
+                        }
+                    },
+                    y: {
+                        grid: { color: '#f1f5f9' },
+                        ticks: {
+                            color: '#64748b',
+                            font: { size: 10.5, family: 'Plus Jakarta Sans' },
+                            callback: function(val) {
+                                return val >= 1000 ? (val / 1000) + 'k' : val;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Attendance Doughnut Chart
+    const attCanvas = document.getElementById('student-attendance-chart');
+    if (attCanvas) {
+        const ctxAtt = attCanvas.getContext('2d');
+        const presentCount = {{ (isset($studentAttendance) && is_iterable($studentAttendance)) ? $studentAttendance->sum('present') : 0 }};
+        const absentCount = {{ (isset($studentAttendance) && is_iterable($studentAttendance)) ? $studentAttendance->sum('absent') : 0 }};
+        const leaveCount = {{ (isset($studentAttendance) && is_iterable($studentAttendance)) ? $studentAttendance->sum('leave') : 0 }};
+        const lateCount = {{ (isset($studentAttendance) && is_iterable($studentAttendance)) ? $studentAttendance->sum('late') : 0 }};
+
+        new Chart(ctxAtt, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent', 'Leave', 'Late'],
+                datasets: [{
+                    data: [
+                        presentCount || 1,
+                        absentCount || 0,
+                        leaveCount || 0,
+                        lateCount || 0
+                    ],
+                    backgroundColor: [
+                        '#10b981', // Emerald
+                        '#ef4444', // Rose
+                        '#f59e0b', // Amber
+                        '#8b5cf6'  // Purple
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 11, weight: '600' },
+                        bodyFont: { size: 11 },
+                        padding: 8,
+                        cornerRadius: 6
+                    }
+                }
+            }
+        });
+    }
+
+    // Global Search shortcut (Ctrl+K or Cmd+K)
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('global-erp-search');
+            if (searchInput) {
+                searchInput.focus();
+            }
+        }
+    });
+});
+</script>

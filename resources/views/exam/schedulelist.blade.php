@@ -1,257 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
-    <style>
-        /* Add space between student results when printing */
-        .d-none {
-    display: none !important;
-}
 
-/* Show the table only during printing */
-@media print {
-    .d-none {
-        display: block !important;
-    }
-
-    .d-print-block {
-        display: block !important;
-    }
-}
-      </style>
 @include('view-file/head')
+
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
 
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Exam Button -->
-            <div class="mb-4">
-              <a href="{{ route('exam-schedule') }}" class="btn btn-primary">Add New Schedule</a>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-calendar-check text-primary"></i>
+                  Exam Schedules
+                </h3>
+                <p class="erp-table-subtitle">Manage examination timetables, classroom date sheets, and result printing</p>
+              </div>
 
-
+              <!-- Top Action: Add New Schedule Button -->
+              <div>
+                <a href="{{ route('exam-schedule') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus mr-1"></i> Add New Schedule
+                </a>
+              </div>
             </div>
 
-            <!-- Filter Inputs -->
-            <div class="mb-4">
-                <div class="row">
-                  <div class="col-md-4">
-                    {{-- <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button> --}}
-                    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-                  </div>
-                  <div class="col-md-8">
-                      <form id="searchForm" method="GET" action="" class="mb-4">
-                          <div class="row">
-                            <div class="col-md-3">
-                              <div class="form-group">
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
 
-                                <select name="class" id="class" class="form-control">
-                                  <option value="">Select Section</option>
+              <!-- Right: Search & Filter Controls -->
+              <form id="searchForm" method="GET" action="" class="m-0">
+                <div class="erp-filter-group">
+                  <select name="class" id="class" class="erp-filter-select">
+                    <option value="">All Classes</option>
+                    @foreach ($classes as $class)
+                      <option value="{{ $class->id }}" {{ $class->id == request()->query('class') ? 'selected' : '' }}>
+                        {{ $class->name }}
+                      </option>
+                    @endforeach
+                  </select>
 
-                                  <!-- Populate classes dynamically -->
-                                  @foreach ($classes as $class)
-                                    <option value="{{ $class->id }}"
-                                        {{ $class->id == request()->query('class') ? 'selected' : '' }}>
-                                        {{ $class->name }}
-                                    </option>
-                                  @endforeach
-                                </select>
-                              </div>
-                            </div>
-                            <div class="col-md-3">
-                              <div class="form-group">
+                  <select name="section" id="section" class="erp-filter-select">
+                    <option value="">All Sections</option>
+                    @foreach ($sections as $section)
+                      <option value="{{ $section->id }}" {{ $section->id == request()->query('section') ? 'selected' : '' }}>
+                        {{ $section->name }} ({{ $section->classe->name ?? '' }})
+                      </option>
+                    @endforeach
+                  </select>
 
-                                <select name="section" id="section" class="form-control">
-                                  <option value="">Select Section</option>
-                                  <!-- Populate sections dynamically -->
-                                  @foreach ($sections as $section)
-                                    <option value="{{ $section->id }}"
-                                        {{ $section->id == request()->query('section') ? 'selected' : '' }}>
-                                        {{ $section->name }}, {{$section->classe->name}}
-                                    </option>
-                                  @endforeach
-                                </select>
-                              </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
+                  <select name="exam" id="exam" class="erp-filter-select">
+                    <option value="">All Exams</option>
+                    @foreach ($exams as $exam)
+                      <option value="{{ $exam->id }}" {{ $exam->id == request()->query('exam') ? 'selected' : '' }}>
+                        {{ $exam->name }}
+                      </option>
+                    @endforeach
+                  </select>
 
-                                  <select name="exam" id="exam" class="form-control">
-                                    <option value="">Select Section</option>
-                                    <!-- Populate sections dynamically -->
-                                    @foreach ($exams as $exam)
-                                      <option value="{{ $exam->id }}"
-                                          {{ $exam->id == request()->query('exam') ? 'selected' : '' }}>
-                                          {{ $exam->name }}
-                                      </option>
-                                    @endforeach
-                                  </select>
-                                </div>
-                              </div>
+                  <button type="submit" class="erp-btn-filter-action erp-btn-filter-primary">
+                    <i class="fas fa-filter"></i> Search
+                  </button>
 
-                            <div class="col-md-3">
-                              <div class="mt-1"></span>
-                              <button type="submit" class="btn btn-primary">Search</button>
-                            </div>
-                          </div>
+                  <a href="{{ url()->current() }}" class="erp-btn-filter-action erp-btn-filter-reset text-decoration-none">
+                    <i class="fas fa-rotate-left"></i> Reset
+                  </a>
+                </div>
+              </form>
+            </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="examsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 24%;">Exam Name</th>
+                    <th style="width: 16%;">Class</th>
+                    <th style="width: 16%;">Section</th>
+                    <th style="width: 24%;" class="text-center">Schedule Duration</th>
+                    <th style="width: 140px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($examschedules as $schedule)
+                  <tr>
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td class="font-weight-semibold text-dark">
+                      <span class="badge badge-soft-primary mr-1" style="font-size: 11px;">
+                        <i class="fas fa-file-pen text-xs mr-1"></i> {{ $schedule->exam->name ?? 'Exam' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-primary">
+                        {{ $schedule->class->name ?? 'Class' }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-purple">
+                        {{ $schedule->section->name ?? 'Section' }}
+                      </span>
+                    </td>
+                    <td class="text-center text-xs">
+                      <span class="badge badge-soft-warning font-weight-medium">
+                        <i class="fas fa-calendar-day mr-1 text-xs"></i> {{ $schedule->start_date }} → {{ $schedule->end_date }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- Print Result Button -->
+                        <a href="{{ route('exam-result', ['id' => $schedule->id]) }}" class="erp-action-btn view" title="Print Result">
+                          <i class="fas fa-print"></i>
+                        </a>
+
+                        <!-- Add Date Sheet Button -->
+                        <a href="{{ route('date-sheet', ['id' => $schedule->id]) }}" class="erp-action-btn" style="background-color: #ecfdf5; color: #047857;" title="Add Date Sheet">
+                          <i class="fas fa-plus"></i>
+                        </a>
+
+                        <!-- View Date Sheet Button -->
+                        <a href="{{ route('date-sheet-list', ['id' => $schedule->id]) }}" class="erp-action-btn view" title="View Date Sheet">
+                          <i class="fas fa-eye"></i>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <a href="{{ route('exam-schedule-edit', ['id' => $schedule->id]) }}" class="erp-action-btn edit" title="Edit Schedule">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-schedule-{{ $schedule->id }}" action="{{ route('exam-schedule_delete', ['id' => $schedule->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Schedule" onclick="confirmDelete({{ $schedule->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
                         </form>
-                  </div>
-                </div>
-              </div>
-
-            <!-- Exams Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Exams List</h4>
-                <div class="table-responsive" style=" overflow-x: visible; position: relative;">
-                  <table class="table table-striped table-bordered text-center">
-                    <thead>
-                      <tr>
-                        <th>Sr.no</th>
-                        <th>Exam Name</th>
-                        <th>Class</th>
-                        <th>Section</th>
-                        <th>Date</th>
-                        <th>More</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $count = 0;
-                        @endphp
-                      @foreach ($examschedules as $exam)
-                      <tr>
-                        <td>{{ ++$count }}</td>
-
-                        <td>
-                            {{ $exam->exam->name }}
-                        </td>
-                        <td>
-                           {{$exam->class->name}}
-
-                        </td>
-                        <td>
-
-                            {{$exam->section->name}}, {{$exam->section->classe->name}}
-
-                        </td>
-                        <td>{{ $exam->start_date }} to {{$exam->end_date}}</td>
-
-                        <td>
-                            <!-- Dropdown -->
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i> <!-- More options icon -->
-                                    {{-- <span class="sr-only">Toggle Dropdown</span> --}}
-                                </button>
-                                <ul class="dropdown-menu" style=" inset: auto !important; right: 0 !important;top: 20px !important;">
-                                    <!-- Add Button -->
-                                    <li>
-
-                                        <a class="dropdown-item text-primary" id="printResultBtn" title="Print" href="{{route('exam-result',['id'=>$exam->id])}}"> <i class="fas fa-print"></i> Print Result</a>
-
-
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('date-sheet',['id'=>$exam->id]) }}" class="dropdown-item text-primary" title="Add">
-                                            <i class="fas fa-plus"></i> Add
-                                        </a>
-                                    </li>
-                                    <!-- View Button -->
-                                    <li>
-                                        <a href="{{ route('date-sheet-list',['id' => $exam->id]) }}" class="dropdown-item text-info" title="View">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </li>
-                                    <!-- Edit Button -->
-                                    <li>
-                                        <a href="{{ route('exam-schedule-edit', ['id' => $exam->id]) }}" class="dropdown-item text-warning" title="Edit">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                    </li>
-                                    <!-- Delete Button -->
-                                    <li>
-                                        <form action="{{ route('exam-schedule_delete', ['id' => $exam->id]) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger" title="Delete">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-
-
-
-                      </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
-
-                </div>
-              </div>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                      <i class="fas fa-calendar-xmark mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No exam schedules created yet. Click <strong>"Add New Schedule"</strong> to configure exam dates.
+                    </td>
+                  </tr>
+                  @endforelse
+                </tbody>
+              </table>
             </div>
+
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info">
+                Showing 1 to {{ count($examschedules) }} of {{ count($examschedules) }} schedules
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
+
   @include('view-file.script')
 
-  <!-- Filter and Suggestion Script -->
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
-    // Function to filter table rows
+    function confirmDelete(scheduleId) {
+      Swal.fire({
+        title: 'Delete Exam Schedule?',
+        text: "This action will permanently delete this schedule and associated dates.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-schedule-' + scheduleId).submit();
+        }
+      });
+    }
+  </script>
 
-
-
-    // Export functionalities
+  <!-- Export Script -->
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
 
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function() {
           let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Schedules' });
+          XLSX.writeFile(wb, 'exam_schedules.xlsx');
         });
       }
 
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function() {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Exam Schedules", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#examsTable',
+              startY: 45,
+              columns: [0, 1, 2, 3, 4],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('exam_schedules.pdf');
+          }
         });
       }
     });
   </script>
-  {{-- <script>
-    document.getElementById('printResultBtn').addEventListener('click', function () {
-    var printContents = document.getElementById('examsTable').outerHTML;
-    // var examId = document.getElementById('examId');
-
-    var originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContents,examId;
-    window.print();
-    document.body.innerHTML = originalContents;
-  });
-
-  </script> --}}
-
 </body>
-
 </html>

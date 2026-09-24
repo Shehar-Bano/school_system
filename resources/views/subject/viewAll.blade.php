@@ -9,280 +9,350 @@
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
       
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Employee Button -->
-            <div class="mb-4">
-              <a href="{{ route('add_subject') }}" class="btn btn-primary">Add New Subject</a>
-            </div>
-          <!-- Filter Inputs -->
-<div class="mb-3 row">
-  <div class="col-6">
-    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-  </div>
-  <div class="col-1 text-primary mt-2">
-    Filter By:
-  </div>
-  <div class="col-md-2">
-    
-    <input type="text" id="filterName" class="form-control btn btn-light btn-outline-primary " placeholder=" Subject Name">
-    <!-- Hidden Suggestion List -->
-    <ul id="nameSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
-  <div class="col-md-2">
-    <input type="text" id="filterDesignation" class="form-control btn btn-light btn-outline-primary" placeholder="Subject Type"> 
-    <!-- Hidden Suggestion List -->
-    <ul id="designationSuggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-      <!-- Suggestions will be populated here dynamically -->
-    </ul>
-  </div>
- 
-</div>
-            <!-- Employees Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Employees List</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center" id="examsTable">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Sub_Name</th>
-                        <th>sub_code</th>
-                        <th>Passing_Marks</th>
-                        <th>Final_Marks</th>
-                        <th>Type</th>
-                      
-                            <th><i class="fa fa-ellipsis-h"></i></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Example Row, you can dynamically generate rows using Blade templates -->
-                      @php
-                          $count=0;
-                      @endphp
-                      @foreach ($subjects as $subject)
-                      <tr>
-                        <td>{{ ++$count }}</td>
-                        <td>{{ $subject->subject_name }}</td>
-                        <td>{{$subject->sub_code  }}</td>
-                        <td>{{$subject->pass_marks }}</td>
-                        <td>{{$subject->final_marks }}</td>
-                        <td>{{$subject->type }}</td>
-                        
-                        <td>
-                        
-                          <!-- Edit Button -->
-                          <a href="{{ route('edit_subject',  ['id' => $subject->id]) }}" class="btn btn-warning btn-sm" title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </a>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-book-bookmark text-primary"></i>
+                  Subjects
+                </h3>
+                <p class="erp-table-subtitle">Manage curriculum, subject codes, passing criteria and grading weights</p>
+              </div>
 
-                          <!-- Delete Button -->
-                          <form id="delete-form-{{ $subject->id }}" action="{{ route('subject_delete', ['id' => $subject->id]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="confirmDelete({{ $subject->id }})">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                          
-                        </td>
-                      </tr>
-                      @endforeach
-                      
-                      <!-- Add more rows here -->
-                    </tbody>
-                  </table>
-                </div>
+              <!-- Top Action: Add New Subject Button -->
+              <div>
+                <a href="{{ route('add_subject') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus mr-1"></i> Add New Subject
+                </a>
               </div>
             </div>
+
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
+
+              <!-- Right: Search & Filter Controls -->
+              <div class="erp-filter-group">
+                <div class="erp-input-icon-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="filterSubjectName" placeholder="Search subject..." autocomplete="off">
+                </div>
+
+                <select id="filterSubjectType" class="erp-filter-select">
+                  <option value="">All Types</option>
+                  <option value="Theory">Theory</option>
+                  <option value="Practical">Practical</option>
+                  <option value="Theory & Practical">Theory & Practical</option>
+                </select>
+
+                <button type="button" id="btnFilterSearch" class="erp-btn-filter-action erp-btn-filter-primary">
+                  <i class="fas fa-filter"></i> Search
+                </button>
+
+                <button type="button" id="btnFilterReset" class="erp-btn-filter-action erp-btn-filter-reset">
+                  <i class="fas fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="subjectsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 26%;">Subject Name</th>
+                    <th style="width: 15%;" class="text-center">Subject Code</th>
+                    <th style="width: 14%;" class="text-center">Passing Marks</th>
+                    <th style="width: 14%;" class="text-center">Final Marks</th>
+                    <th style="width: 16%;" class="text-center">Type</th>
+                    <th style="width: 100px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="subjectsTableBody">
+                  @php
+                      $count = 0;
+                  @endphp
+                  @forelse ($subjects as $subject)
+                  <tr data-name="{{ strtolower($subject->subject_name) }}" data-type="{{ strtolower($subject->type) }}">
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td class="font-weight-semibold text-dark">
+                      {{ $subject->subject_name }}
+                    </td>
+                    <td class="text-center">
+                      <span class="erp-code-pill">{{ $subject->sub_code }}</span>
+                    </td>
+                    <td class="text-center">
+                      <span class="font-weight-semibold text-dark">{{ $subject->pass_marks }}</span>
+                    </td>
+                    <td class="text-center">
+                      <span class="font-weight-semibold text-dark">{{ $subject->final_marks }}</span>
+                    </td>
+                    <td class="text-center">
+                      @if(stripos($subject->type, 'Practical') !== false && stripos($subject->type, 'Theory') !== false)
+                        <span class="badge badge-soft-warning">
+                          <i class="fas fa-layer-group mr-1" style="font-size: 10px;"></i> {{ $subject->type }}
+                        </span>
+                      @elseif(stripos($subject->type, 'Practical') !== false)
+                        <span class="badge badge-soft-purple">
+                          <i class="fas fa-flask mr-1" style="font-size: 10px;"></i> {{ $subject->type }}
+                        </span>
+                      @else
+                        <span class="badge badge-soft-primary">
+                          <i class="fas fa-book-open mr-1" style="font-size: 10px;"></i> {{ $subject->type }}
+                        </span>
+                      @endif
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- Edit Button -->
+                        <a href="{{ route('edit_subject', ['id' => $subject->id]) }}" class="erp-action-btn edit" title="Edit Subject">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-form-{{ $subject->id }}" action="{{ route('subject_delete', ['id' => $subject->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Subject" onclick="confirmDelete({{ $subject->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr id="emptyRow">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-folder-open mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No subjects found. Click <strong>"Add New Subject"</strong> to create one.
+                    </td>
+                  </tr>
+                  @endforelse
+                  <tr id="noResultsRow" style="display: none;">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching subjects found. Try adjusting your search or filters.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer with Records Count and Compact Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info" id="tableRecordInfo">
+                Showing 1 to {{ count($subjects) }} of {{ count($subjects) }} subjects
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                    <i class="fas fa-chevron-left" style="font-size: 10px;"></i>
+                  </a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#">
+                    <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
+
   @include('view-file.script')
+
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
-    function confirmDelete(employeeId) {
+    function confirmDelete(subjectId) {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Delete Subject?',
+        text: "This action cannot be undone and will remove the subject.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          popup: 'rounded-xl shadow-lg border'
+        }
       }).then((result) => {
         if (result.isConfirmed) {
-          document.getElementById('delete-form-' + employeeId).submit();
+          document.getElementById('delete-form-' + subjectId).submit();
         }
-      })
+      });
     }
-
- 
   </script>
- <!-- Filter and Suggestion Script -->
-<script>
-  // Filter by Name with Suggestions
-  const filterNameInput = document.getElementById('filterName');
-  const nameSuggestionList = document.getElementById('nameSuggestionList');
 
-  filterNameInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
+  <!-- Filter & Search Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nameInput = document.getElementById('filterSubjectName');
+      const typeSelect = document.getElementById('filterSubjectType');
+      const searchBtn = document.getElementById('btnFilterSearch');
+      const resetBtn = document.getElementById('btnFilterReset');
+      const tableRows = document.querySelectorAll('#subjectsTableBody tr[data-name]');
+      const noResultsRow = document.getElementById('noResultsRow');
+      const infoText = document.getElementById('tableRecordInfo');
+      const totalCount = tableRows.length;
 
-    rows.forEach(row => {
-      const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase(); // assuming name is in 4th column
-      if (name.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = name;
-        suggestionItem.addEventListener('click', function() {
-          filterNameInput.value = name;
-          nameSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
-            r.style.display = n === name ? '' : 'none';
-          });
-        });
-        nameSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
+      function filterTable() {
+        const queryName = nameInput.value.trim().toLowerCase();
+        const queryType = typeSelect.value.trim().toLowerCase();
+        let visibleCount = 0;
 
-    nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
+        tableRows.forEach(row => {
+          const rowName = row.getAttribute('data-name') || '';
+          const rowType = row.getAttribute('data-type') || '';
 
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterNameInput.contains(event.target)) {
-      nameSuggestionList.style.display = 'none';
-    }
-  });
+          const matchName = !queryName || rowName.includes(queryName);
+          const matchType = !queryType || rowType.includes(queryType);
 
-  // Filter by Designation with Suggestions
-  const filterDesignationInput = document.getElementById('filterDesignation');
-  const designationSuggestionList = document.getElementById('designationSuggestionList');
-
-  filterDesignationInput.addEventListener('keyup', function() {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#examsTable tbody tr');
-    designationSuggestionList.innerHTML = ''; // Clear previous suggestions
-    let hasSuggestions = false;
-
-    rows.forEach(row => {
-      const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
-      if (designation.includes(filter)) {
-        row.style.display = '';
-        // Add suggestion to the list
-        const suggestionItem = document.createElement('li');
-        suggestionItem.className = 'list-group-item list-group-item-action';
-        suggestionItem.textContent = designation;
-        suggestionItem.addEventListener('click', function() {
-          filterDesignationInput.value = designation;
-          designationSuggestionList.style.display = 'none';
-          // Hide non-matching rows
-          rows.forEach(r => {
-            const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
-            r.style.display = d === designation ? '' : 'none';
-          });
-        });
-        designationSuggestionList.appendChild(suggestionItem);
-        hasSuggestions = true;
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-    designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-  });
-
-  // Hide suggestion list when clicking outside
-  document.addEventListener('click', function(event) {
-    if (!filterDesignationInput.contains(event.target)) {
-      designationSuggestionList.style.display = 'none';
-    }
-  });
-</script>
-    <script>
-      // Filter by ID
-   
-  
-      document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
-  
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
-          text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+          if (matchName && matchType) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
           }
         });
+
+        if (noResultsRow) {
+          noResultsRow.style.display = (visibleCount === 0 && totalCount > 0) ? '' : 'none';
+        }
+
+        if (infoText) {
+          if (visibleCount === totalCount) {
+            infoText.innerText = `Showing 1 to ${totalCount} of ${totalCount} subjects`;
+          } else {
+            infoText.innerText = `Showing ${visibleCount} of ${totalCount} filtered subjects`;
+          }
+        }
       }
-  
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+
+      // Instant live filtering on typing / selection
+      nameInput.addEventListener('input', filterTable);
+      typeSelect.addEventListener('change', filterTable);
+      searchBtn.addEventListener('click', filterTable);
+
+      // Reset filters
+      resetBtn.addEventListener('click', function () {
+        nameInput.value = '';
+        typeSelect.value = '';
+        filterTable();
+      });
+
+      // Export Functionality
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      // 1. Copy to Clipboard
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            let table = document.getElementById('subjectsTable');
+            return table.innerText;
+          }
+        }).on('success', function (e) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Table copied to clipboard',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        });
+      }
+
+      // 2. Export to CSV
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#subjectsTable tr:not(#noResultsRow)');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              // Ignore action column (last column)
+              for (let i = 0; i < cols.length - 1; i++) {
+                let cleanText = cols[i].innerText.replace(/"/g, '""').trim();
+                rowData.push('"' + cleanText + '"');
+              }
+              csv.push(rowData.join(','));
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+          });
+
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'subjects_list.csv';
+          link.click();
         });
       }
-  
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+
+      // 3. Export to Excel (XLSX)
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('subjectsTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Subjects' });
+          XLSX.writeFile(wb, 'subjects_list.xlsx');
         });
       }
-  
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+
+      // 4. Export to PDF (jsPDF + autoTable)
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Subjects List", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#subjectsTable',
+              startY: 45,
+              columns: [0, 1, 2, 3, 4, 5], // Exclude actions
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('subjects_list.pdf');
+          }
         });
       }
     });
-    </script>
-  
+  </script>
 </body>
-
 </html>

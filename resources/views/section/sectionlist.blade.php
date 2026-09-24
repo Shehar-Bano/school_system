@@ -2,225 +2,320 @@
 <html lang="en">
 
 @include('view-file/head')
+
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
 
-      <!-- Inner-page -->
+      <!-- Main Panel -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Exam Button -->
-            <div class="mb-4">
-              <a href="{{ route('section') }}" class="btn btn-primary">Add New section</a>
-            </div>
+          
+          <!-- ERP Card Table Container -->
+          <div class="erp-card-table">
+            
+            <!-- Table Header Block -->
+            <div class="erp-table-header-block">
+              <div class="erp-table-title-area">
+                <h3 class="erp-table-title">
+                  <i class="fas fa-layer-group text-primary"></i>
+                  Class Sections
+                </h3>
+                <p class="erp-table-subtitle">Manage class sections, student seating capacity, class teachers, and fee receipts</p>
+              </div>
 
-            <!-- Filter Inputs -->
-            <div class="mb-4">
-              <div class="row">
-                <div class="col-md-8">
-                    <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                    <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-                    <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                    <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-                  </div>
-                <div class="col-md-2">
-                  <input type="text" id="filterName" class="form-control" placeholder="Filter by Name">
-                  <!-- Hidden Suggestion List -->
-                  <ul id="suggestionList" class="list-group" style="display:none; position:absolute; z-index:1000;">
-                    <!-- Suggestions will be populated here dynamically -->
-                  </ul>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" id="filterId" class="form-control" placeholder="Filter by ID">
-                  </div>
+              <!-- Top Action: Add New Section Button -->
+              <div>
+                <a href="{{ route('section') }}" class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus mr-1"></i> Add New Section
+                </a>
               </div>
             </div>
 
-            <!-- Exams Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Section List</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered" id="examsTable">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Section Name</th>
-                        <th>Capacity</th>
-                        <th>Teacher</th>
-                        <th>Class</th>
-                        <th>Note</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($sections as $section)
-                        <tr>
-                            <td>{{ $section->id }}</td>
-                            <td>{{ $section->name }}</td>
-                            <td>{{ $section->capacity }}</td>
-                            <td>{{ $section->employee ? $section->employee->name : 'No employee assigned' }}</td>
-                            <td>{{ $section->classe ? $section->classe->name : 'No class assigned' }}</td>
-                            <td>{{ $section->note }}</td>
-                            <td>
-                              <a href="{{ route('section-fee', ['id' => $section->id]) }}" class="btn btn-info btn-sm" title="Print Recipte">
-                                <i class="fas fa-print"></i>
+            <!-- Single-Line Compact Toolbar (Exports & Filters) -->
+            <div class="erp-toolbar">
+              <!-- Left: Grouped Export Buttons -->
+              <div class="erp-export-group">
+                <button type="button" id="copyButton" class="erp-export-btn" title="Copy to clipboard">
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+                <button type="button" id="csvButton" class="erp-export-btn" title="Export to CSV">
+                  <i class="fas fa-file-csv"></i> CSV
+                </button>
+                <button type="button" id="excelButton" class="erp-export-btn" title="Export to Excel">
+                  <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button type="button" id="pdfButton" class="erp-export-btn" title="Export to PDF">
+                  <i class="fas fa-file-pdf"></i> PDF
+                </button>
+              </div>
 
-                            </a>
-                                <!-- Edit Button -->
-                                <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="btn btn-warning btn-sm" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                {{-- <a href="{{ route('section_delete', ['id' => $section->id]) }}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a> --}}
-                                <form action="{{ route('section_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-
-
-                  </table>
+              <!-- Right: Search & Filter Controls -->
+              <div class="erp-filter-group">
+                <div class="erp-input-icon-wrapper">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="filterSectionName" placeholder="Search section..." autocomplete="off">
                 </div>
+
+                <button type="button" id="btnFilterSearch" class="erp-btn-filter-action erp-btn-filter-primary">
+                  <i class="fas fa-filter"></i> Search
+                </button>
+
+                <button type="button" id="btnFilterReset" class="erp-btn-filter-action erp-btn-filter-reset">
+                  <i class="fas fa-rotate-left"></i> Reset
+                </button>
               </div>
             </div>
+
+            <!-- Table Responsive Container -->
+            <div class="table-responsive">
+              <table class="erp-table" id="sectionsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;" class="text-center">#</th>
+                    <th style="width: 20%;">Section Name</th>
+                    <th style="width: 14%;" class="text-center">Capacity</th>
+                    <th style="width: 18%;">Class</th>
+                    <th style="width: 20%;">Class Teacher</th>
+                    <th style="width: 15%;">Note</th>
+                    <th style="width: 120px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="sectionsTableBody">
+                  @php
+                    $count = 0;
+                  @endphp
+                  @forelse ($sections as $section)
+                  <tr data-name="{{ strtolower($section->name) }}" data-class="{{ strtolower($section->classe->name ?? '') }}">
+                    <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
+                    <td class="font-weight-semibold text-dark">
+                      {{ $section->name }}
+                    </td>
+                    <td class="text-center">
+                      <span class="badge badge-soft-info" style="font-size: 11px;">
+                        <i class="fas fa-users text-xs mr-1"></i> {{ $section->capacity }} Seats
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge badge-soft-primary">
+                        {{ $section->classe ? $section->classe->name : 'Unassigned' }}
+                      </span>
+                    </td>
+                    <td class="text-dark font-weight-medium">
+                      @if($section->employee)
+                        <i class="fas fa-chalkboard-user text-muted mr-1"></i> {{ $section->employee->name }}
+                      @else
+                        <span class="text-muted text-xs">No teacher assigned</span>
+                      @endif
+                    </td>
+                    <td class="text-muted text-xs">
+                      {{ $section->note ?? '—' }}
+                    </td>
+                    <td class="text-center">
+                      <div class="erp-action-btn-group">
+                        <!-- Fee Receipt Button -->
+                        <a href="{{ route('section-fee', ['id' => $section->id]) }}" class="erp-action-btn view" title="Print Section Fee Slip">
+                          <i class="fas fa-receipt"></i>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="erp-action-btn edit" title="Edit Section">
+                          <i class="fas fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form id="delete-section-{{ $section->id }}" action="{{ route('section_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="erp-action-btn delete" title="Delete Section" onclick="confirmDelete({{ $section->id }})">
+                            <i class="fas fa-trash-can"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr id="emptyRow">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-layer-group mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
+                      No sections found. Click <strong>"Add New Section"</strong> to add one.
+                    </td>
+                  </tr>
+                  @endforelse
+                  <tr id="noResultsRow" style="display: none;">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching sections found.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer with Records Count and Pagination -->
+            <div class="erp-table-footer">
+              <div class="erp-table-info" id="tableRecordInfo">
+                Showing 1 to {{ count($sections) }} of {{ count($sections) }} sections
+              </div>
+              <ul class="erp-pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-left" style="font-size: 10px;"></i></a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#"><i class="fas fa-chevron-right" style="font-size: 10px;"></i></a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+          <!-- End ERP Card Table -->
+
         </div>
       </div>
-      <!-- End Inner-page -->
+      <!-- End Main Panel -->
 
     </div>
   </div>
+
   @include('view-file.script')
 
-  <!-- Filter and Suggestion Script -->
+  <!-- SweetAlert2 Delete Confirmation -->
   <script>
-    // Filter by ID
-    document.getElementById('filterId').addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      rows.forEach(row => {
-        const id = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-        if (id.includes(filter)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    });
-
-    // Filter by Name with Suggestions
-    const filterNameInput = document.getElementById('filterName');
-    const suggestionList = document.getElementById('suggestionList');
-
-    filterNameInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      suggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-
-      rows.forEach(row => {
-        const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        if (name.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = name;
-          suggestionItem.addEventListener('click', function() {
-            filterNameInput.value = name;
-            suggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const n = r.querySelector('td:nth-child(2)').textContent.toLowerCase();
-              r.style.display = n === name ? '' : 'none';
-            });
-          });
-          suggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      suggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-
-    // Hide suggestion list when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterNameInput.contains(event.target)) {
-        suggestionList.style.display = 'none';
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-    const copyButton = document.getElementById('copyButton');
-    const csvButton = document.getElementById('csvButton');
-    const excelButton = document.getElementById('excelButton');
-    const pdfButton = document.getElementById('pdfButton');
-
-    // Copy to Clipboard
-    if (copyButton) {
-      new ClipboardJS(copyButton, {
-        text: function() {
-          let table = document.getElementById('examsTable');
-          return table.innerText; // Copy table content
+    function confirmDelete(sectionId) {
+      Swal.fire({
+        title: 'Delete Section?',
+        text: "This action will permanently delete the section.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('delete-section-' + sectionId).submit();
         }
       });
     }
-
-    // Export to CSV
-    if (csvButton) {
-      csvButton.addEventListener('click', function() {
-        let csv = [];
-        let rows = document.querySelectorAll('#examsTable tr');
-        for (let i = 0; i < rows.length; i++) {
-          let row = [];
-          let cols = rows[i].querySelectorAll('td, th');
-          for (let j = 0; j < cols.length; j++) {
-            row.push(cols[j].innerText);
-          }
-          csv.push(row.join(','));
-        }
-        let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-        let downloadLink = document.createElement('a');
-        downloadLink.download = 'exams.csv';
-        downloadLink.href = window.URL.createObjectURL(csvFile);
-        downloadLink.click();
-      });
-    }
-
-    // Export to Excel
-    if (excelButton) {
-      excelButton.addEventListener('click', function() {
-        let table = document.getElementById('examsTable');
-        let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-        XLSX.writeFile(wb, 'exams.xlsx');
-      });
-    }
-
-    // Export to PDF
-    if (pdfButton) {
-      pdfButton.addEventListener('click', function() {
-        const { jsPDF } = window.jspdf;
-        let doc = new jsPDF();
-        let table = document.getElementById('examsTable');
-        doc.autoTable({ html: table });
-        doc.save('exams.pdf');
-      });
-    }
-  });
   </script>
 
+  <!-- Filter & Export Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const nameInput = document.getElementById('filterSectionName');
+      const searchBtn = document.getElementById('btnFilterSearch');
+      const resetBtn = document.getElementById('btnFilterReset');
+      const tableRows = document.querySelectorAll('#sectionsTableBody tr[data-name]');
+      const noResultsRow = document.getElementById('noResultsRow');
+      const infoText = document.getElementById('tableRecordInfo');
+      const totalCount = tableRows.length;
 
+      function filterTable() {
+        const query = nameInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+          const rowName = row.getAttribute('data-name') || '';
+          const rowClass = row.getAttribute('data-class') || '';
+          if (!query || rowName.includes(query) || rowClass.includes(query)) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        if (noResultsRow) {
+          noResultsRow.style.display = (visibleCount === 0 && totalCount > 0) ? '' : 'none';
+        }
+
+        if (infoText) {
+          infoText.innerText = (visibleCount === totalCount)
+            ? `Showing 1 to ${totalCount} of ${totalCount} sections`
+            : `Showing ${visibleCount} of ${totalCount} filtered sections`;
+        }
+      }
+
+      nameInput.addEventListener('input', filterTable);
+      searchBtn.addEventListener('click', filterTable);
+
+      resetBtn.addEventListener('click', function () {
+        nameInput.value = '';
+        filterTable();
+      });
+
+      // Export functionality
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      if (copyBtn && window.ClipboardJS) {
+        new ClipboardJS(copyBtn, {
+          text: function () {
+            return document.getElementById('sectionsTable').innerText;
+          }
+        }).on('success', function () {
+          Swal.fire({
+            toast: true, position: 'top-end', icon: 'success',
+            title: 'Sections table copied', showConfirmButton: false, timer: 2000
+          });
+        });
+      }
+
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function () {
+          let csv = [];
+          let rows = document.querySelectorAll('#sectionsTable tr:not(#noResultsRow)');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
+              }
+              csv.push(rowData.join(','));
+            }
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'sections_list.csv';
+          link.click();
+        });
+      }
+
+      if (excelBtn && window.XLSX) {
+        excelBtn.addEventListener('click', function () {
+          let table = document.getElementById('sectionsTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sections' });
+          XLSX.writeFile(wb, 'sections_list.xlsx');
+        });
+      }
+
+      if (pdfBtn && window.jspdf) {
+        pdfBtn.addEventListener('click', function () {
+          const { jsPDF } = window.jspdf;
+          let doc = new jsPDF('p', 'pt', 'a4');
+          doc.text("School ERP - Sections List", 40, 30);
+          if (doc.autoTable) {
+            doc.autoTable({
+              html: '#sectionsTable',
+              startY: 45,
+              columns: [0, 1, 2, 3, 4, 5],
+              theme: 'striped',
+              headStyles: { fillColor: [79, 70, 229] }
+            });
+            doc.save('sections_list.pdf');
+          }
+        });
+      }
+    });
+  </script>
 </body>
-
 </html>

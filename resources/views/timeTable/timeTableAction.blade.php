@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <?php use Carbon\Carbon; ?>
+@php
+    use Carbon\Carbon;
+@endphp
 @include('view-file/head')
-<style>
-  .dropdown-toggle::after{
-    display: none;
-  }
-</style>
+
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
@@ -16,142 +14,189 @@
       <!-- Inner-page -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New TimeTable Button -->
-            <div class="mb-4">
-              <a href="{{ route('timeTable_create') }}" class="btn btn-primary">Add New TimeTable</a>
-            </div>
-            <!-- Buttons for Exporting and Copying -->
-            <div class="mb-3 row">
-              <div class="col-6">
-                <button id="copyButton" class="btn btn-light btn-outline-primary">Copy</button>
-                <button id="csvButton" class="btn btn-light btn-outline-primary">CSV</button>
-                <button id="excelButton" class="btn btn-light btn-outline-primary">Excel</button>
-                <button id="pdfButton" class="btn btn-light btn-outline-primary">PDF</button>
-              </div>
-            </div>
+          <div class="container-fluid px-3 py-2">
 
-            <!-- Search Form -->
-            <form id="searchForm" method="GET" action="{{ route('timeTable') }}" class="mb-4">
-              <div class="row">
-                  <div class="col-md-3">
-                      <div class="form-group">
-                          <label for="class">Class</label>
-                          <select name="class" id="class" class="form-control">
-                              <option value="">Select Class</option>
-                              @foreach ($classes as $class)
-                                  <option value="{{ $class->id }}" 
-                                      {{ $class->id == request()->query('class') ? 'selected' : '' }}>
-                                      {{ $class->name }}
-                                  </option>
-                              @endforeach
-                          </select>
-                      </div>
-                  </div>
-                  <div class="col-md-3">
-                      <div class="form-group">
-                          <label for="section">Section</label>
-                          <select name="section" id="section" class="form-control">
-                              <option value="">Select Section</option>
-                              @foreach ($sections as $section)
-                                  <option value="{{ $section->id }}" 
-                                      {{ $section->id == request()->query('section') ? 'selected' : '' }}>
-                                      {{ $section->name }}
-                                  </option>
-                              @endforeach
-                          </select>
-                      </div>
-                  </div>
-                  <div class="col-md-3">
-                      <div class="form-group">
-                          <label for="teacher">Teacher</label>
-                          <select name="teacher" id="teacher" class="form-control">
-                              <option value="">Select Teacher</option>
-                              @foreach ($employees as $employee)
-                                  @if($employee->designation->name == "Teacher")
-                                      <option value="{{ $employee->id }}" 
-                                          {{ $employee->id == request()->query('teacher') ? 'selected' : '' }}>
-                                          {{ $employee->name }}
-                                      </option>
-                                  @endif
-                              @endforeach
-                          </select>
-                      </div>
-                  </div>
-                  <div class="col-md-3 mt-4">
-                      <button type="submit" class="btn btn-primary">Search</button>
-                  </div>
-              </div>
-          </form>
-          
-            <!-- Time Table -->
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">TimeTable</h4>
-                <div class="table-responsive">
-                  <table class="table table-striped table-bordered text-center">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Class</th>
-                        <th>Section</th>
-                        <th>Subject</th>
-                        <th>Teacher</th>
-                        <th>Time</th>
-                        <th>Slot Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    
-                    <tbody>
-                        @php
-                            $count = 0;
-                        @endphp
-                        @foreach ($timetables as $timetable)
-                        <tr>
-                          <td>{{ ++$count }}</td>
-                          <td>{{ $timetable->class->name }}</td>
-                          <td>{{ $timetable->section->name }}</td>
-                          <td>{{ $timetable->subject->subject_name }}</td>
-                          <td>{{ $timetable->teacher->name }}</td>
-                          <td>{{ Carbon::parse($timetable->start_time)->format('g:i A')}} - {{ Carbon::parse($timetable->end_time)->format('g:i A')}}</td>
-                          <td class="mt-3">
-                            @if($timetable->slot_status == 'allocated')
-                                <span class="btn btn-success btn-xs">{{$timetable->slot_status}}</span>
-                            @elseif ($timetable->slot_status == 'available')
-                                <span class="btn btn-info btn-xs">{{$timetable->slot_status}}</span>
-                            @else
-                                <span class="btn btn-warning btn-xs">{{$timetable->slot_status}}</span>
-                            @endif
-                        </td>
-                        
-                          <td>
-                            <!-- Bootstrap Dropdown -->
-                            <div class="dropdown">
-                              <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton{{ $timetable->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-ellipsis-v"></i>
-                              </button>
-                              <div class="dropdown-menu " aria-labelledby="dropdownMenuButton{{ $timetable->id }}">
-                                <a class="dropdown-item text-warning" href="{{ route('timetable_edit', ['id' => $timetable->id]) }}" title="Edit"><i class="fas fa-edit"></i> Edit</a>
-                                <a class="dropdown-item text-danger" href="{{ route('timetable_delete', ['id' => $timetable->id]) }}" title="Delete" onclick="confirmDelete(event, '{{ route('timetable_delete', ['id' => $timetable->id]) }}')">
-                                  <i class="fas fa-trash"></i> Delete
-                              </a>
-                                @if($timetable->slot_status == 'allocated')
-                                  <a class="dropdown-item text-info" href="{{ route('timetable_freeSlot', ['id' => $timetable->id]) }}" title="Free this time slot"><i class="fas fa-circle-notch"></i> Free Slot</a>
-                                @else
-                                  <a class="dropdown-item text-info" href="{{ route('timetable_occupySlot', ['id' => $timetable->id]) }}" title="Allocate this time slot"><i class="fas fa-unlock"></i> Allocate</a>
-                                @endif
-                              </div>
-                            </div>
-                          </td>
-                        </tr>  
-                        @endforeach
-                    </tbody>
-                    
-                  </table>
+            <div class="erp-card-table">
+              <!-- Header Block -->
+              <div class="erp-table-header-block">
+                <div>
+                  <h4 class="erp-table-title"><i class="fas fa-calendar-days text-primary me-2"></i>TimeTable Schedules</h4>
+                  <p class="erp-table-subtitle">Manage class schedules, period timings, teacher allocations, and slot statuses</p>
+                </div>
+                <div class="d-flex gap-2">
+                  <a href="{{ route('timeTable_show') }}" class="btn btn-light btn-sm font-weight-bold" style="border: 1px solid var(--erp-border, #e2e8f0); color: #475569;">
+                    <i class="fas fa-table-cells me-1"></i> Class Matrix
+                  </a>
+                  <a href="{{ route('teacher_timeTable_show') }}" class="btn btn-light btn-sm font-weight-bold" style="border: 1px solid var(--erp-border, #e2e8f0); color: #475569;">
+                    <i class="fas fa-user-clock me-1"></i> Teacher Matrix
+                  </a>
+                  <a href="{{ route('timeTable_create') }}" class="btn btn-primary btn-sm font-weight-bold shadow-sm">
+                    <i class="fas fa-plus me-1"></i> Add Schedule
+                  </a>
                 </div>
               </div>
+
+              <!-- Toolbar -->
+              <div class="erp-toolbar">
+                <!-- Left: Export Buttons -->
+                <div class="erp-export-group">
+                  <button id="copyButton" class="erp-btn-export" title="Copy to Clipboard">
+                    <i class="fas fa-copy"></i><span>Copy</span>
+                  </button>
+                  <button id="csvButton" class="erp-btn-export" title="Export to CSV">
+                    <i class="fas fa-file-csv"></i><span>CSV</span>
+                  </button>
+                  <button id="excelButton" class="erp-btn-export" title="Export to Excel">
+                    <i class="fas fa-file-excel"></i><span>Excel</span>
+                  </button>
+                  <button id="pdfButton" class="erp-btn-export" title="Export to PDF">
+                    <i class="fas fa-file-pdf"></i><span>PDF</span>
+                  </button>
+                </div>
+
+                <!-- Right: Server/Client Filters -->
+                <form id="searchForm" method="GET" action="{{ route('timeTable') }}" class="m-0">
+                  <div class="erp-filter-group">
+                    <select name="class" id="class" class="form-control erp-filter-select" style="width: 140px;">
+                      <option value="">All Classes</option>
+                      @foreach ($classes as $class)
+                        <option value="{{ $class->id }}" {{ $class->id == request()->query('class') ? 'selected' : '' }}>
+                          {{ $class->name }}
+                        </option>
+                      @endforeach
+                    </select>
+
+                    <select name="section" id="section" class="form-control erp-filter-select" style="width: 140px;">
+                      <option value="">All Sections</option>
+                      @foreach ($sections as $section)
+                        <option value="{{ $section->id }}" {{ $section->id == request()->query('section') ? 'selected' : '' }}>
+                          {{ $section->name }}
+                        </option>
+                      @endforeach
+                    </select>
+
+                    <select name="teacher" id="teacher" class="form-control erp-filter-select" style="width: 160px;">
+                      <option value="">All Teachers</option>
+                      @foreach ($employees as $employee)
+                        @if($employee->designation->name == "Teacher")
+                          <option value="{{ $employee->id }}" {{ $employee->id == request()->query('teacher') ? 'selected' : '' }}>
+                            {{ $employee->name }}
+                          </option>
+                        @endif
+                      @endforeach
+                    </select>
+
+                    <button type="submit" class="erp-btn-filter-action erp-btn-filter-search" title="Apply Filter">
+                      <i class="fas fa-filter"></i><span>Filter</span>
+                    </button>
+                    <a href="{{ route('timeTable') }}" class="erp-btn-filter-action erp-btn-filter-reset" title="Reset Filters">
+                      <i class="fas fa-rotate-left"></i><span>Reset</span>
+                    </a>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Table -->
+              <div class="table-responsive">
+                <table class="table erp-table" id="timetablesTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">#</th>
+                      <th>Class</th>
+                      <th>Section</th>
+                      <th>Subject</th>
+                      <th>Teacher</th>
+                      <th>Time Slot</th>
+                      <th style="width: 120px;" class="text-center">Slot Status</th>
+                      <th style="width: 130px;" class="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @php $count = 0; @endphp
+                    @forelse ($timetables as $timetable)
+                      <tr>
+                        <td class="font-weight-bold text-muted">{{ ++$count }}</td>
+                        <td>
+                          <span class="badge" style="background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                            {{ $timetable->class->name }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="font-weight-500 text-dark">{{ $timetable->section->name }}</span>
+                        </td>
+                        <td>
+                          <div class="font-weight-600 text-dark">{{ $timetable->subject->subject_name }}</div>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="me-2" style="width: 26px; height: 26px; border-radius: 50%; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">
+                              {{ strtoupper(substr($timetable->teacher->name ?? 'T', 0, 1)) }}
+                            </div>
+                            <span class="font-weight-500 text-dark">{{ $timetable->teacher->name }}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span class="erp-code-pill" style="color: #0f766e; background: #ccfbf1; border-color: #99f6e4;">
+                            <i class="fas fa-clock me-1 text-muted"></i>
+                            {{ Carbon::parse($timetable->start_time)->format('g:i A') }} - {{ Carbon::parse($timetable->end_time)->format('g:i A') }}
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          @if($timetable->slot_status == 'allocated')
+                            <span class="badge" style="background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                              <i class="fas fa-lock me-1"></i>Allocated
+                            </span>
+                          @elseif ($timetable->slot_status == 'available')
+                            <span class="badge" style="background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                              <i class="fas fa-unlock me-1"></i>Available
+                            </span>
+                          @else
+                            <span class="badge" style="background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                              {{ ucfirst($timetable->slot_status) }}
+                            </span>
+                          @endif
+                        </td>
+                        <td class="text-center">
+                          <div class="erp-action-btn-group justify-content-center">
+                            @if($timetable->slot_status == 'allocated')
+                              <a class="erp-action-btn" style="color: #0284c7; background: #e0f2fe;" href="{{ route('timetable_freeSlot', ['id' => $timetable->id]) }}" title="Free this slot">
+                                <i class="fas fa-circle-notch"></i>
+                              </a>
+                            @else
+                              <a class="erp-action-btn" style="color: #059669; background: #d1fae5;" href="{{ route('timetable_occupySlot', ['id' => $timetable->id]) }}" title="Allocate this slot">
+                                <i class="fas fa-lock"></i>
+                              </a>
+                            @endif
+                            <a class="erp-action-btn erp-btn-edit" href="{{ route('timetable_edit', ['id' => $timetable->id]) }}" title="Edit Schedule">
+                              <i class="fas fa-pen"></i>
+                            </a>
+                            <button type="button" class="erp-action-btn erp-btn-delete" title="Delete Schedule" onclick="confirmDelete(event, '{{ route('timetable_delete', ['id' => $timetable->id]) }}')">
+                              <i class="fas fa-trash-can"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                          <i class="fas fa-calendar-xmark fa-2x mb-2 d-block text-muted opacity-50"></i>
+                          No timetable schedules found for the selected criteria.
+                        </td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Footer -->
+              <div class="erp-table-footer">
+                <div class="erp-footer-count">
+                  Showing <span>{{ $count }}</span> schedule entries
+                </div>
+              </div>
+
             </div>
+
           </div>
         </div>
       </div>
@@ -161,106 +206,111 @@
 
   @include('view-file.script')
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
   <script>
     function confirmDelete(event, url) {
-    event.preventDefault(); // Prevent the default action of the link
-
-    Swal.fire({
+      event.preventDefault();
+      Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#4f46e5',
+        cancelButtonColor: '#ef4444',
         confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
+      }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = url; // Redirect to the URL if confirmed
+          window.location.href = url;
         }
-    });
-}
+      });
+    }
 
-
-    // Export and Copy Functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.getElementById('copyButton');
-      const csvButton = document.getElementById('csvButton');
-      const excelButton = document.getElementById('excelButton');
-      const pdfButton = document.getElementById('pdfButton');
+      // Exports
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
 
-      // Copy to Clipboard
-      if (copyButton) {
-        new ClipboardJS(copyButton, {
+      if (copyBtn) {
+        new ClipboardJS(copyBtn, {
           text: function() {
-            let table = document.getElementById('examsTable');
-            return table.innerText; // Copy table content
+            let table = document.getElementById('timetablesTable');
+            return table.innerText;
           }
+        }).on('success', function() {
+          Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
         });
       }
 
-      // Export to CSV
-      if (csvButton) {
-        csvButton.addEventListener('click', function() {
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function() {
           let csv = [];
-          let rows = document.querySelectorAll('#examsTable tr');
-          for (let i = 0; i < rows.length; i++) {
-            let row = [];
-            let cols = rows[i].querySelectorAll('td, th');
-            for (let j = 0; j < cols.length; j++) {
-              row.push(cols[j].innerText);
+          let rows = document.querySelectorAll('#timetablesTable tr');
+          rows.forEach(row => {
+            let cols = row.querySelectorAll('th, td');
+            let rowData = [];
+            for (let i = 0; i < cols.length - 1; i++) {
+              rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
             }
-            csv.push(row.join(','));
-          }
-          let csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-          let downloadLink = document.createElement('a');
-          downloadLink.download = 'exams.csv';
-          downloadLink.href = window.URL.createObjectURL(csvFile);
-          downloadLink.click();
+            csv.push(rowData.join(','));
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'timetables.csv';
+          link.click();
         });
       }
 
-      // Export to Excel
-      if (excelButton) {
-        excelButton.addEventListener('click', function() {
-          let table = document.getElementById('examsTable');
-          let wb = XLSX.utils.table_to_book(table, { sheet: 'Sheet1' });
-          XLSX.writeFile(wb, 'exams.xlsx');
+      if (excelBtn) {
+        excelBtn.addEventListener('click', function() {
+          let table = document.getElementById('timetablesTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'TimeTable' });
+          XLSX.writeFile(wb, 'timetables.xlsx');
         });
       }
 
-      // Export to PDF
-      if (pdfButton) {
-        pdfButton.addEventListener('click', function() {
+      if (pdfBtn) {
+        pdfBtn.addEventListener('click', function() {
           const { jsPDF } = window.jspdf;
-          let doc = new jsPDF();
-          let table = document.getElementById('examsTable');
-          doc.autoTable({ html: table });
-          doc.save('exams.pdf');
+          let doc = new jsPDF('landscape');
+          doc.text('TimeTable Schedules', 14, 15);
+          doc.autoTable({
+            html: '#timetablesTable',
+            startY: 20,
+            columns: [0, 1, 2, 3, 4, 5, 6]
+          });
+          doc.save('timetables.pdf');
         });
       }
     });
   </script>
 
-   @if(session('message'))
-   <script>
-       Swal.fire({
-           title: 'Success!',
-           text: "{{ session('message') }}",
-           icon: 'success',
-           confirmButtonText: 'OK'
-       });
-   </script>
-   @endif
-   
-   @if(session('error'))
-   <script>
-       Swal.fire({
-           title: 'Error!',
-           text: "{{ session('error') }}",
-           icon: 'error',
-           confirmButtonText: 'OK'
-       });
-   </script>
-   @endif
+  @if(session('message'))
+  <script>
+    Swal.fire({
+      title: 'Success!',
+      text: "{{ session('message') }}",
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+  </script>
+  @endif
+
+  @if(session('error'))
+  <script>
+    Swal.fire({
+      title: 'Error!',
+      text: "{{ session('error') }}",
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  </script>
+  @endif
 </body>
 </html>

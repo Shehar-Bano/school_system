@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  @php
-  use Carbon\Carbon;
-  use App\Models\StudentFee;
-  use App\Models\TaxeFee;
-// Add this line to import the model
+@php
+    use Carbon\Carbon;
+    use App\Models\StudentFee;
+    use App\Models\TaxeFee;
 @endphp
 
 @include('view-file/head')
@@ -18,101 +17,142 @@
       <!-- Inner-page -->
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-          <!-- Filter Inputs -->
-<div class="mb-3 row">
-  <div class="col-12 mt-5">
-    <form action="{{ route('finance.salary') }}" method="get">
-      <div class="mb-3 row">
-        <div class="col-md-3">
-          <label for="start_date" class="form-label">Start Date</label>
-          <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-        </div>
-        <div class="col-md-3">
-          <label for="end_date" class="form-label">End Date</label>
-          <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-        </div>
-        {{-- <div class="col-md-3">
-          <label for="employee_id" class="form-label">Name</label>
-          <select class="form-control {{ $errors->has('employee_id') ? 'is-invalid' : '' }}" id="employee_id" name="employee_id">
-            <option value="">Select Employee</option>
-            @foreach ($employees as $employee)
-              <option value="{{ $employee->id }}" {{ request('employee_id') == $employee->id ? 'selected' : '' }}>
-                {{ $employee->name }}
-              </option>
-            @endforeach
-          </select>
-        </div> --}}
+          <div class="container-fluid px-3 py-2">
 
-      </div>
-      <button type="submit" class="btn btn-primary">Filter</button>
-    </form>
-  </div>
+            <div class="erp-card-table">
+              <!-- Header Block -->
+              <div class="erp-table-header-block">
+                <div>
+                  <h4 class="erp-table-title"><i class="fas fa-file-invoice text-primary me-2"></i>Student Auxiliary Fee Breakdown</h4>
+                  <p class="erp-table-subtitle">Bus, admission, canteen, activity, and library tax collections</p>
+                </div>
+                <div class="d-flex gap-2">
+                  <a href="{{ route('taxe.index') }}" class="btn btn-light btn-sm font-weight-bold" style="border: 1px solid var(--erp-border, #e2e8f0); color: #475569;">
+                    <i class="fas fa-arrow-left me-1"></i> Section Slabs
+                  </a>
+                  <a href="{{ route('student_fees') }}" class="btn btn-light btn-sm font-weight-bold" style="border: 1px solid var(--erp-border, #e2e8f0); color: #475569;">
+                    <i class="fas fa-coins me-1"></i> General Fees
+                  </a>
+                </div>
+              </div>
 
-</div>
-<div class="card">
-    <div class="card-body">
-      <h4 class="card-title">Student Fee List</h4>
-      <div class="table-responsive">
-        <table class="table table-striped table-bordered text-center table-sm" id="studentFeeTable">
-            <thead>
-                <tr>
+              <!-- Toolbar -->
+              <div class="erp-toolbar">
+                <!-- Left: Export Buttons -->
+                <div class="erp-export-group">
+                  <button id="copyButton" class="erp-btn-export" title="Copy to Clipboard">
+                    <i class="fas fa-copy"></i><span>Copy</span>
+                  </button>
+                  <button id="csvButton" class="erp-btn-export" title="Export to CSV">
+                    <i class="fas fa-file-csv"></i><span>CSV</span>
+                  </button>
+                  <button id="excelButton" class="erp-btn-export" title="Export to Excel">
+                    <i class="fas fa-file-excel"></i><span>Excel</span>
+                  </button>
+                  <button id="pdfButton" class="erp-btn-export" title="Export to PDF">
+                    <i class="fas fa-file-pdf"></i><span>PDF</span>
+                  </button>
+                </div>
 
-                    <th>Date</th>
-                    <th>Name</th>
-                    <th>Bus Taxe</th>
-                    <th>Admi Fee</th>
-                    <th>Other Activity </th>
-                    <th>Canteen Taxe</th>
-                    <th>Library Taxe</th>
+                <!-- Right: Search Controls -->
+                <div class="erp-filter-group">
+                  <div class="erp-input-icon-wrapper">
+                    <i class="fas fa-search erp-input-icon"></i>
+                    <input type="text" id="taxStudentSearch" class="form-control erp-filter-input" placeholder="Search student name..." style="width: 220px;">
+                  </div>
+                  <button type="button" id="resetFilterBtn" class="erp-btn-filter-action erp-btn-filter-reset" title="Reset Filters">
+                    <i class="fas fa-rotate-left"></i><span>Reset</span>
+                  </button>
+                </div>
+              </div>
 
-                    <th>Total Fee</th>
-                    <th>Payment Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($studentData as $data)
-                <tr>
-                    <td>{{ \Carbon\Carbon::parse($data['date'])->format('j, M Y') }}</td> <!-- Date -->
-                    <td>{{ $data['student']->name }}</td> <!-- Student's Name -->
-                    <td>{{ number_format($data['bus_taxes']) }} Rs/-</td> <!-- Bus Tax -->
-                    <td>{{ number_format($data['admission_tax']) }} Rs/-</td> <!-- Admission Fee -->
-                    <td>{{ number_format($data['other_activity_tax']) }} Rs/-</td> <!-- Other Activity Tax -->
-                    <td>{{ number_format($data['lunch']) }} Rs/-</td> <!-- Canteen (Lunch) Tax -->
-                    <td>{{ number_format($data['library_tax']) }} Rs/-</td> <!-- Library Tax -->
-
-                    <!-- Total Fee -->
-                    <td>{{ number_format($data['totalFee']) }} Rs/-</td> <!-- Total Fee -->
-
-                    <!-- Payment Status -->
-                    @if (!TaxeFee::where('student_id', $data['student_id'])->exists())
-                        <td><span class="badge badge-danger">Pending</span></td>
-                    @else
-                        <td><span class="badge badge-success">Received</span></td>
-                    @endif
-
-                    <!-- Actions -->
-                    <td>
-                        @if (!TaxeFee::where('student_id', $data['student_id'])->exists())
-                            <a href="{{ route('taxe.receive', ['id' => $data['student_id'], 'total' => $data['totalFee']]) }}"
-                               title='Confirm Receive' class="btn btn-sm btn-info">
-                                <i class="fas fa-money-bill-1"></i>
+              <!-- Table -->
+              <div class="table-responsive">
+                <table class="table erp-table" id="studentTaxFeeTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 100px;">Date</th>
+                      <th>Student</th>
+                      <th class="text-right">Bus Tax</th>
+                      <th class="text-right">Adm Fee</th>
+                      <th class="text-right">Activity</th>
+                      <th class="text-right">Canteen</th>
+                      <th class="text-right">Library</th>
+                      <th class="text-right">Total Fee</th>
+                      <th style="width: 120px;" class="text-center">Status</th>
+                      <th style="width: 100px;" class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @php $count = 0; @endphp
+                    @forelse ($studentData as $data)
+                      @php
+                        $count++;
+                        $isPaid = TaxeFee::where('student_id', $data['student_id'])->exists();
+                      @endphp
+                      <tr class="student-fee-row" data-name="{{ strtolower($data['student']->name ?? '') }}">
+                        <td>
+                          <span class="erp-code-pill" style="color: #475569; background: #f8fafc; border-color: #e2e8f0; font-size: 11px;">
+                            {{ Carbon::parse($data['date'])->format('d M, Y') }}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="font-weight-600 text-dark">{{ $data['student']->name ?? 'N/A' }}</div>
+                          <span class="text-muted" style="font-size: 11px;">ID: #{{ $data['student_id'] }}</span>
+                        </td>
+                        <td class="text-right font-weight-500 text-dark">{{ number_format($data['bus_taxes']) }} Rs</td>
+                        <td class="text-right font-weight-500 text-dark">{{ number_format($data['admission_tax']) }} Rs</td>
+                        <td class="text-right font-weight-500 text-dark">{{ number_format($data['other_activity_tax']) }} Rs</td>
+                        <td class="text-right font-weight-500 text-dark">{{ number_format($data['lunch']) }} Rs</td>
+                        <td class="text-right font-weight-500 text-dark">{{ number_format($data['library_tax']) }} Rs</td>
+                        <td class="text-right">
+                          <span class="font-weight-bold text-primary" style="font-size: 13px;">
+                            {{ number_format($data['totalFee']) }} Rs/-
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          @if (!$isPaid)
+                            <span class="badge" style="background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                              <i class="fas fa-circle-exclamation me-1"></i>Pending
+                            </span>
+                          @else
+                            <span class="badge" style="background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                              <i class="fas fa-circle-check me-1"></i>Received
+                            </span>
+                          @endif
+                        </td>
+                        <td class="text-center">
+                          @if (!$isPaid)
+                            <a href="{{ route('taxe.receive', ['id' => $data['student_id'], 'total' => $data['totalFee']]) }}" title="Confirm Payment Receipt" class="btn btn-sm btn-primary py-1 px-2 font-weight-bold shadow-xs" style="font-size: 11px; border-radius: 6px;">
+                              <i class="fas fa-hand-holding-dollar me-1"></i> Receive
                             </a>
-                        @else
-                            <button class="btn btn-sm btn-secondary" disabled title="Fee Already Paid">
-                                <i class="fas fa-money-bill-1"></i>
+                          @else
+                            <button class="btn btn-sm btn-light py-1 px-2 text-muted" disabled style="font-size: 11px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                              <i class="fas fa-check me-1"></i> Paid
                             </button>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                          @endif
+                        </td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="10" class="text-center py-4 text-muted">
+                          <i class="fas fa-receipt fa-2x mb-2 d-block text-muted opacity-50"></i>
+                          No auxiliary fee records found.
+                        </td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
 
-      </div>
-    </div>
-  </div>
+              <!-- Footer -->
+              <div class="erp-table-footer">
+                <div class="erp-footer-count">
+                  Showing <span id="filteredCount">{{ $count }}</span> of <span>{{ $count }}</span> student tax entries
+                </div>
+              </div>
+
+            </div>
 
           </div>
         </div>
@@ -121,30 +161,130 @@
 
     </div>
   </div>
+
   @include('view-file.script')
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('taxStudentSearch');
+      const resetBtn = document.getElementById('resetFilterBtn');
+      const rows = document.querySelectorAll('.student-fee-row');
+      const filteredCount = document.getElementById('filteredCount');
+
+      function filterRows() {
+        const query = (searchInput.value || '').toLowerCase().trim();
+        let visible = 0;
+
+        rows.forEach(row => {
+          const name = row.getAttribute('data-name') || '';
+          if (name.includes(query)) {
+            row.style.display = '';
+            visible++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        if (filteredCount) filteredCount.textContent = visible;
+      }
+
+      if (searchInput) searchInput.addEventListener('input', filterRows);
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+          if (searchInput) searchInput.value = '';
+          filterRows();
+        });
+      }
+
+      // Exports
+      const copyBtn = document.getElementById('copyButton');
+      const csvBtn = document.getElementById('csvButton');
+      const excelBtn = document.getElementById('excelButton');
+      const pdfBtn = document.getElementById('pdfButton');
+
+      if (copyBtn) {
+        new ClipboardJS(copyBtn, {
+          text: function() {
+            let table = document.getElementById('studentTaxFeeTable');
+            return table.innerText;
+          }
+        }).on('success', function() {
+          Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
+        });
+      }
+
+      if (csvBtn) {
+        csvBtn.addEventListener('click', function() {
+          let csv = [];
+          let rows = document.querySelectorAll('#studentTaxFeeTable tr');
+          rows.forEach(row => {
+            if (row.style.display !== 'none') {
+              let cols = row.querySelectorAll('th, td');
+              let rowData = [];
+              for (let i = 0; i < cols.length - 1; i++) {
+                rowData.push('"' + cols[i].innerText.replace(/"/g, '""').trim() + '"');
+              }
+              csv.push(rowData.join(','));
+            }
+          });
+          let blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          let link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'student_auxiliary_fees.csv';
+          link.click();
+        });
+      }
+
+      if (excelBtn) {
+        excelBtn.addEventListener('click', function() {
+          let table = document.getElementById('studentTaxFeeTable');
+          let wb = XLSX.utils.table_to_book(table, { sheet: 'AuxiliaryFees' });
+          XLSX.writeFile(wb, 'student_auxiliary_fees.xlsx');
+        });
+      }
+
+      if (pdfBtn) {
+        pdfBtn.addEventListener('click', function() {
+          const { jsPDF } = window.jspdf;
+          let doc = new jsPDF('landscape');
+          doc.text('Student Auxiliary Fee List', 14, 15);
+          doc.autoTable({
+            html: '#studentTaxFeeTable',
+            startY: 20,
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          });
+          doc.save('student_auxiliary_fees.pdf');
+        });
+      }
+    });
+  </script>
 
   @if(session('error'))
   <script>
-      Swal.fire({
-          title: 'Error!',
-          text: "{{ session('error') }}",
-          icon: 'error',
-          confirmButtonText: 'OK'
-      });
+    Swal.fire({
+      title: 'Error!',
+      text: "{{ session('error') }}",
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
   </script>
   @endif
+
   @if(session('success'))
   <script>
-      Swal.fire({
-          title: 'Success!',
-          text: "{{ session('success') }}",
-          icon: 'success',
-          confirmButtonText: 'OK'
-      });
+    Swal.fire({
+      title: 'Success!',
+      text: "{{ session('success') }}",
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
   </script>
   @endif
 
-
 </body>
-
 </html>
