@@ -72,7 +72,17 @@ class Employee extends Model implements AuthenticatableContract
         return $this->hasMany(Classe::class);
     }
 
+    public function classes()
+    {
+        return $this->hasMany(Classe::class);
+    }
+
     public function section()
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    public function sections()
     {
         return $this->hasMany(Section::class);
     }
@@ -84,26 +94,41 @@ class Employee extends Model implements AuthenticatableContract
 
     public function attendance()
     {
-        return $this->belongsTo(EmployeeAttendance::class);
+        return $this->hasMany(EmployeeAttendance::class, 'employee_id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(EmployeeAttendance::class, 'employee_id');
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(TimeTable::class, 'teacher_id');
+    }
+
+    public function timetable()
+    {
+        return $this->hasMany(TimeTable::class, 'teacher_id');
     }
 
     public function financeRecode()
     {
-        return $this->belongsTo(Finance_recode::class);
+        return $this->hasMany(Finance_recode::class, 'employee_id');
     }
 
     public function financeRecords()
     {
-        return $this->hasMany(Finance_recode::class);
+        return $this->hasMany(Finance_recode::class, 'employee_id');
     }
 
     public function financeRecordBonus()
     {
-        return $this->hasMany(Finance_recode::class);
+        return $this->hasMany(Finance_recode::class, 'employee_id');
     }
 
     public function financeRecordDeduction()
     {
-        return $this->hasMany(Finance_recode::class);
+        return $this->hasMany(Finance_recode::class, 'employee_id');
     }
 }

@@ -9,13 +9,26 @@ class DateSheet extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'exam_schedule_id',
+        'subject_id',
+        'start_time',
+        'end_time',
+        'date',
+    ];
+
     public function exam_schedule()
     {
-        return $this->hasMany(ExamSchedule::class);
+        return $this->belongsTo(ExamSchedule::class, 'exam_schedule_id');
+    }
+
+    public function examSchedule()
+    {
+        return $this->belongsTo(ExamSchedule::class, 'exam_schedule_id');
     }
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 }

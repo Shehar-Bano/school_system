@@ -63,7 +63,7 @@ Route::post('employee/store', [EmployeeController::class, 'storeEmployee'])->nam
 Route::get('employee/show/{id}', [EmployeeController::class, 'showEmployee'])->name('employees_show');
 Route::get('employee/edit/{id}', [EmployeeController::class, 'editEmployee'])->name('employees_edit');
 Route::post('employee/update/{id}', [EmployeeController::class, 'updateEmployee'])->name('employees_update');
-Route::delete('employee/delete{id}', [EmployeeController::class, 'deleteEmployee'])->name('employees_delete');
+Route::delete('employee/delete/{id}', [EmployeeController::class, 'deleteEmployee'])->name('employees_delete');
 ////////////subject
 Route::get('/subject/view', [SubjectController::class, 'subjectView'])->name('subject_show');
 Route::get('/subject/add', [SubjectController::class, 'addSubjectView'])->name('add_subject');

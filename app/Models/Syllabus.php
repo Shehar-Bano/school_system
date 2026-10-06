@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Syllabus extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'description',
+        'class_id',
+        'file',
+        'uploader',
+        'date',
+    ];
+
+    public function class()
+    {
+        return $this->belongsTo(classe::class, 'class_id');
+    }
 }

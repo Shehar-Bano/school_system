@@ -45,14 +45,18 @@ class TimeTableController extends Controller
 
     public function timeTableView(Request $request)
     {
+        $classes = Classe::all();
+        $sections = Section::all();
+        $subjects = Subject::all();
+        $staticSubjects = ['Urdu', 'English', 'Science', 'Drawing', 'Social Study', 'Math'];
+        $employees = Employee::with('designation')->get();
+
         // Initialize the query builder with relationships
         $query = TimeTable::with('subject', 'teacher', 'class', 'section');
 
-        // Apply default filter for Class 1
-        $classId = 6;
-        if ($request->has('class') && ! empty($request->input('class'))) {
-            $classId = $request->input('class');
-        }
+        // Apply default filter for first available Class
+        $defaultClassId = $classes->first()?->id ?? 1;
+        $classId = $request->input('class', $defaultClassId);
         $query->where('class_id', $classId);
 
         if ($request->has('section') && ! empty($request->input('section'))) {
@@ -66,26 +70,21 @@ class TimeTableController extends Controller
         // Fetch the filtered results
         $timetables = $query->get();
 
-        // Fetch all classes, sections, and employees
-        $classes = Classe::all();
-        $sections = Section::all();
-        $subjects = Subject::all();
-        $staticSubjects = ['Urdu', 'English', 'Science', 'Drawing', 'Social Study', 'Math'];
-        $employees = Employee::with('designation')->get(); // Ensure the employee model includes the designation relationship
-
         // Pass the data to the view
         return view('timeTable.classView', compact('timetables', 'classes', 'subjects', 'sections', 'employees', 'staticSubjects'));
     }
 
     public function timeTableViewTeacher(Request $request)
     {
+        $employees = Employee::all();
+        $defaultTeacherId = $employees->first()?->id ?? 1;
+
         // Initialize the query builder with relationships
         $query = TimeTable::with('subject', 'teacher', 'class', 'section');
 
-        // Apply default filter for teacher_id = 1
-        if (! $request->has('teacher') || empty($request->input('teacher'))) {
-            $query->where('teacher_id', 1);
-        }
+        // Apply default filter for first available teacher if not specified
+        $teacherId = $request->input('teacher', $defaultTeacherId);
+        $query->where('teacher_id', $teacherId);
 
         // Apply filters for class and section
         if ($request->has('class') && ! empty($request->input('class'))) {

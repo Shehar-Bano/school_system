@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'subject_name',
         'type', // optional or mandatory
@@ -16,7 +17,6 @@ class Subject extends Model
         'sub_code', // subject code
     ];
 
-
     public function teacher()
     {
         return $this->belongsTo(Employee::class);
@@ -24,7 +24,12 @@ class Subject extends Model
 
     public function class()
     {
-        return $this->belongsTo(Classe::class);
+        return $this->belongsTo(classe::class);
+    }
+
+    public function classes()
+    {
+        return $this->belongsToMany(classe::class, 'classes_subjects', 'subject_id', 'class_id');
     }
 
     public function assignments()
@@ -32,23 +37,33 @@ class Subject extends Model
         return $this->hasMany(Assignment::class);
     }
 
-    public function classSunject()
+    public function classSubject()
     {
-        return $this->hasMany(ClassesSubject::class);
+        return $this->hasMany(ClassesSubject::class, 'subject_id');
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(TimeTable::class, 'subject_id');
     }
 
     public function timetable()
     {
-        return $this->belongsTo(TimeTable::class);
+        return $this->hasMany(TimeTable::class, 'subject_id');
     }
 
     public function dateSheets()
     {
-        return $this->hasMany(DateSheet::class);
+        return $this->hasMany(DateSheet::class, 'subject_id');
     }
 
     public function result()
     {
-        return $this->hasMany(Result::class);
+        return $this->hasMany(Result::class, 'subject_id');
+    }
+
+    public function results()
+    {
+        return $this->hasMany(Result::class, 'subject_id');
     }
 }

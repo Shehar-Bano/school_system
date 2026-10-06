@@ -78,7 +78,7 @@ class SectionController extends Controller
         $section = Section::find($id);
         $section->delete();
 
-        return redirect()->back()->with('message', 'class deleted successfully');
+        return redirect()->back()->with('message', 'Section deleted successfully');
     }
 
     public function edit($id)

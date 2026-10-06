@@ -13,7 +13,7 @@ class ExamSchedule extends Model
 
     public function class()
     {
-        return $this->belongsTo(Classe::class);
+        return $this->belongsTo(classe::class);
     }
 
     public function section()
@@ -38,6 +38,11 @@ class ExamSchedule extends Model
 
     public function datesheet()
     {
-        return $this->belongsTo(DateSheet::class);
+        return $this->hasMany(DateSheet::class, 'exam_schedule_id');
+    }
+
+    public function datesheets()
+    {
+        return $this->hasMany(DateSheet::class, 'exam_schedule_id');
     }
 }

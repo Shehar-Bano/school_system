@@ -97,7 +97,6 @@ class ClasseController extends Controller
         $class->note = $request->note;
         $class->save();
 
-        return redirect()->back()->with('message', 'Exam successfully updated!');
-
+        return redirect()->back()->with('message', 'Class successfully updated!');
     }
 }
