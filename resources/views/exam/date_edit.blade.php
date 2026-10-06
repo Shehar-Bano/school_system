@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('view-file/head')
-<head>
-    <!-- Include SweetAlert CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px rgb(56, 56, 56);
-            box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
-        }
-        .header {
-            background-color: #4B49AC;
-            color: white;
-            padding: 10px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h4 {
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .header h4 i {
-            margin-right: 10px;
-        }
-        .header a {
-            color: whitesmoke;
-            text-decoration: none;
-        }
-    </style>
-</head>
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
+      
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container mt-5">
-            <div class="form-container">
-                <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i> Update Exam Schedule</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-                            {{-- <li class="breadcrumb-item"><a href="{{route('date-sheet-list',['id'=>$datesheets->id])}}">Datesheet</a></li> --}}
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Update Exam Subject</li>
-                        </ol>
-                    </nav>
+          <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-calendar-pen text-primary"></i>
+                      Update Subject Exam Timing
+                    </h3>
+                    <p class="erp-form-subtitle">Modify date, start time, and finish time for {{ $exam->subject->subject_name ?? 'this subject' }}</p>
+                  </div>
+
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('exam-schedule-list') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Schedules
+                    </a>
+                  </div>
                 </div>
 
-
-
-                <form class="mt-1" action="{{ route('exam.schedule.datesheet.update', ['id' => $exam->id]) }}" method="POST">
-                    @csrf
+                <form action="{{ route('exam.schedule.datesheet.update', ['id' => $exam->id]) }}" method="POST" id="editDateSheetForm">
+                  @csrf
+                  
+                  <div class="erp-form-body">
                     <div class="row">
-                        <div class="col-md-3 px-5">
-                            <label class="form-control" for="subject">{{ $exam->subject->subject_name }}</label>
+                      <!-- Subject Display -->
+                      <div class="col-md-12 mb-3">
+                        <div class="p-3 bg-light rounded border d-flex align-items-center">
+                          <i class="fas fa-book text-primary fa-lg mr-2"></i>
+                          <div>
+                            <small class="text-muted d-block">Subject</small>
+                            <span class="font-weight-bold text-dark fs-6">{{ $exam->subject->subject_name ?? 'Subject' }}</span>
+                          </div>
                         </div>
+                      </div>
 
-                        <!-- Date Selection -->
-                        <div class="col-md-3 mb-3">
-                            <input type="date" class="form-control" name="date" value="{{ $exam->date ?? '' }}" required>
+                      <!-- Date -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="date" class="erp-form-label">Exam Date <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="date" name="date" value="{{ $exam->date ?? '' }}" required>
                         </div>
+                      </div>
 
-                        <!-- Start Time -->
-                        <div class="col-md-3 mb-3">
-                            <input type="time" class="form-control" name="start_time" value="{{ $exam->start_time ?? '' }}" required>
+                      <!-- Start Time -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="start_time" class="erp-form-label">Start Time <span class="required">*</span></label>
+                          <input type="time" class="form-control" id="start_time" name="start_time" value="{{ $exam->start_time ?? '' }}" required>
                         </div>
+                      </div>
 
-                        <!-- End Time -->
-                        <div class="col-md-3 mb-3">
-                            <input type="time" class="form-control" name="end_time" value="{{ $exam->end_time ?? '' }}" required>
+                      <!-- End Time -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="end_time" class="erp-form-label">End Time <span class="required">*</span></label>
+                          <input type="time" class="form-control" id="end_time" name="end_time" value="{{ $exam->end_time ?? '' }}" required>
                         </div>
+                      </div>
                     </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Update Exam Schedule</button>
-                    </div>
+                  </div>
+
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('exam-schedule-list') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-save"></i> Update Exam Timing
+                    </button>
+                  </div>
                 </form>
 
-
+              </div>
+              <!-- End ERP Card Form -->
 
             </div>
           </div>
@@ -96,47 +96,5 @@
   </div>
 
   @include('view-file/script')
-
-  @if(session('message'))
-  <script>
-      Swal.fire({
-          title: 'Success!',
-          text: "{{ session('message') }}",
-          icon: 'success',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  @if(session('error'))
-  <script>
-      Swal.fire({
-          title: 'Error!',
-          text: "{{ session('error') }}",
-          icon: 'error',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  <script>
-      document.querySelector('form').addEventListener('submit', function(event) {
-          event.preventDefault(); // Prevent the form from submitting
-
-          Swal.fire({
-              title: 'Are you sure?',
-              text: "Do you want to submit the exam schedule?",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, submit it!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  this.submit(); // Submit the form
-              }
-          });
-      });
-  </script>
 </body>
 </html>

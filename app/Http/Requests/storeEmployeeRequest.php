@@ -34,6 +34,7 @@ class StoreEmployeeRequest extends FormRequest
             'joining_date' => 'required|date|before_or_equal:today',
             'salary' => 'required|numeric',
             'role' => 'nullable|string|max:100',
+            'password' => 'nullable|string|min:6|confirmed',
         ];
     }
 }

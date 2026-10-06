@@ -3,79 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Student Portal Login | EduSuite</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #6366f1;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.96);
+        }
+
         body {
-            background-image: url({{asset('assesst/images/image.png')}}); /* Replace with your background image URL */
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
         }
-        .login-form {
-            background: rgba(0, 0, 0, 0.6); /* Transparent background */
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            color: #fff;
+
+        /* Ambient glowing background circles */
+        .ambient-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
         }
-        .login-form h4 {
-            text-align: center;
+        .glow-1 {
+            width: 420px;
+            height: 420px;
+            background: #6366f1;
+            top: -100px;
+            left: -100px;
+        }
+        .glow-2 {
+            width: 380px;
+            height: 380px;
+            background: #ec4899;
+            bottom: -80px;
+            right: -80px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            padding: 40px 34px;
+            backdrop-filter: blur(16px);
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
             margin-bottom: 20px;
         }
-        .login-form input[type="email"],
-        .login-form input[type="text"],
-        .login-form input[type="password"] {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid #ccc;
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
         }
-        .login-form input::placeholder {
-            color: #ccc;
+
+        .auth-desc {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-bottom: 24px;
         }
-        .btn-primary {
-            background-color: #fff;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .input-group-custom {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-custom .field-icon {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 15px;
+            pointer-events: none;
+            z-index: 4;
+            transition: color 0.2s;
+        }
+
+        .form-control-custom {
             width: 100%;
+            height: 48px;
+            padding: 10px 42px 10px 42px;
+            font-size: 14px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .btn-primary:hover {
-            background-color: #ccc;
+
+        .form-control-custom:focus {
+            outline: none;
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
         }
-        .form-check-label, .forgot-password, .register-link {
-            color: #ccc;
+
+        .form-control-custom:focus + .field-icon,
+        .input-group-custom:focus-within .field-icon {
+            color: var(--primary);
         }
-        .register-link:hover {
-            color: #fff;
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 6px;
+            cursor: pointer;
+            z-index: 5;
+            transition: color 0.2s;
+        }
+
+        .password-toggle-btn:hover {
+            color: #334155;
+        }
+
+        .btn-portal-submit {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+
+        .btn-portal-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 24px -5px rgba(79, 70, 229, 0.5);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+
+        .portal-switch-links {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .portal-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .portal-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-<div class="login-form col-md-4">
-    <h4>Student Login</h4>
-    <form method="POST" action="{{ route('student.login') }}">
-        @csrf
-        <div class="mb-3">
-            <label for="username" class="form-label">Enter your UserName</label>
-            <input type="text" class="form-control" name="username" placeholder="UserName" required>
-        </div>
-        <div class="mb-3">
-            <label for="registration" class="form-label">Enter your registration number</label>
-            <input type="text" class="form-control" name="registration" placeholder="Registration No" required>
-        </div>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
 
-        <button type="submit" class="btn btn-primary">Log In</button>
-    </form>
-    {{-- <div class="text-center mt-3">
-        <a href="#" class="register-link">Don't have an account? Register</a>
-    </div> --}}
-</div>
+    <div class="auth-container">
+        <div class="auth-card">
+            
+            <div class="brand-badge">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Student Academic Portal</span>
+            </div>
 
+            <h1 class="auth-title">Welcome Back, Scholar!</h1>
+            <p class="auth-desc">Enter your portal credentials to view your classes, timetable, fees, assignments, and exam results.</p>
+
+            @if ($errors->any())
+                <div class="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size: 13px; border-radius: 10px;">
+                    <i class="fas fa-circle-exclamation text-danger"></i>
+                    <div>{{ $errors->first() }}</div>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size: 13px; border-radius: 10px;">
+                    <i class="fas fa-circle-check text-success"></i>
+                    <div>{{ session('success') }}</div>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('student.login') }}">
+                @csrf
+
+                <!-- Username / Registration No -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username, Registration No or Email</label>
+                    <div class="input-group-custom">
+                        <i class="fas fa-user-graduate field-icon"></i>
+                        <input type="text" class="form-control-custom @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username') }}" placeholder="e.g. std_john or REG-2026-001" required autofocus autocomplete="username">
+                    </div>
+                    @error('username')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <label for="password" class="form-label mb-0">Portal Password</label>
+                        <span class="text-muted" style="font-size: 11.5px;">(Initial pass is your Reg. No)</span>
+                    </div>
+                    <div class="input-group-custom">
+                        <i class="fas fa-lock field-icon"></i>
+                        <input type="password" class="form-control-custom @error('password') is-invalid @enderror" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Remember Me Checkbox -->
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember" checked>
+                        <label class="form-check-label text-muted" for="remember" style="font-size: 12.5px;">
+                            Remember my login
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-portal-submit">
+                    <i class="fas fa-arrow-right-to-bracket"></i>
+                    <span>Log In to Student Portal</span>
+                </button>
+            </form>
+
+            <!-- Footer Switch Navigation -->
+            <div class="portal-switch-links">
+                <a href="{{ url('/') }}" class="portal-link">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Home
+                </a>
+                <a href="{{ route('employee.login') }}" class="portal-link">
+                    <i class="fas fa-chalkboard-user me-1"></i> Teacher Portal
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

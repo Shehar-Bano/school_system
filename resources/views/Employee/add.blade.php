@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 @include('view-file/head')
 
 <body>
@@ -8,260 +7,302 @@
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
-
-      <!-- Inner page -->
+      
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Employee Form -->
-            <div class="card">
-              <div class="card-body">
-                <div class="header">
-                    <h4><i class="fas fa-user"></i> Employee</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('employee_view')}}">Employee</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam</li>
-                        </ol>
-                    </nav>
+          <div class="row justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-user-plus text-primary"></i>
+                      Add New Staff / Employee
+                    </h3>
+                    <p class="erp-form-subtitle">Register teacher or administrative staff member, assign designation, salary and portal security role</p>
+                  </div>
+
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('employee_view') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Employees
+                    </a>
+                  </div>
                 </div>
-                <h4 class="card-title mt-5">Add New Employee</h4>
-                <div class="form-container">
-                   
-                  <form action="{{ route('employees_store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name" name="name" value="{{ old('name') }}">
-                        @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="designation">Designation</label>
-                        <select class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" id="designation" name="designation">
-                          <option value="" disabled selected></option> 
-                          @foreach ($designations as $designation )
-                          <option value="{{ $designation->id }}" {{ old('designation') == $designation->name ? 'selected' : '' }}>{{ $designation->name }}</option>
-                          
-                          @endforeach
-                            </select>
-                        @error('designation')
-                        <div class="invalid-feedback ">{{ $message }}</div>
-                        @enderror
+
+                <form action="{{ route('employees_store') }}" method="POST" enctype="multipart/form-data" id="addEmployeeForm">
+                  @csrf
+                  
+                  <div class="erp-form-body">
+                    
+                    <!-- 1. Position & Employment Info -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-briefcase mr-1"></i> Employment & Position Details
+                      </h5>
                     </div>
 
-                    <div class="form-group">
-                        <label for="role">Assign Security Role</label>
-                        <select class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role" name="role">
-                          <option value="" disabled selected>Select Role (Inherits all permissions of the role)</option>
-                          @if(isset($roles))
-                            @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" {{ old('role', 'employee') == $role->name ? 'selected' : '' }}>
-                              {{ ucfirst($role->name) }} ({{ strtoupper($role->guard_name) }} Guard - {{ $role->permissions->count() }} permissions)
-                            </option>
+                    <div class="row mb-3">
+                      <!-- Designation -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="designation" class="erp-form-label">Designation / Role <span class="required">*</span></label>
+                          <select class="form-control" id="designation" name="designation" required>
+                            <option value="" disabled selected>-- Select Designation --</option> 
+                            @foreach ($designations as $designation)
+                              <option value="{{ $designation->id }}" {{ old('designation') == $designation->id ? 'selected' : '' }}>
+                                {{ $designation->name }}
+                              </option>
                             @endforeach
-                          @endif
-                        </select>
-                        @error('role')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">The assigned role automatically grants all its action permissions to this employee.</small>
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" class="form-control {{ $errors->has('date_of_birth') ? 'is-invalid' : '' }}" id="dob" name="date_of_birth" value="{{ old('date_of_birth') }}">
-                        @error('date_of_birth')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="genderMale" value="Male" {{ old('gender') == 'Male' ? 'checked' : '' }}>
-                            <label class="form-check-label" for="genderMale">Male</label>
+                          </select>
+                          @error('designation')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="Female" {{ old('gender') == 'Female' ? 'checked' : '' }}>
-                            <label class="form-check-label" for="genderFemale">Female</label>
+                      </div>
+
+                      <!-- Joining Date -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="joining_date" class="erp-form-label">Date of Joining <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="joining_date" name="joining_date" value="{{ old('joining_date', date('Y-m-d')) }}" required>
+                          @error('joining_date')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
                         </div>
-                        @error('gender')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                      </div>
+
+                      <!-- Salary -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="salary" class="erp-form-label">Monthly Salary (Rs.) <span class="required">*</span></label>
+                          <input type="number" class="form-control" id="salary" name="salary" value="{{ old('salary') }}" placeholder="e.g. 45000" required>
+                          @error('salary')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
                     </div>
-                
-                    <div class="form-group">
-                        <label for="religion">Religion</label>
-                        <select class="form-control {{ $errors->has('religion') ? 'is-invalid' : '' }}" id="religion" name="religion">
-                          <option value="" disabled selected></option>
+
+                    <!-- 2. Personal & Contact Info -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-user-tie mr-1"></i> Personal & Contact Information
+                      </h5>
+                    </div>
+
+                    <div class="row mb-3">
+                      <!-- Full Name -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="name" class="erp-form-label">Full Name <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="e.g. John Doe" required autofocus>
+                          @error('name')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="email" class="erp-form-label">Email Address <span class="required">*</span></label>
+                          <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="staff@school.edu" required>
+                          @error('email')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Phone -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="phone" class="erp-form-label">Phone Number <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" placeholder="+92 300 1234567" required>
+                          @error('phone')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Date of Birth -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="dob" class="erp-form-label">Date of Birth <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="dob" name="date_of_birth" value="{{ old('date_of_birth') }}" required>
+                          @error('date_of_birth')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Gender -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label class="erp-form-label">Gender <span class="required">*</span></label>
+                          <div class="d-flex align-items-center gap-4 mt-2">
+                            <div class="form-check mr-3">
+                              <input class="form-check-input" type="radio" name="gender" id="genderMale" value="Male" {{ old('gender', 'Male') == 'Male' ? 'checked' : '' }}>
+                              <label class="form-check-label font-weight-medium" for="genderMale">Male</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="Female" {{ old('gender') == 'Female' ? 'checked' : '' }}>
+                              <label class="form-check-label font-weight-medium" for="genderFemale">Female</label>
+                            </div>
+                          </div>
+                          @error('gender')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Religion -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="religion" class="erp-form-label">Religion</label>
+                          <select class="form-control" id="religion" name="religion">
+                            <option value="Islam" {{ old('religion', 'Islam') == 'Islam' ? 'selected' : '' }}>Islam</option>
                             <option value="Christianity" {{ old('religion') == 'Christianity' ? 'selected' : '' }}>Christianity</option>
-                            <option value="Islam" {{ old('religion') == 'Islam' ? 'selected' : '' }}>Islam</option>
                             <option value="Hinduism" {{ old('religion') == 'Hinduism' ? 'selected' : '' }}>Hinduism</option>
-                            <option value="Buddhism" {{ old('religion') == 'Buddhism' ? 'selected' : '' }}>Buddhism</option>
                             <option value="Other" {{ old('religion') == 'Other' ? 'selected' : '' }}>Other</option>
-                        </select>
-                        @error('religion')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Address -->
+                      <div class="col-md-8">
+                        <div class="erp-form-group">
+                          <label for="address" class="erp-form-label">Residential Address <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}" placeholder="House #, Street, City" required>
+                          @error('address')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
                     </div>
-                
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}">
-                        @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+
+                    <!-- 3. Portal Security & Role -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-shield-halved mr-1"></i> Security & Permissions
+                      </h5>
                     </div>
 
-                  <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="text" class="form-control  {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="phone" name="phone"  value="{{ old('phone') }}">
-                    @error('phone')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <div class="row mb-3">
+                      <!-- Assign Security Role -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="role" class="erp-form-label">Portal Security Role</label>
+                          <select class="form-control" id="role" name="role">
+                            <option value="" disabled selected>-- Select Role --</option>
+                            @if(isset($roles))
+                              @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" {{ old('role', 'teacher') == $role->name ? 'selected' : '' }}>
+                                  {{ ucfirst($role->name) }} ({{ $role->permissions->count() }} permissions)
+                                </option>
+                              @endforeach
+                            @endif
+                          </select>
+                          <small class="text-muted">The assigned role grants module access privileges to this employee.</small>
+                        </div>
+                      </div>
+
+                      <!-- Photo Upload -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group mb-0">
+                          <label for="image" class="erp-form-label">Employee Photo <span class="required">*</span></label>
+                          <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                          @error('image')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Password Security Row -->
+                    <div class="row">
+                      <!-- Password -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="password" class="erp-form-label">
+                            Portal Password <span class="text-muted font-weight-normal" style="font-size: 11.5px;">(Optional, defaults to 'password')</span>
+                          </label>
+                          <div class="input-group">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Create login password" autocomplete="new-password">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password', this)" style="border: 1px solid #ced4da; border-left: none;">
+                                <i class="fas fa-eye"></i>
+                              </button>
+                            </div>
+                          </div>
+                          @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Confirm Password -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="password_confirmation" class="erp-form-label">
+                            Confirm Portal Password
+                          </label>
+                          <div class="input-group">
+                            <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="Repeat portal password" autocomplete="new-password">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password_confirmation', this)" style="border: 1px solid #ced4da; border-left: none;">
+                                <i class="fas fa-eye"></i>
+                              </button>
+                            </div>
+                          </div>
+                          @error('password_confirmation')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
 
-                  <div class="form-group">
-                    <label for="address">Address</label>
-                    <textarea class="form-control  {{ $errors->has('address') ? 'is-invalid' : '' }}" id="address" name="address" rows="3"  >{{ old('address') }}</textarea>
-                    @error('address')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('employee_view') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-check"></i> Register Employee
+                    </button>
                   </div>
-
-                  <div class="form-group">
-                    <label for="joining_date">Joining Date</label>
-                    <input type="date" class="form-control  {{ $errors->has('joining_date') ? 'is-invalid' : '' }}" id="joining_date" name="joining_date" value="{{ old('joining_date') }}">
-                    @error('joining_date')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                  </div>
-                  <div class="form-group">
-                    <label for="salary">Salary</label>
-                    <input type="number" class="form-control  {{ $errors->has('salary') ? 'is-invalid' : '' }}" id="salary" name="salary" value="{{ old('salary') }}">
-                    @error('salary')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                  </div>
-
-
-                  <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" class="form-control  {{ $errors->has('image') ? 'is-invalid' : '' }}" id="image" name="image" accept="image/*" value="{{ old('image') }}" >
-                    @error('image')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                  </div>
-
-                  <button type="submit" class="btn btn-primary">Save</button>
                 </form>
+
               </div>
+              <!-- End ERP Card Form -->
+
             </div>
           </div>
         </div>
       </div>
-      <!-- End Inner page -->
     </div>
   </div>
-  @include('view-file.script')
+
+  @include('view-file/script')
+
   <script>
-    @if(session('message'))
-      swal("Success!", "{{ session('message') }}", "success");
-    @endif
-  </script>
-  <script>
-    // Filter by Name with Suggestions
-    const filterNameInput = document.getElementById('filterName');
-    const nameSuggestionList = document.getElementById('nameSuggestionList');
-  
-    filterNameInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-  
-      rows.forEach(row => {
-        const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
-        if (name.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = name;
-          suggestionItem.addEventListener('click', function() {
-            filterNameInput.value = name;
-            nameSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
-              r.style.display = n === name ? '' : 'none';
-            });
-          });
-          nameSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-  
-      nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-  
-    // Hide suggestion list when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterNameInput.contains(event.target)) {
-        nameSuggestionList.style.display = 'none';
+    function toggleInputPassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
       }
-    });
-  
-    // Filter by Designation with Suggestions
-    const filterDesignationInput = document.getElementById('filterDesignation');
-    const designationSuggestionList = document.getElementById('designationSuggestionList');
-  
-    filterDesignationInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      designationSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-  
-      rows.forEach(row => {
-        const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
-        if (designation.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = designation;
-          suggestionItem.addEventListener('click', function() {
-            filterDesignationInput.value = designation;
-            designationSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
-              r.style.display = d === designation ? '' : 'none';
-            });
-          });
-          designationSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-  
-      designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-  
-    // Hide suggestion list when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterDesignationInput.contains(event.target)) {
-        designationSuggestionList.style.display = 'none';
-      }
-    });
+    }
   </script>
 </body>
 </html>

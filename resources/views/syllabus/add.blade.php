@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 @include('view-file/head')
 
 <body>
@@ -8,174 +7,111 @@
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
-
-      <!-- Inner page -->
+      
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container">
-            <!-- Add New Employee Form -->
-            <div class="card">
-              <div class="card-body">
-                <div class="header">
-                    <h4><i class="fas fa-file-alt"></i> Syllabus</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('subject_show')}}">Acadamic</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('syllabus_show')}}">Syllabus</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Syllabus</li>
-                        </ol>
-                    </nav>
+          <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-file-circle-plus text-primary"></i>
+                      Add New Syllabus
+                    </h3>
+                    <p class="erp-form-subtitle">Upload class curriculum outline, course topics, study guide, and reference document</p>
+                  </div>
+
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('syllabus_show') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Syllabus
+                    </a>
+                  </div>
                 </div>
-                <h4 class="card-title mt-5">Add New Syllabus</h4>
-                <div class="form-container">
-                   
-                  <form action="{{ route('syllabus_store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" id="title" name="title" value="{{ old('title') }}">
-                     
-                        @error('title')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <input type="text" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" id="description" name="description" value="{{ old('description') }}">
-                     
-                        @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="class_id">Add Class</label>
-                        <select class="form-control {{ $errors->has('class_id') ? 'is-invalid' : '' }}" id="class_id" name="class_id">
-                            <option value="" disabled selected></option>
-                            @foreach ($classes as $class)
-                                <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
-                                    {{ $class->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('class_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                
-                    <div class="form-group">
-                        <label for="file">File</label>
-                        <input type="file" class="form-control  {{ $errors->has('file') ? 'is-invalid' : '' }}" id="file" name="file"  value="{{ old('file') }}" >
-                        @error('file')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+
+                <form action="{{ route('syllabus_store') }}" method="POST" enctype="multipart/form-data" id="addSyllabusForm">
+                  @csrf
+                  
+                  <div class="erp-form-body">
+                    <div class="row">
+                      <!-- Title -->
+                      <div class="col-md-7">
+                        <div class="erp-form-group">
+                          <label for="title" class="erp-form-label">Syllabus Title <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="e.g. Grade 10 Mathematics Term 1 Syllabus" required autofocus>
+                          @error('title')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
                       </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
+
+                      <!-- Class Selection -->
+                      <div class="col-md-5">
+                        <div class="erp-form-group">
+                          <label for="class_id" class="erp-form-label">Target Class <span class="required">*</span></label>
+                          <select class="form-control" id="class_id" name="class_id" required>
+                            <option value="" disabled selected>-- Select Class --</option>
+                            @foreach ($classes as $class)
+                              <option value="{{ $class->id }}" {{ old('class_id') == $class->id ? 'selected' : '' }}>
+                                {{ $class->name }}
+                              </option>
+                            @endforeach
+                          </select>
+                          @error('class_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Description -->
+                      <div class="col-md-12">
+                        <div class="erp-form-group">
+                          <label for="description" class="erp-form-label">Description & Learning Outcomes <span class="required">*</span></label>
+                          <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter key syllabus topics, grading weights, and learning objectives..." required>{{ old('description') }}</textarea>
+                          @error('description')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Attachment File -->
+                      <div class="col-md-12">
+                        <div class="erp-form-group mb-0">
+                          <label for="file" class="erp-form-label">Document Attachment (PDF / DOC / DOCX) <span class="required">*</span></label>
+                          <input type="file" class="form-control" id="file" name="file" required>
+                          <small class="form-text text-muted">Upload a complete syllabus outline document (Max 10MB)</small>
+                          @error('file')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('syllabus_show') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-check"></i> Save Syllabus
+                    </button>
+                  </div>
                 </form>
-                
+
               </div>
+              <!-- End ERP Card Form -->
+
             </div>
           </div>
         </div>
       </div>
-      <!-- End Inner page -->
     </div>
   </div>
-  @include('view-file.script')
-  <script>
-    @if(session('message'))
-      swal("Success!", "{{ session('message') }}", "success");
-    @endif
-  </script>
-  <script>
-    // Filter by Name with Suggestions
-    const filterNameInput = document.getElementById('filterName');
-    const nameSuggestionList = document.getElementById('nameSuggestionList');
-  
-    filterNameInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      nameSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-  
-      rows.forEach(row => {
-        const name = row.querySelector('td:nth-child(4)').textContent.toLowerCase(); // assuming name is in 4th column
-        if (name.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = name;
-          suggestionItem.addEventListener('click', function() {
-            filterNameInput.value = name;
-            nameSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const n = r.querySelector('td:nth-child(4)').textContent.toLowerCase();
-              r.style.display = n === name ? '' : 'none';
-            });
-          });
-          nameSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-  
-      nameSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-  
-    // Hide suggestion list when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterNameInput.contains(event.target)) {
-        nameSuggestionList.style.display = 'none';
-      }
-    });
-  
-    // Filter by Designation with Suggestions
-    const filterDesignationInput = document.getElementById('filterDesignation');
-    const designationSuggestionList = document.getElementById('designationSuggestionList');
-  
-    filterDesignationInput.addEventListener('keyup', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#examsTable tbody tr');
-      designationSuggestionList.innerHTML = ''; // Clear previous suggestions
-      let hasSuggestions = false;
-  
-      rows.forEach(row => {
-        const designation = row.querySelector('td:nth-child(6)').textContent.toLowerCase(); // assuming designation is in 6th column
-        if (designation.includes(filter)) {
-          row.style.display = '';
-          // Add suggestion to the list
-          const suggestionItem = document.createElement('li');
-          suggestionItem.className = 'list-group-item list-group-item-action';
-          suggestionItem.textContent = designation;
-          suggestionItem.addEventListener('click', function() {
-            filterDesignationInput.value = designation;
-            designationSuggestionList.style.display = 'none';
-            // Hide non-matching rows
-            rows.forEach(r => {
-              const d = r.querySelector('td:nth-child(6)').textContent.toLowerCase();
-              r.style.display = d === designation ? '' : 'none';
-            });
-          });
-          designationSuggestionList.appendChild(suggestionItem);
-          hasSuggestions = true;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-  
-      designationSuggestionList.style.display = hasSuggestions ? 'block' : 'none';
-    });
-  
-    // Hide suggestion list when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!filterDesignationInput.contains(event.target)) {
-        designationSuggestionList.style.display = 'none';
-      }
-    });
-  </script>
+
+  @include('view-file/script')
 </body>
 </html>

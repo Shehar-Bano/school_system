@@ -216,6 +216,24 @@
                         </div>
                     </li>
 
+                    <!-- Assignments Menu Item -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#ui-assignments" aria-expanded="false"
+                            aria-controls="ui-assignments">
+                            <i class="fas fa-clipboard-list menu-icon"></i>
+                            <span class="menu-title">Assignments</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="ui-assignments">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><a class="nav-link"
+                                        href="{{ route('employee.assignments') }}">My Assignments</a></li>
+                                <li class="nav-item"><a class="nav-link"
+                                        href="{{ route('employee.assignment.create') }}">Add Assignment</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
                     <!-- Attendance Item -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('attendance.employee') }}">

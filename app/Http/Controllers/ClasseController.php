@@ -41,6 +41,14 @@ class ClasseController extends Controller
             abort(403, 'Unauthorized: You do not have permission to create classes.');
         }
 
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'tution_fee' => 'required|numeric|min:0',
+            'note' => 'nullable|string|max:1000',
+            'subject_id' => 'required|array|min:1',
+            'subject_id.*' => 'exists:subjects,id',
+        ]);
+
         // Create a new class instance
         $class = new Classe;
         $class->name = $request->name;
@@ -58,7 +66,7 @@ class ClasseController extends Controller
             }
         }
 
-        return redirect()->back()->with('message', 'Class successfully added!');
+        return redirect()->route('class-list')->with('message', 'Class successfully added!');
     }
 
     public function del($id)
@@ -80,9 +88,11 @@ class ClasseController extends Controller
         }
 
         $teacher = Employee::get();
-        $classes = Classe::with('employee')->findOrFail($id);
+        $classes = Classe::with('employee', 'classsubject')->findOrFail($id);
+        $subjects = Subject::get();
+        $assignedSubjectIds = ClassesSubject::where('class_id', $id)->pluck('subject_id')->toArray();
 
-        return view('class.editclass', compact('classes', 'teacher'));
+        return view('class.editclass', compact('classes', 'teacher', 'subjects', 'assignedSubjectIds'));
     }
 
     public function update(Request $request, $id)
@@ -91,12 +101,31 @@ class ClasseController extends Controller
             abort(403, 'Unauthorized: You do not have permission to update classes.');
         }
 
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'tution_fee' => 'required|numeric|min:0',
+            'note' => 'nullable|string|max:1000',
+            'subject_id' => 'required|array|min:1',
+            'subject_id.*' => 'exists:subjects,id',
+        ]);
+
         $class = Classe::findOrFail($id);
         $class->name = $request->name;
         $class->tution_fee = $request->tution_fee;
         $class->note = $request->note;
         $class->save();
 
-        return redirect()->back()->with('message', 'Class successfully updated!');
+        // Sync subjects: delete existing mappings and insert newly selected ones
+        ClassesSubject::where('class_id', $class->id)->delete();
+        if ($request->has('subject_id') && is_array($request->subject_id)) {
+            foreach ($request->subject_id as $subjectId) {
+                $subject = new ClassesSubject;
+                $subject->class_id = $class->id;
+                $subject->subject_id = $subjectId;
+                $subject->save();
+            }
+        }
+
+        return redirect()->route('class-list')->with('message', 'Class and subjects successfully updated!');
     }
 }

@@ -157,3 +157,77 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<!-- Global ERP SweetAlert2 Notifications & Confirmations -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @if(session('message') || session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Action Successful',
+            text: "{{ session('message') ?? session('success') }}",
+            confirmButtonColor: '#4f46e5',
+            timer: 3500,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error Occurred',
+            text: "{{ session('error') }}",
+            confirmButtonColor: '#ef4444'
+        });
+    @endif
+
+    @if(session('warning'))
+        Swal.fire({
+            icon: 'warning',
+            title: 'Notice',
+            text: "{{ session('warning') }}",
+            confirmButtonColor: '#f59e0b'
+        });
+    @endif
+
+    @if(session('status'))
+        Swal.fire({
+            icon: 'info',
+            title: 'Status Update',
+            text: "{{ session('status') }}",
+            confirmButtonColor: '#4f46e5'
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            html: '<ul style="text-align: left; font-size: 13px;">@foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach</ul>',
+            confirmButtonColor: '#ef4444'
+        });
+    @endif
+});
+
+// Universal Delete Confirmation Helper
+function confirmGlobalDelete(formId, itemName = 'Record') {
+    Swal.fire({
+        title: `Delete ${itemName}?`,
+        text: `Are you sure you want to delete this ${itemName.toLowerCase()}? This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(formId);
+            if (form) {
+                form.submit();
+            }
+        }
+    });
+}
+</script>

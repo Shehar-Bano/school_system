@@ -1,157 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('view-file/head')
-<head>
-    <!-- Include SweetAlert CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px rgb(56, 56, 56);
-            box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
-        }
-        .header {
-            background-color: #4B49AC;
-            color: white;
-            padding: 10px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h4 {
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .header h4 i {
-            margin-right: 10px;
-        }
-        .header a {
-            color: whitesmoke;
-            text-decoration: none;
-        }
-    </style>
-</head>
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
+      
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container mt-5">
-            <div class="form-container">
-                <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i> Add Exam Schedule</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('exam-schedule-list')}}">Exam Schedule</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Exam Subject</li>
-                        </ol>
-                    </nav>
+          <div class="row justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-calendar-days text-primary"></i>
+                      Configure Exam Date Sheet
+                    </h3>
+                    <p class="erp-form-subtitle">Assign examination dates, start times and ending times for every subject</p>
+                  </div>
+
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('exam-schedule-list') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Schedules
+                    </a>
+                  </div>
                 </div>
-            <div class="row mt-4" >
-            <div class="col-md-3 px-5">
-                <label for="date" class="form-label">Subject <span class="text-danger">*</span></label>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="start_time" class="form-label">Start Time <span class="text-danger">*</span></label>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="end_time" class="form-label">End Time <span class="text-danger">*</span></label>
-            </div>
+
+                <form action="{{ url('/exam/schedule/datesheet/store', ['id' => $exam->id]) }}" method="POST" id="dateSheetForm">
+                  @csrf
+                  
+                  <div class="erp-form-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered align-middle">
+                        <thead class="bg-light">
+                          <tr>
+                            <th style="width: 30%;">Subject</th>
+                            <th style="width: 25%;">Exam Date <span class="text-danger">*</span></th>
+                            <th style="width: 22%;">Start Time <span class="text-danger">*</span></th>
+                            <th style="width: 23%;">End Time <span class="text-danger">*</span></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach($subjects as $subject)
+                          <tr>
+                            <td>
+                              <span class="font-weight-semibold text-dark">
+                                <i class="fas fa-book text-primary mr-1"></i> {{ $subject->subject_name }}
+                              </span>
+                              <input type="hidden" name="subjects[{{ $loop->index }}][subject_id]" value="{{ $subject->id }}">
+                            </td>
+                            <td>
+                              <input type="date" class="form-control" name="subjects[{{ $loop->index }}][date]" required>
+                            </td>
+                            <td>
+                              <input type="time" class="form-control" name="subjects[{{ $loop->index }}][start_time]" required>
+                            </td>
+                            <td>
+                              <input type="time" class="form-control" name="subjects[{{ $loop->index }}][end_time]" required>
+                            </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('exam-schedule-list') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-check"></i> Save Date Sheet
+                    </button>
+                  </div>
+                </form>
 
               </div>
-             <form class="mt-1" action="{{url('/exam/schedule/datesheet/store', ['id' => $exam->id]) }}" method="POST">
-    @csrf
-    @foreach($subjects as $subject)
-    <div class="row">
-        <div class="col-md-3 px-5">
-            <label class="form-control" for="subject">{{ $subject->subject_name }}</label>
-            <input type="hidden" class="form-control" name="subjects[{{ $loop->index }}][subject_id]" value="{{ $subject->id }}" required>
-        </div>
-
-        <!-- Date Selection -->
-        <div class="col-md-3 mb-3">
-            <input type="date" class="form-control" name="subjects[{{ $loop->index }}][date]" required>
-        </div>
-
-        <!-- Start Time -->
-        <div class="col-md-3 mb-3">
-            <input type="time" class="form-control" name="subjects[{{ $loop->index }}][start_time]" required>
-        </div>
-
-        <!-- End Time -->
-        <div class="col-md-3 mb-3">
-            <input type="time" class="form-control" name="subjects[{{ $loop->index }}][end_time]" required>
-        </div>
-    </div>
-    @endforeach
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary">Add Exam Schedule</button>
-    </div>
-
-</form>
-
+              <!-- End ERP Card Form -->
 
             </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
   @include('view-file/script')
-
-  @if(session('message'))
-  <script>
-      Swal.fire({
-          title: 'Success!',
-          text: "{{ session('message') }}",
-          icon: 'success',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  @if(session('error'))
-  <script>
-      Swal.fire({
-          title: 'Error!',
-          text: "{{ session('error') }}",
-          icon: 'error',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  <script>
-      document.querySelector('form').addEventListener('submit', function(event) {
-          event.preventDefault(); // Prevent the form from submitting
-
-          Swal.fire({
-              title: 'Are you sure?',
-              text: "Do you want to submit the exam schedule?",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, submit it!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  this.submit(); // Submit the form
-              }
-          });
-      });
-  </script>
 </body>
 </html>

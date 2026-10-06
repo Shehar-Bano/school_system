@@ -131,4 +131,9 @@ class Employee extends Model implements AuthenticatableContract
     {
         return $this->hasMany(Finance_recode::class, 'employee_id');
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class, 'teacher_id');
+    }
 }

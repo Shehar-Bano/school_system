@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 @php
-    use Carbon\Carbon;
+  use Carbon\Carbon;
 @endphp
-
 @include('view-file/head')
 
 <body>
@@ -11,139 +10,148 @@
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
       @include('view-file.side-bar')
-
-      <!-- Inner-page -->
+      
       <div class="main-panel">
         <div class="content-wrapper">
+          <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-wallet text-primary"></i>
+                      Update Expense Record
+                    </h3>
+                    <p class="erp-form-subtitle">Modify inventory purchase costs, utility payments or expense details</p>
+                  </div>
 
-<div class="mb-3 row">
-  <div class="col-12 my-3 ">
-    <div class="card">
-        <div class="card-body">
-            <div class="header">
-                <h4><i class="fas fa-wallet"></i> Expense</h4>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('inventory.expences') }}">Inventory</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('inventory.expences') }}">Expenses</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Edit Expense</li>
-                    </ol>
-                </nav>
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('inventory.expences') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Expenses
+                    </a>
+                  </div>
+                </div>
+
+                <form action="{{ route('inventory.expences.update', ['id' => $expence->id]) }}" method="POST" id="editExpenseForm">
+                  @csrf
+                  
+                  <div class="erp-form-body">
+                    <div class="row">
+                      <!-- Category -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="category_id" class="erp-form-label">Expense Category <span class="required">*</span></label>
+                          <select name="category_id" id="category_id" class="form-control" required>
+                            <option value="" disabled>-- Select Category --</option>
+                            @foreach ($categories as $category)
+                              @if ($category->status == 'active')
+                                <option value="{{ $category->id }}" {{ $expence->category_id == $category->id ? 'selected' : '' }}>
+                                  {{ $category->name }}
+                                </option>
+                              @endif
+                            @endforeach
+                          </select>
+                          @error('category_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Subcategory -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="sub_category_id" class="erp-form-label">Subcategory <span class="required">*</span></label>
+                          <select name="sub_category_id" id="sub_category_id" class="form-control" required>
+                            <option value="" disabled>-- Select Subcategory --</option>
+                          </select>
+                          @error('sub_category_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Amount -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="amount" class="erp-form-label">Expense Amount (Rs.) <span class="required">*</span></label>
+                          <input type="number" name="amount" id="amount" class="form-control" value="{{ $expence->amount }}" placeholder="e.g. 5000" min="1" step="0.01" required>
+                          @error('amount')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Date -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="date" class="erp-form-label">Expense Date <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="date" name="date" value="{{ $expence->date }}" required>
+                          @error('date')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Description -->
+                      <div class="col-md-12">
+                        <div class="erp-form-group mb-0">
+                          <label for="description" class="erp-form-label">Expense Description & Details <span class="required">*</span></label>
+                          <textarea name="description" id="description" class="form-control" rows="3" placeholder="Enter vendor name, invoice reference, or item breakdown..." required>{{ $expence->description }}</textarea>
+                          @error('description')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('inventory.expences') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-save"></i> Update Expense
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+              <!-- End ERP Card Form -->
+
             </div>
-          <h4 class="card-title mt-5">Add Expense</h4>
-          <div class="form-container">
-            <form action="{{ route('inventory.expences.update', ['id' => $expence->id]) }}" method="POST">
-              @csrf
-  
-              <div class="form-group">
-                <label for="category_id">Category</label>
-                <select name="category_id" id="category_id" class="form-control {{ $errors->has('category_id') ? 'is-invalid' : '' }}">
-                  <option value="">Select a Category</option>
-                  @foreach ($categories as $category)
-                  @if ($category->status == 'active')
-                  <option value="{{ $category->id }}" {{ $expence->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                  @endif
-                  @endforeach
-                </select>
-                @error('category_id')
-                  <div class="invalid-feedback">{{ 'Category is required' }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label for="sub_category_id"> Subcategory</label>
-                <select name="sub_category_id" id="sub_category_id" class="form-control {{ $errors->has('sub_category_id') ? 'is-invalid' : '' }}">
-                  <option value="">Select a Subcategory</option>
-                </select>
-                @error('sub_category_id')
-                  <div class="invalid-feedback">{{ 'Subcategory is required' }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" name="amount" id="amount" class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" value="{{ $expence->amount }}">
-                @error('amount')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label for="description">Description</label>
-                <input type="text" name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" value="{{ $expence->description }}">
-                @error('description')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <div class="form-group">
-                <label for="date">Date</label>
-                <input type="date" class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" id="date" name="date" value="{{ $expence->date }}">
-                @error('date')
-                  <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-              </div>
-
-              <button type="submit" class="btn btn-primary">Save</button>
-            </form>
           </div>
         </div>
       </div>
-  </div>
-</div>
-
     </div>
   </div>
 
   @include('view-file/script')
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var subCategories = @json($sub_categories);
+      var selectedSubCategoryId = "{{ $expence->sub_category_id }}";
 
-<!-- jQuery Script for Category/Subcategory -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    var subCategories = @json($sub_categories);
-    var selectedSubCategoryId = "{{ $expence->sub_category_id }}";
+      $('#category_id').on('change', function() {
+        var categoryId = $(this).val();
+        var filteredSubCategories = subCategories.filter(function(subCategory) {
+          return subCategory.category_id == categoryId;
+        });
 
-    $('#category_id').on('change', function() {
-      var categoryId = $(this).val();
-      var filteredSubCategories = subCategories.filter(function(subCategory) {
-        return subCategory.category_id == categoryId;
+        $('#sub_category_id').empty();
+        $('#sub_category_id').append('<option value="" disabled>-- Select Subcategory --</option>');
+        filteredSubCategories.forEach(function(subCategory) {
+          $('#sub_category_id').append('<option value="' + subCategory.id + '"' + (subCategory.id == selectedSubCategoryId ? ' selected' : '') + '>' + subCategory.name + '</option>');
+        });
       });
 
-      $('#sub_category_id').empty();
-      $('#sub_category_id').append('<option value="">Select a Subcategory</option>');
-      filteredSubCategories.forEach(function(subCategory) {
-        $('#sub_category_id').append('<option value="' + subCategory.id + '"' + (subCategory.id == selectedSubCategoryId ? ' selected' : '') + '>' + subCategory.name + '</option>');
-      });
+      $('#category_id').trigger('change');
     });
-
-    // Trigger the change event on page load to set the initial state
-    $('#category_id').trigger('change');
-  });
-</script>
-
-@if(session('error'))
-<script>
-  Swal.fire({
-    title: 'Error!',
-    text: "{{ session('error') }}",
-    icon: 'error',
-    confirmButtonText: 'OK'
-  });
-</script>
-@endif
-
-@if(session('success'))
-<script>
-  Swal.fire({
-    title: 'Success!',
-    text: "{{ session('success') }}",
-    icon: 'success',
-    confirmButtonText: 'OK'
-  });
-</script>
-@endif
-
+  </script>
 </body>
 </html>

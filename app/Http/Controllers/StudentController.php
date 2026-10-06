@@ -6,6 +6,7 @@ use App\Models\classe;
 use App\Models\Section;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Spatie\Permission\Models\Role;
@@ -46,8 +47,9 @@ class StudentController extends Controller
             'section' => 'required',
             'group' => 'required|string|in:arts,science,commerce',
             'registration' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'role' => 'nullable|string|max:100',
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
 
         // Check if the username already exists
@@ -60,6 +62,11 @@ class StudentController extends Controller
         $imagePath = $request->hasFile('image')
             ? $request->file('image')->store('students', 'public')
             : null;
+
+        // Password hashing: use provided password or fallback to registration or default
+        $rawPassword = $request->filled('password') 
+            ? $request->input('password') 
+            : ($request->input('registration') ?: '123456');
 
         // Create the student
         $student = Student::create([
@@ -80,6 +87,7 @@ class StudentController extends Controller
             'fee_concession' => $request->input('fee_concession'),
             'image' => $imagePath,
             'username' => $request->input('username'),
+            'password' => Hash::make($rawPassword),
         ]);
 
         // Assign role to student
@@ -96,7 +104,7 @@ class StudentController extends Controller
         }
 
         // Redirect with success message
-        return redirect()->back()->with('message', 'Student added and role assigned successfully!');
+        return redirect()->back()->with('message', 'Student registered successfully with portal access!');
     }
 
     public function del($id)
@@ -135,8 +143,9 @@ class StudentController extends Controller
             'section' => 'required',
             'group' => 'required|string|in:arts,science,commerce',
             'registration' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'role' => 'nullable|string|max:100',
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
 
         $student = Student::findOrFail($id);
@@ -149,8 +158,8 @@ class StudentController extends Controller
             $imagePath = $student->image;
         }
 
-        // Update the student record
-        $student->update([
+        // Prepare student data
+        $updateData = [
             'username' => $request->input('username'),
             'name' => $request->input('name'),
             'gurdian' => $request->input('gurdian'),
@@ -167,7 +176,15 @@ class StudentController extends Controller
             'tution_fee' => $request->input('tution_fee'),
             'registration' => $request->input('registration'),
             'image' => $imagePath,
-        ]);
+        ];
+
+        // Update password only if provided
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->input('password'));
+        }
+
+        // Update the student record
+        $student->update($updateData);
 
         // Sync role
         if ($request->filled('role')) {

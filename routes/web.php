@@ -35,6 +35,8 @@ use App\Http\Controllers\TaxeController;
 use App\Http\Controllers\TaxeFeeController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\TransactionTypeController;
+use App\Http\Controllers\EmployeeAssignmentController;
+use App\Http\Controllers\Student\StudentAssignmentController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
@@ -85,9 +87,12 @@ Route::get('/assignment/view', [AssignmentController::class, 'assignmentView'])-
 Route::get('/assignment/add', [AssignmentController::class, 'addAssignmentView'])->name('add_assignment');
 Route::post('/assignment/store', [AssignmentController::class, 'assignmentStore'])->name('assignments_store');
 Route::get('/assignment/edit/{id}', [AssignmentController::class, 'editAssignmentView'])->name('edit_assinment');
+Route::get('/assignment/edit-alt/{id}', [AssignmentController::class, 'editAssignmentView'])->name('edit_assignment');
 Route::post('/assignment/update/{id}', [AssignmentController::class, 'assignmentUpdate'])->name('assignments_update');
 Route::delete('/assignment/delete/{id}', [AssignmentController::class, 'assignmentDelete'])->name('assignment_delete');
 Route::get('/assignment/detail/{id}', [AssignmentController::class, 'assignmetDetail'])->name('assignmet_detail');
+Route::get('/assignment/tracking/{id}', [AssignmentController::class, 'assignmentTracking'])->name('assignment_tracking');
+Route::post('/assignment/grade/{id}', [AssignmentController::class, 'gradeSubmission'])->name('assignment_grade');
 //////////timeTable
 Route::get('/timeTable', [TimeTableController::class, 'timeTableActions'])->name('timeTable');
 Route::get('/timeTable/class', [TimeTableController::class, 'timeTableView'])->name('timeTable_show');
@@ -268,6 +273,10 @@ Route::group(['prefix' => 'studentDashboard'], function () {
     Route::get('/notification', [StudentProfileController::class, 'notification'])->name('student.notifications');
     //student.notifications.read
     Route::get('/read/{id}', [StudentProfileController::class, 'readNotification'])->name('student.notifications.read');
+    // Student Assignment Routes
+    Route::get('/assignments', [StudentAssignmentController::class, 'index'])->name('student.assignments');
+    Route::get('/assignments/detail/{id}', [StudentAssignmentController::class, 'detail'])->name('student.assignment.detail');
+    Route::post('/assignments/submit/{id}', [StudentAssignmentController::class, 'submit'])->name('student.assignment.submit');
 
 });
 ////////////////////////////employeeDashboard//////////////////////////////
@@ -290,6 +299,16 @@ Route::prefix('employeeDashboard')->controller(EmployeeProfileController::class)
     Route::get('/notifications/read/{id}', 'markAsRead')->name('notifications.read');
 
 });
+
+// Teacher / Employee Assignment Management Routes
+Route::prefix('employeeDashboard')->controller(EmployeeAssignmentController::class)->group(function () {
+    Route::get('/assignments', 'index')->name('employee.assignments');
+    Route::get('/assignments/create', 'create')->name('employee.assignment.create');
+    Route::post('/assignments/store', 'store')->name('employee.assignment.store');
+    Route::get('/assignments/track/{id}', 'track')->name('employee.assignment.track');
+    Route::post('/assignments/grade/{id}', 'grade')->name('employee.assignment.grade');
+});
+
 Route::prefix('employeeDashboard')->controller(EmployeeExamController::class)->group(function () {
     Route::get('/exam', 'index')->name('employee.exam.list');
     Route::post('/exam', 'store')->name('employee.exam.add');

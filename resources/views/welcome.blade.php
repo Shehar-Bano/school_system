@@ -234,10 +234,10 @@
 
                                     <!-- Email / Username Input -->
                                     <div class="form-floating-custom">
-                                        <label for="loginEmail">Email / Username</label>
+                                        <label for="loginEmail" id="loginHandleLabel">Admin Email Address</label>
                                         <div class="input-icon-wrap">
-                                            <input type="email" class="form-control-custom" id="loginEmail" name="email" value="{{ old('email', 'admin@admin.com') }}" placeholder="name@school.com" required autofocus autocomplete="username">
-                                            <i class="fas fa-envelope field-icon"></i>
+                                            <input type="text" class="form-control-custom" id="loginEmail" name="email" value="{{ old('email', 'admin@admin.com') }}" placeholder="admin@admin.com" required autofocus autocomplete="username">
+                                            <i class="fas fa-envelope field-icon" id="loginHandleIcon"></i>
                                         </div>
                                     </div>
 
@@ -859,19 +859,40 @@
             document.querySelectorAll('.role-pill-btn').forEach(btn => btn.classList.remove('active'));
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
+            const loginForm = document.getElementById('loginForm');
+            const handleLabel = document.getElementById('loginHandleLabel');
+            const handleIcon = document.getElementById('loginHandleIcon');
 
             if (role === 'admin') {
                 document.getElementById('roleBtnAdmin').classList.add('active');
+                loginForm.action = '{{ route("login") }}';
+                emailInput.name = 'email';
+                emailInput.type = 'email';
+                emailInput.placeholder = 'admin@admin.com';
                 emailInput.value = 'admin@admin.com';
                 passwordInput.value = 'password';
+                if(handleLabel) handleLabel.innerText = 'Admin Email Address';
+                if(handleIcon) handleIcon.className = 'fas fa-envelope field-icon';
             } else if (role === 'teacher') {
                 document.getElementById('roleBtnTeacher').classList.add('active');
+                loginForm.action = '{{ route("employee.login") }}';
+                emailInput.name = 'email';
+                emailInput.type = 'text';
+                emailInput.placeholder = 'teacher@school.com or Phone';
                 emailInput.value = 'teacher@school.com';
                 passwordInput.value = 'password';
+                if(handleLabel) handleLabel.innerText = 'Teacher Email or Phone';
+                if(handleIcon) handleIcon.className = 'fas fa-chalkboard-user field-icon';
             } else if (role === 'student') {
                 document.getElementById('roleBtnStudent').classList.add('active');
-                emailInput.value = 'student@school.com';
+                loginForm.action = '{{ route("student.login") }}';
+                emailInput.name = 'username';
+                emailInput.type = 'text';
+                emailInput.placeholder = 'std_username or Reg. No';
+                emailInput.value = 'student';
                 passwordInput.value = 'password';
+                if(handleLabel) handleLabel.innerText = 'Student Username / Reg. No';
+                if(handleIcon) handleIcon.className = 'fas fa-user-graduate field-icon';
             }
         }
 

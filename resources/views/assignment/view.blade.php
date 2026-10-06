@@ -78,11 +78,12 @@
               <table class="erp-table" id="assignmentsTable">
                 <thead>
                   <tr>
-                    <th style="width: 50px;" class="text-center">#</th>
-                    <th style="width: 16%;" class="text-center">Due Deadline</th>
-                    <th style="width: 25%;">Assignment Title</th>
-                    <th style="width: 40%;">Description & Instructions</th>
-                    <th style="width: 120px;" class="text-center">Actions</th>
+                    <th style="width: 45px;" class="text-center">#</th>
+                    <th style="width: 14%;" class="text-center">Due Deadline</th>
+                    <th style="width: 22%;">Assignment Title</th>
+                    <th style="width: 18%;">Class & Subject</th>
+                    <th style="width: 18%;" class="text-center">Submission Tracking</th>
+                    <th style="width: 140px;" class="text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="assignmentsTableBody">
@@ -90,21 +91,54 @@
                     $count = 0;
                   @endphp
                   @forelse ($assignments as $assignment)
+                  @php
+                    $stats = $assignment->getTrackingStats();
+                  @endphp
                   <tr data-title="{{ strtolower($assignment->title) }}" data-deadline="{{ $assignment->deadline }}">
                     <td class="text-center font-weight-medium text-muted">{{ ++$count }}</td>
                     <td class="text-center">
-                      <span class="badge badge-soft-warning font-weight-medium">
-                        <i class="fas fa-clock mr-1 text-xs"></i> {{ $assignment->deadline }}
-                      </span>
+                      @if($stats['is_deadline_passed'])
+                        <span class="badge badge-soft-danger font-weight-medium" title="Deadline has passed">
+                          <i class="fas fa-circle-xmark mr-1 text-xs"></i> {{ $assignment->deadline }}
+                        </span>
+                      @else
+                        <span class="badge badge-soft-warning font-weight-medium" title="Deadline Active">
+                          <i class="fas fa-clock mr-1 text-xs"></i> {{ $assignment->deadline }}
+                        </span>
+                      @endif
                     </td>
-                    <td class="font-weight-semibold text-dark">
-                      {{ $assignment->title }}
+                    <td>
+                      <div class="font-weight-semibold text-dark">{{ $assignment->title }}</div>
+                      <div class="text-muted text-xs">{{ \Illuminate\Support\Str::limit($assignment->description, 60) }}</div>
                     </td>
-                    <td class="text-secondary text-xs">
-                      {{ \Illuminate\Support\Str::limit($assignment->description, 100) }}
+                    <td>
+                      <div>
+                        <span class="badge badge-soft-primary mr-1">{{ $assignment->class->name ?? 'Class' }}</span>
+                        <span class="badge badge-soft-info">{{ $assignment->section->name ?? 'Section' }}</span>
+                      </div>
+                      <div class="text-muted small mt-1">
+                        <i class="fas fa-book mr-1 text-xs text-primary"></i> {{ $assignment->subject->subject_name ?? 'Subject' }}
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <a href="{{ route('assignment_tracking', ['id' => $assignment->id]) }}" class="text-decoration-none" title="Click to view full submission tracking">
+                        <div class="d-flex align-items-center justify-content-center gap-1 mb-1">
+                          <span class="badge badge-soft-{{ $stats['percentage'] == 100 ? 'success' : ($stats['percentage'] > 0 ? 'primary' : 'secondary') }} font-weight-bold" style="font-size: 11px;">
+                            {{ $stats['submitted_count'] }} / {{ $stats['total_students'] }} Submitted ({{ $stats['percentage'] }}%)
+                          </span>
+                        </div>
+                        <div class="progress mx-auto" style="height: 4px; width: 110px;">
+                          <div class="progress-bar {{ $stats['percentage'] == 100 ? 'bg-success' : 'bg-primary' }}" role="progressbar" style="width: {{ $stats['percentage'] }}%"></div>
+                        </div>
+                      </a>
                     </td>
                     <td class="text-center">
                       <div class="erp-action-btn-group">
+                        <!-- Tracking Dashboard Button -->
+                        <a href="{{ route('assignment_tracking', ['id' => $assignment->id]) }}" class="erp-action-btn view" style="background: #eef2ff; color: #4f46e5;" title="Assignment Tracking Dashboard">
+                          <i class="fas fa-chart-line"></i>
+                        </a>
+
                         @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.assignment.detail') || auth()->user()->can('academic.assignment.view')))
                         <!-- View Detail Button -->
                         <a href="{{ route('assignmet_detail', ['id' => $assignment->id]) }}" class="erp-action-btn view" title="View Assignment Details">
@@ -134,15 +168,18 @@
                   </tr>
                   @empty
                   <tr id="emptyRow">
-                    <td colspan="5" class="text-center py-4 text-muted">
+                    <td colspan="6" class="text-center py-4 text-muted">
                       <i class="fas fa-tasks mb-2 text-xl d-block" style="font-size: 24px; color: #cbd5e1;"></i>
                       No assignments assigned yet. Click <strong>"Add New Assignment"</strong> to create homework.
                     </td>
                   </tr>
                   @endforelse
                   <tr id="noResultsRow" style="display: none;">
-                    <td colspan="5" class="text-center py-4 text-muted">
+                    <td colspan="6" class="text-center py-4 text-muted">
                       <i class="fas fa-magnifying-glass mb-2 text-xl d-block" style="font-size: 22px; color: #cbd5e1;"></i>
+                      No matching assignment records found.
+                    </td>
+                  </tr>
                       No matching assignment records found.
                     </td>
                   </tr>

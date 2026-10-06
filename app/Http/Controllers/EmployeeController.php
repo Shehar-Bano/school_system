@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Designation;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class EmployeeController extends Controller
@@ -80,7 +81,12 @@ class EmployeeController extends Controller
         $image = $request->file('image');
         $imagePath = $image->store('images', 'public');
         $employee->image = $imagePath;
-        $employee->status = 'inactive';
+        $employee->status = 'active';
+
+        // Password hashing: use provided password or default 'password'
+        $rawPassword = $request->filled('password') ? $request->password : 'password';
+        $employee->password = Hash::make($rawPassword);
+
         $employee->save();
 
         // Assign selected role or default employee role
@@ -128,10 +134,16 @@ class EmployeeController extends Controller
         $employee->gender = $request->gender;
         $employee->religion = $request->religion;
         $employee->joining_date = $request->joining_date;
-        if ($request->image) {
+        
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imagePath = $image->store('images', 'public');
             $employee->image = $imagePath;
+        }
+
+        // Update password if a new one was provided
+        if ($request->filled('password')) {
+            $employee->password = Hash::make($request->password);
         }
 
         $employee->save();

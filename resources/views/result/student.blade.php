@@ -1,186 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('view-file/head')
-<head>
-    <!-- Include SweetAlert CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px rgb(56, 56, 56);
-            box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
-        }
-        .header {
-            background-color: #4B49AC;
-            color: white;
-            padding: 10px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h4 {
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .header h4 i {
-            margin-right: 10px;
-        }
-        .header a {
-            color: whitesmoke;
-            text-decoration: none;
-        }
-    </style>
-</head>
 <body>
   <div class="container-scroller">
     @include('view-file/nav')
     <div class="container-fluid page-body-wrapper">
-      @include('view-file/side-bar')
+      @include('view-file.side-bar')
+      
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="container mt-5">
-            <div class="form-container">
-                <div class="header">
-                    <h4><i class="fas fa-pencil-alt"></i> Add Exam Schedule</h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('result') }}">Result</a></li>
-                            <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Add Marks</li>
-                        </ol>
-                    </nav>
+          <div class="row justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-file-pen text-primary"></i>
+                      Enter Exam Marks
+                    </h3>
+                    <p class="erp-form-subtitle">Record individual student exam marks for {{ $subject->subject_name }} ({{ $class->name }} - {{ $section->name }})</p>
+                  </div>
+
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('result') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Results
+                    </a>
+                  </div>
                 </div>
-                <form class="mt-1" action="{{ route('result-store') }}" method="POST">
-                    @csrf
-                    <div class="row mt-3">
-                        <!-- Exam, Class, Section, Subject -->
-                        <div class="col-md-3 px-5">
-                            <label for="exam">Exam Name</label>
-                            <select class="form-control" name="exam" required>
-                                <option value="{{ $exam->id }}">{{ $exam->name }}</option>
-                            </select>
-                        </div>
 
-                        <div class="col-md-3 mb-3">
-                            <label for="class">Class Name</label>
-                            <select class="form-control" name="class" required>
-                                <option value="{{ $class->id }}">{{ $class->name }}</option>
-                            </select>
-                        </div>
+                <form action="{{ route('result-store') }}" method="POST" id="storeMarksForm">
+                  @csrf
+                  
+                  <!-- Hidden Session Parameters -->
+                  <input type="hidden" name="exam" value="{{ $exam->id }}">
+                  <input type="hidden" name="class" value="{{ $class->id }}">
+                  <input type="hidden" name="section" value="{{ $section->id }}">
+                  <input type="hidden" name="subject" value="{{ $subject->id }}">
 
-                        <div class="col-md-3 mb-3">
-                            <label for="section">Section Name</label>
-                            <select class="form-control" name="section" required>
-                                <option value="{{ $section->id }}">{{ $section->name }}</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-                            <label for="subject">Subject</label>
-                            <select class="form-control" name="subject" required>
-                                <option value="{{ $subject->id }}">{{ $subject->subject_name }}</option>
-                            </select>
-                        </div>
+                  <div class="erp-form-body">
+                    <!-- Session Context Badges -->
+                    <div class="p-3 bg-light rounded border mb-4 d-flex flex-wrap align-items-center gap-3 justify-content-between">
+                      <div>
+                        <span class="text-muted small d-block">Exam Term:</span>
+                        <strong class="text-dark">{{ $exam->name }}</strong>
+                      </div>
+                      <div>
+                        <span class="text-muted small d-block">Class & Section:</span>
+                        <span class="badge badge-soft-primary">{{ $class->name }}</span>
+                        <span class="badge badge-soft-purple">{{ $section->name }}</span>
+                      </div>
+                      <div>
+                        <span class="text-muted small d-block">Subject:</span>
+                        <span class="badge badge-soft-info"><i class="fas fa-book mr-1"></i> {{ $subject->subject_name }}</span>
+                      </div>
+                      <div>
+                        <span class="text-muted small d-block">Max / Total Marks:</span>
+                        <strong class="text-dark">{{ $subject->final_marks ?? 100 }}</strong>
+                      </div>
                     </div>
 
                     @if($students->isNotEmpty())
-                    <div class="container-fluid bg-light mt-4 p-3" style="border-radius: 15px">
-                        <div class="row">
-                            <div class="col-md-3 px-5">
-                                <label for="student">Student</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="obt_marks">Obtain Marks</label>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="obt_marks">Total Marks</label>
-                            </div>
-                        </div>
-
-                        @foreach ($students as $student)
-                        <div class="row">
-                            <div class="col-md-3 px-5">
-                                <input type="hidden" name="students[{{ $loop->index }}][student_id]" value="{{ $student->id }}">
-                                <input type="text" class="form-control" value="{{ $student->name }}" disabled>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input type="number" class="form-control" name="students[{{ $loop->index }}][obt_marks]" required>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <input type="number" class="form-control" name="students[{{ $loop->index }}][total]" required>
-                            </div>
-                        </div>
-                        @endforeach
+                    <div class="table-responsive">
+                      <table class="table table-bordered align-middle">
+                        <thead class="bg-light">
+                          <tr>
+                            <th style="width: 50px;" class="text-center">#</th>
+                            <th style="width: 40%;">Student Name</th>
+                            <th style="width: 30%;">Obtained Marks <span class="text-danger">*</span></th>
+                            <th style="width: 30%;">Total Marks <span class="text-danger">*</span></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($students as $student)
+                          <tr>
+                            <td class="text-center text-muted font-weight-medium">{{ $loop->iteration }}</td>
+                            <td>
+                              <input type="hidden" name="students[{{ $loop->index }}][student_id]" value="{{ $student->id }}">
+                              <span class="font-weight-semibold text-dark">{{ $student->name }}</span>
+                              <small class="d-block text-muted">Reg: {{ $student->registration ?? 'N/A' }}</small>
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" name="students[{{ $loop->index }}][obt_marks]" placeholder="e.g. 75" min="0" max="{{ $subject->final_marks ?? 100 }}" required>
+                            </td>
+                            <td>
+                              <input type="number" class="form-control" name="students[{{ $loop->index }}][total]" value="{{ $subject->final_marks ?? 100 }}" required>
+                            </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
                     </div>
+                    @else
+                      <div class="text-center py-4 text-muted">
+                        <i class="fas fa-users-slash fa-2x mb-2 d-block text-muted"></i>
+                        No students enrolled in this class and section.
+                      </div>
                     @endif
+                  </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary mt-3">Add Marks</button>
-                    </div>
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('result') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    @if($students->isNotEmpty())
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-check"></i> Save & Publish Marks
+                    </button>
+                    @endif
+                  </div>
                 </form>
 
+              </div>
+              <!-- End ERP Card Form -->
+
             </div>
-
-
-
-
-
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
 
   @include('view-file/script')
-
-  @if(session('message'))
-  <script>
-      Swal.fire({
-          title: 'Success!',
-          text: "{{ session('message') }}",
-          icon: 'success',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  @if(session('error'))
-  <script>
-      Swal.fire({
-          title: 'Error!',
-          text: "{{ session('error') }}",
-          icon: 'error',
-          confirmButtonText: 'OK'
-      });
-  </script>
-  @endif
-
-  <script>
-      document.querySelector('form').addEventListener('submit', function(event) {
-          event.preventDefault(); // Prevent the form from submitting
-
-          Swal.fire({
-              title: 'Are you sure?',
-              text: "Do you want to submit the exam schedule?",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, submit it!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  this.submit(); // Submit the form
-              }
-          });
-      });
-  </script>
 </body>
 </html>
-

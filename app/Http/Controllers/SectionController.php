@@ -16,10 +16,16 @@ class SectionController extends Controller
             abort(403, 'Unauthorized: You do not have permission to create sections.');
         }
 
-        $teacher = Employee::get();
+        $teacher = Employee::with('designation')->get();
         $class = Classe::get();
 
-        return view('section.section', compact('teacher', 'class'));
+        // Get all sections with assigned incharge to detect and prevent conflicts
+        $assignedTeachers = Section::with(['classe', 'employee'])
+            ->whereNotNull('employee_id')
+            ->get()
+            ->keyBy('employee_id');
+
+        return view('section.section', compact('teacher', 'class', 'assignedTeachers'));
     }
 
     public function list()
@@ -48,13 +54,30 @@ class SectionController extends Controller
             'note' => 'nullable|string|max:500',
         ]);
 
-        // Check if the section already exists
+        // Check if the section already exists in the same class
         $existingSection = Section::where('name', $validatedData['name'])
             ->where('classe_id', $validatedData['class'])
             ->first();
 
         if ($existingSection) {
-            return redirect()->back()->withErrors(['name' => 'This section already exists!'])->withInput();
+            return redirect()->back()->withErrors(['name' => 'This section name already exists for the selected class!'])->withInput();
+        }
+
+        // Check if the selected teacher/professor is already assigned as incharge in another section
+        $alreadyAssigned = Section::with(['classe', 'employee'])
+            ->where('employee_id', $validatedData['employ'])
+            ->first();
+
+        if ($alreadyAssigned) {
+            $teacherName = $alreadyAssigned->employee->name ?? 'This teacher';
+            $className = $alreadyAssigned->classe->name ?? 'another class';
+            $secName = $alreadyAssigned->name ?? 'Section';
+            $errorMsg = "Professor {$teacherName} is already assigned as Incharge for {$className} - {$secName}. Please select another professor / teacher.";
+
+            return redirect()->back()
+                ->withErrors(['employ' => $errorMsg])
+                ->with('error', $errorMsg)
+                ->withInput();
         }
 
         // Create a new Section with the validated data
@@ -63,10 +86,10 @@ class SectionController extends Controller
         $section->capacity = $validatedData['capacity'];
         $section->employee_id = $validatedData['employ'];
         $section->classe_id = $validatedData['class'];
-        $section->note = $validatedData['note'] ?? null; // Note is nullable
+        $section->note = $validatedData['note'] ?? null;
         $section->save();
 
-        return redirect()->back()->with('message', 'Section successfully added!');
+        return redirect()->route('section-list')->with('message', 'Section successfully added!');
     }
 
     public function del($id)
@@ -87,11 +110,18 @@ class SectionController extends Controller
             abort(403, 'Unauthorized: You do not have permission to edit sections.');
         }
 
-        $teacher = Employee::get();
+        $teacher = Employee::with('designation')->get();
         $class = Classe::get();
         $section = Section::with('employee', 'classe')->findOrFail($id);
 
-        return view('section.editsection', compact('section', 'teacher', 'class'));
+        // Get assigned incharges excluding the current section
+        $assignedTeachers = Section::with(['classe', 'employee'])
+            ->whereNotNull('employee_id')
+            ->where('id', '!=', $id)
+            ->get()
+            ->keyBy('employee_id');
+
+        return view('section.editsection', compact('section', 'teacher', 'class', 'assignedTeachers'));
     }
 
     public function update(Request $request, $id)
@@ -115,11 +145,29 @@ class SectionController extends Controller
         // Check if another section with the same name and class already exists (excluding the current one)
         $existingSection = Section::where('name', $validatedData['name'])
             ->where('classe_id', $validatedData['class'])
-            ->where('id', '!=', $id) // Exclude the current section from the check
+            ->where('id', '!=', $id)
             ->first();
 
         if ($existingSection) {
-            return redirect()->back()->withErrors(['name' => 'This section already exists!'])->withInput();
+            return redirect()->back()->withErrors(['name' => 'This section name already exists for the selected class!'])->withInput();
+        }
+
+        // Check if the selected teacher/professor is already assigned as incharge in another section
+        $alreadyAssigned = Section::with(['classe', 'employee'])
+            ->where('employee_id', $validatedData['employ'])
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($alreadyAssigned) {
+            $teacherName = $alreadyAssigned->employee->name ?? 'This teacher';
+            $className = $alreadyAssigned->classe->name ?? 'another class';
+            $secName = $alreadyAssigned->name ?? 'Section';
+            $errorMsg = "Professor {$teacherName} is already assigned as Incharge for {$className} - {$secName}. Please select another professor / teacher.";
+
+            return redirect()->back()
+                ->withErrors(['employ' => $errorMsg])
+                ->with('error', $errorMsg)
+                ->withInput();
         }
 
         // Update the section with the validated data
@@ -127,10 +175,10 @@ class SectionController extends Controller
         $section->capacity = $validatedData['capacity'];
         $section->employee_id = $validatedData['employ'];
         $section->classe_id = $validatedData['class'];
-        $section->note = $validatedData['note'] ?? null; // Note is nullable
+        $section->note = $validatedData['note'] ?? null;
         $section->save();
 
-        return redirect()->back()->with('message', 'Section successfully updated!');
+        return redirect()->route('section-list')->with('message', 'Section successfully updated!');
     }
 
     public function generateFeeSlips($id)

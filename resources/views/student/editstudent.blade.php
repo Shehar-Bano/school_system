@@ -1,217 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('view-file/head')
-<head>
-    <!-- Include SweetAlert CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-    .form-container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(114, 114, 114, 0.1);
-    }
-    .header {
-        background-color: #4B49AC;
-        color: white;
-        padding: 10px;
-        border-radius: 8px 8px 0 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .header h4 {
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
-    .header h4 i {
-        margin-right: 10px;
-    }
-    .header a {
-        color: whitesmoke;
-        text-decoration: none;
-    }
-</style>
-</head>
 <body>
-    <div class="container-scroller">
-      @include('view-file/nav')
-      <div class="container-fluid page-body-wrapper">
-        @include('view-file.side-bar')
-        <div class="main-panel">
-          <div class="content-wrapper">
-            <div class="container mt-5">
-              <div class="form-container">
-                  <div class="header">
-                      <h4><i class="fas fa-pencil-alt"></i>Update Student</h4>
-                      <nav aria-label="breadcrumb">
-                          <ol class="breadcrumb mb-0">
-                              <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                              <li class="breadcrumb-item">Academic</li>
-                              <li class="breadcrumb-item"><a href="{{route('student-list')}}">Students</a></li>
-                              <li class="breadcrumb-item active" aria-current="page" style="color: rgb(180, 176, 176)">Update Student</li>
-                          </ol>
-                      </nav>
+  <div class="container-scroller">
+    @include('view-file/nav')
+    <div class="container-fluid page-body-wrapper">
+      @include('view-file.side-bar')
+      
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row justify-content-center">
+            <div class="col-lg-11 col-xl-10">
+              
+              <!-- Modern ERP Form Card -->
+              <div class="erp-card-form">
+                <div class="erp-form-header-block">
+                  <div class="erp-form-title-area">
+                    <h3 class="erp-form-title">
+                      <i class="fas fa-user-pen text-primary"></i>
+                      Update Student Profile
+                    </h3>
+                    <p class="erp-form-subtitle">Modify student details, class section assignment, fee structures, and account role</p>
                   </div>
 
-                  <form id="studentForm" class="mt-4" action="{{route('student-update',['id'=>$student->id])}}" method="POST" enctype="multipart/form-data">
-                      @csrf
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Student Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{$student->name}}"  placeholder="Enter student name" required>
+                  <!-- Back to List Button -->
+                  <div>
+                    <a href="{{ route('student-list') }}" class="erp-btn-back">
+                      <i class="fas fa-arrow-left"></i> Back to Students
+                    </a>
+                  </div>
+                </div>
+
+                <form id="studentEditForm" action="{{ route('student-update', ['id' => $student->id]) }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  
+                  <div class="erp-form-body">
+                    
+                    <!-- 1. Academic & Enrollment Details -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-graduation-cap mr-1"></i> Academic & Enrollment Information
+                      </h5>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="gurdian" class="form-label">Guardian <span class="text-danger">*</span></label>
-                        <select class="form-control" id="gurdian" name="gurdian" required>
-                            <option value="" disabled selected>Select Guardian</option>
-                            <option value="father"{{$student->gurdian == 'father' ? 'selected' : ''}}>Father</option>
-                            <option value="mother" {{$student->gurdian == 'mother' ? 'selected' : ''}}>Mother</option>
-                            <option value="otherFamilyMember" {{$student->gurdian == 'otherFamilyMember' ? 'selected' : ''}}>Other Family Member</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="admissiondate" class="form-label">Admission Date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="admissiondate" value={{$student->admissiondate}} name="admissiondate" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="dob" value={{$student->dob}} name="dob" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
-                        <select class="form-control" id="gender" name="gender" required>
-                            <option value="" disabled selected>Select Gender</option>
-                            <option value="male" {{$student->gender == 'male' ? 'selected' : ''}}>Male</option>
-                            <option value="female" {{$student->gender == 'female' ? 'selected' : ''}}>Female</option>
-                            <option value="other" {{$student->gender == 'other' ? 'selected' : ''}}>Other</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="religion" class="form-label">Religion</label>
-                        <input type="text" class="form-control" id="religion" value="{{$student->religion}}" name="religion" placeholder="Enter religion">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" value="{{$student->email}}" name="email" placeholder="Enter email">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" value="{{$student->phone}}" name="phone" placeholder="Enter phone number">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" value="{{$student->address}}" name="address" placeholder="Enter address">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="class" class="form-label">Class <span class="text-danger">*</span></label>
-                        <select class="form-control" id="class" name="class" required>
-                            <option value="" disabled selected>Select Class</option>
+                    <div class="row mb-3">
+                      <!-- Class -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="class" class="erp-form-label">Class <span class="required">*</span></label>
+                          <select class="form-control" id="class" name="class" required>
+                            <option value="" disabled>-- Select Class --</option>
                             @foreach ($classes as $class)
-                                <option  value="{{ $class->id }}" {{$student->class_id == $class->id ? 'selected' : ''}} index="{{$class->id}}">{{ $class->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                   
-                    <div class="mb-3">
-                        <label for="tution_fee" class="form-label">Tution Fee </label>
-                        <input type="number" class="form-control" id="tution_fee" name="tution_fee"  value={{ $student->tution_fee }} placeholder="Enter fee concession">
-                    </div>
-                    <div class="mb-3">
-                        <label for="section" class="form-label">Section <span class="text-danger">*</span></label>
-                        <select class="form-control" id="section" name="section" required>
-                            <option value="" disabled selected>Select Section</option>
-                            @foreach ($sections as $section)
-                                <option  value="{{ $section->id }}"{{$student->section_id == $section->id ? 'selected' : ''}} class="ab ab{{$section->classe_id}}">{{ $section->name }}, {{$section->classe->name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="group" class="form-label">Group <span class="text-danger">*</span></label>
-                        <select class="form-control" id="group" name="group" required>
-                            <option value="" disabled selected>Select Group</option>
-                            <option value="arts" {{$student->group == 'art' ? 'selected' : ''}}>Arts</option>
-                            <option value="science" {{$student->group == 'science' ? 'selected' : ''}}>Science</option>
-                            <option value="commerce" {{$student->group == 'commerce' ? 'selected' : ''}}>Commerce</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="registration" class="form-label">Registration Number</label>
-                        <input type="text" class="form-control" id="registration" value="{{$student->registration}}" name="registration" placeholder="Enter registration number">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="role" class="form-label font-weight-bold">Assign Security Role</label>
-                        <select class="form-control" id="role" name="role">
-                          @php
-                            $currentRole = $student->roles->first() ? $student->roles->first()->name : 'student';
-                          @endphp
-                          @if(isset($roles))
-                            @foreach ($roles as $role)
-                              <option value="{{ $role->name }}" {{ old('role', $currentRole) == $role->name ? 'selected' : '' }}>
-                                {{ ucfirst($role->name) }} ({{ $role->permissions->count() }} Portal Permissions)
+                              <option value="{{ $class->id }}" index="{{ $class->id }}" {{ old('class', $student->class_id) == $class->id ? 'selected' : '' }}>
+                                {{ $class->name }}
                               </option>
                             @endforeach
-                          @endif
-                        </select>
-                        <small class="text-muted">The assigned role gives this student access permissions to their portal features.</small>
+                          </select>
+                          @error('class')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Section -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="section" class="erp-form-label">Section <span class="required">*</span></label>
+                          <select class="form-control" id="section" name="section" required>
+                            <option value="" disabled>-- Select Section --</option>
+                            @foreach ($sections as $section)
+                              <option value="{{ $section->id }}" class="ab ab{{ $section->classe_id }}" {{ old('section', $student->section_id) == $section->id ? 'selected' : '' }}>
+                                {{ $section->name }} ({{ $section->classe->name ?? '' }})
+                              </option>
+                            @endforeach
+                          </select>
+                          @error('section')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Academic Group -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="group" class="erp-form-label">Group / Stream <span class="required">*</span></label>
+                          <select class="form-control" id="group" name="group" required>
+                            <option value="science" {{ old('group', $student->group) == 'science' ? 'selected' : '' }}>Science</option>
+                            <option value="arts" {{ old('group', $student->group) == 'arts' || old('group', $student->group) == 'art' ? 'selected' : '' }}>Arts / Humanities</option>
+                            <option value="commerce" {{ old('group', $student->group) == 'commerce' ? 'selected' : '' }}>Commerce</option>
+                          </select>
+                          @error('group')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Admission Date -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="admissiondate" class="erp-form-label">Admission Date <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="admissiondate" name="admissiondate" value="{{ old('admissiondate', $student->admissiondate) }}" required>
+                          @error('admissiondate')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Registration Number -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="registration" class="erp-form-label">Registration / Roll No</label>
+                          <input type="text" class="form-control" id="registration" name="registration" value="{{ old('registration', $student->registration) }}" placeholder="e.g. REG-2026-001">
+                          @error('registration')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Monthly Tuition Fee -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="tution_fee" class="erp-form-label">Monthly Tuition Fee (Rs.)</label>
+                          <input type="number" class="form-control" id="tution_fee" name="tution_fee" value="{{ old('tution_fee', $student->tution_fee) }}" placeholder="e.g. 3500">
+                          @error('tution_fee')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control"  id="image" name="image">
+                    <!-- 2. Personal & Contact Details -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-user mr-1"></i> Personal & Contact Information
+                      </h5>
                     </div>
-                    <input type="submit" id="submitBtn" class="btn btn-primary" value="Update Student">
-                  </form>
+
+                    <div class="row mb-3">
+                      <!-- Student Full Name -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="name" class="erp-form-label">Student Full Name <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $student->name) }}" placeholder="Enter student full name" required>
+                          @error('name')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Guardian -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="gurdian" class="erp-form-label">Guardian Relationship <span class="required">*</span></label>
+                          <select class="form-control" id="gurdian" name="gurdian" required>
+                            <option value="father" {{ old('gurdian', $student->gurdian) == 'father' ? 'selected' : '' }}>Father</option>
+                            <option value="mother" {{ old('gurdian', $student->gurdian) == 'mother' ? 'selected' : '' }}>Mother</option>
+                            <option value="otherFamilyMember" {{ old('gurdian', $student->gurdian) == 'otherFamilyMember' ? 'selected' : '' }}>Other Relative / Guardian</option>
+                          </select>
+                          @error('gurdian')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Date of Birth -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="dob" class="erp-form-label">Date of Birth <span class="required">*</span></label>
+                          <input type="date" class="form-control" id="dob" name="dob" value="{{ old('dob', $student->dob) }}" required>
+                          @error('dob')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Gender -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="gender" class="erp-form-label">Gender <span class="required">*</span></label>
+                          <select class="form-control" id="gender" name="gender" required>
+                            <option value="male" {{ old('gender', $student->gender) == 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ old('gender', $student->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                            <option value="other" {{ old('gender', $student->gender) == 'other' ? 'selected' : '' }}>Other</option>
+                          </select>
+                          @error('gender')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Religion -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="religion" class="erp-form-label">Religion</label>
+                          <input type="text" class="form-control" id="religion" name="religion" value="{{ old('religion', $student->religion) }}" placeholder="e.g. Islam">
+                          @error('religion')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="email" class="erp-form-label">Email Address</label>
+                          <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $student->email) }}" placeholder="student@school.edu">
+                          @error('email')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Phone -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="phone" class="erp-form-label">Contact / Guardian Phone</label>
+                          <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $student->phone) }}" placeholder="e.g. +92 300 1234567">
+                          @error('phone')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Address -->
+                      <div class="col-md-12">
+                        <div class="erp-form-group">
+                          <label for="address" class="erp-form-label">Residential Address</label>
+                          <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $student->address) }}" placeholder="House #, Street, City">
+                          @error('address')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 3. Portal Account & Security -->
+                    <div class="form-section-title mb-3">
+                      <h5 class="text-primary font-weight-bold" style="font-size: 14px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">
+                        <i class="fas fa-shield-halved mr-1"></i> Portal Access & Security
+                      </h5>
+                    </div>
+
+                    <div class="row mb-3">
+                      <!-- Username -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="username" class="erp-form-label">Portal Username <span class="required">*</span></label>
+                          <input type="text" class="form-control" id="username" name="username" value="{{ old('username', $student->username) }}" placeholder="e.g. std_john" required>
+                          @error('username')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Role -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="role" class="erp-form-label">Portal Security Role</label>
+                          <select class="form-control" id="role" name="role">
+                            @php
+                              $currentRole = $student->roles->first() ? $student->roles->first()->name : 'student';
+                            @endphp
+                            @if(isset($roles))
+                              @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" {{ old('role', $currentRole) == $role->name ? 'selected' : '' }}>
+                                  {{ ucfirst($role->name) }} ({{ $role->permissions->count() }} permissions)
+                                </option>
+                              @endforeach
+                            @endif
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Student Photo -->
+                      <div class="col-md-4">
+                        <div class="erp-form-group">
+                          <label for="image" class="erp-form-label">Change Profile Photo</label>
+                          <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                          @if($student->image && $student->image !== 'default.png')
+                            <div class="mt-2 d-flex align-items-center gap-2">
+                              <img src="{{ asset('storage/' . $student->image) }}" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;" alt="current">
+                              <span class="text-xs text-muted">Current photo</span>
+                            </div>
+                          @endif
+                          @error('image')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Password Security Row -->
+                    <div class="row">
+                      <!-- New Password -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="password" class="erp-form-label">
+                            New Password <span class="text-muted font-weight-normal" style="font-size: 11.5px;">(Leave blank to keep unchanged)</span>
+                          </label>
+                          <div class="input-group">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Enter new password (min. 6 chars)" autocomplete="new-password">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password', this)" style="border: 1px solid #ced4da; border-left: none;">
+                                <i class="fas fa-eye"></i>
+                              </button>
+                            </div>
+                          </div>
+                          @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+
+                      <!-- Confirm Password -->
+                      <div class="col-md-6">
+                        <div class="erp-form-group">
+                          <label for="password_confirmation" class="erp-form-label">
+                            Confirm New Password
+                          </label>
+                          <div class="input-group">
+                            <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="Repeat new password" autocomplete="new-password">
+                            <div class="input-group-append">
+                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password_confirmation', this)" style="border: 1px solid #ced4da; border-left: none;">
+                                <i class="fas fa-eye"></i>
+                              </button>
+                            </div>
+                          </div>
+                          @error('password_confirmation')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                          @enderror
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Form Action Footer -->
+                  <div class="erp-form-footer">
+                    <a href="{{ route('student-list') }}" class="btn btn-sm btn-outline-secondary">
+                      Cancel
+                    </a>
+                    <button type="submit" class="erp-btn-submit">
+                      <i class="fas fa-save"></i> Update Student
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+              <!-- End ERP Card Form -->
+
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  @include('view-file.script')
 
-  @if(session('message'))
-    <script>
-        Swal.fire({
-            title: 'Success!',
-            text: "{{ session('message') }}",
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    </script>
-  @endif
+  @include('view-file/script')
+  
+  <script>
+    function toggleInputPassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
 
-  @if(session('error'))
-    <script>
-        Swal.fire({
-            title: 'Error!',
-            text: "{{ session('error') }}",
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    </script>
-  @endif
-
-   <script>
     $(document).ready(function(){
-        $('#class').on('change',function(){
-      $('.ab').hide()
-      $('.ab'+ $(this).children('option:selected').attr('index')).css('display', 'block')
-      })
-    })
-    </script>
+      $('#class').on('change', function() {
+        var classIndex = $(this).children('option:selected').attr('index');
+        $('#section option').each(function(){
+          if($(this).val() === '') return;
+          if($(this).hasClass('ab' + classIndex)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

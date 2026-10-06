@@ -52,4 +52,9 @@ class Student extends Authenticatable
     {
         return $this->hasMany(StudentTransaction::class);
     }
+
+    public function assignmentSubmissions()
+    {
+        return $this->hasMany(AssignmentSubmission::class, 'student_id');
+    }
 }

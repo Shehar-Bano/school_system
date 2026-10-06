@@ -16,6 +16,13 @@
   </li>
 
     <li class="nav-item">
+        <a class="nav-link" href="{{route('student.assignments')}}">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Assignments</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="{{route('timetable.student')}}" aria-expanded="false" aria-controls="tables">
           <i class="fas fa-clock menu-icon"></i>
           <span class="menu-title">TimeTable</span>
