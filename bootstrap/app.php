@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'forgot-password/otp/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

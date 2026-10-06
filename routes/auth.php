@@ -33,6 +33,14 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // OTP Password Reset API Routes
+    Route::post('forgot-password/otp/send', [\App\Http\Controllers\Auth\OtpPasswordResetController::class, 'sendOtp'])
+        ->name('password.otp.send');
+    Route::post('forgot-password/otp/verify', [\App\Http\Controllers\Auth\OtpPasswordResetController::class, 'verifyOtp'])
+        ->name('password.otp.verify');
+    Route::post('forgot-password/otp/reset', [\App\Http\Controllers\Auth\OtpPasswordResetController::class, 'resetPassword'])
+        ->name('password.otp.reset');
 });
 
 Route::middleware('auth')->group(function () {
