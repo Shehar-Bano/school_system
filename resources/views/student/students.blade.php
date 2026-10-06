@@ -166,6 +166,20 @@
                     </div>
 
                       <div class="mb-3">
+                        <label for="role" class="form-label font-weight-bold">Assign Security Role</label>
+                        <select class="form-control" id="role" name="role">
+                          @if(isset($roles))
+                            @foreach ($roles as $role)
+                              <option value="{{ $role->name }}" {{ (old('role', 'student') == $role->name) ? 'selected' : '' }}>
+                                {{ ucfirst($role->name) }} ({{ $role->permissions->count() }} Portal Permissions)
+                              </option>
+                            @endforeach
+                          @endif
+                        </select>
+                        <small class="text-muted">The assigned role gives this student access permissions to their portal features.</small>
+                      </div>
+
+                      <div class="mb-3">
                           <label for="image" class="form-label">Upload Image</label>
                           <input type="file" class="form-control" id="image" name="image">
                       </div>

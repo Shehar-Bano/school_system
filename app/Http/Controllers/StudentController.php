@@ -8,6 +8,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Permission\Models\Role;
 
 class StudentController extends Controller
 {
@@ -15,13 +16,14 @@ class StudentController extends Controller
     {
         $sections = Section::all();
         $classes = Classe::get();
+        $roles = Role::where('guard_name', 'student')->get();
 
-        return view('student.students', compact('classes', 'sections'));
+        return view('student.students', compact('classes', 'sections', 'roles'));
     }
 
     public function list()
     {
-        $students = Student::with('employee', 'class')->get();
+        $students = Student::with('employee', 'class', 'roles')->get();
 
         return view('student.studentlist', compact('students'));
     }
@@ -45,6 +47,7 @@ class StudentController extends Controller
             'group' => 'required|string|in:arts,science,commerce',
             'registration' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'role' => 'nullable|string|max:100',
         ]);
 
         // Check if the username already exists
@@ -59,7 +62,7 @@ class StudentController extends Controller
             : null;
 
         // Create the student
-        Student::create([
+        $student = Student::create([
             'name' => $request->input('name'),
             'gurdian' => $request->input('gurdian'),
             'admissiondate' => $request->input('admissiondate'),
@@ -79,8 +82,21 @@ class StudentController extends Controller
             'username' => $request->input('username'),
         ]);
 
+        // Assign role to student
+        if ($request->filled('role')) {
+            $role = Role::where('name', $request->role)->where('guard_name', 'student')->first();
+            if ($role) {
+                $student->syncRoles([$role]);
+            }
+        } else {
+            $defaultRole = Role::where('name', 'student')->where('guard_name', 'student')->first();
+            if ($defaultRole) {
+                $student->syncRoles([$defaultRole]);
+            }
+        }
+
         // Redirect with success message
-        return redirect()->back()->with('message', 'Student added successfully!');
+        return redirect()->back()->with('message', 'Student added and role assigned successfully!');
     }
 
     public function del($id)
@@ -95,9 +111,10 @@ class StudentController extends Controller
     {
         $sections = Section::get();
         $classes = Classe::get();
-        $student = Student::findOrFail($id);
+        $roles = Role::where('guard_name', 'student')->get();
+        $student = Student::with('roles')->findOrFail($id);
 
-        return view('student.editstudent', compact('student', 'classes', 'sections'));
+        return view('student.editstudent', compact('student', 'classes', 'sections', 'roles'));
     }
 
     public function update(Request $request, $id)
@@ -119,6 +136,7 @@ class StudentController extends Controller
             'group' => 'required|string|in:arts,science,commerce',
             'registration' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'role' => 'nullable|string|max:100',
         ]);
 
         $student = Student::findOrFail($id);
@@ -151,7 +169,15 @@ class StudentController extends Controller
             'image' => $imagePath,
         ]);
 
+        // Sync role
+        if ($request->filled('role')) {
+            $role = Role::where('name', $request->role)->where('guard_name', 'student')->first();
+            if ($role) {
+                $student->syncRoles([$role]);
+            }
+        }
+
         // Redirect with success message
-        return redirect()->back()->with('message', 'Student updated successfully!');
+        return redirect()->back()->with('message', 'Student and role updated successfully!');
     }
 }

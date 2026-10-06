@@ -112,7 +112,14 @@
                         @endif
                         <div>
                           <span class="font-weight-semibold text-dark">{{ $student->name }}</span>
-                          <small class="d-block text-muted" style="font-size: 10.5px;">{{ $student->email }}</small>
+                          <div class="d-flex align-items-center gap-1">
+                            <small class="text-muted" style="font-size: 10.5px;">{{ $student->email }}</small>
+                            @if($student->roles && $student->roles->count() > 0)
+                              <span class="badge badge-soft-info ml-1" style="font-size: 9.5px; padding: 1px 5px;" title="Assigned Security Role">
+                                <i class="fas fa-shield mr-1"></i> {{ ucfirst($student->roles->first()->name) }}
+                              </span>
+                            @endif
+                          </div>
                         </div>
                       </div>
                     </td>

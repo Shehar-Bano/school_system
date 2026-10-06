@@ -175,6 +175,24 @@
             </a>
         </li>
 
+        <!-- Section: Security & Access Control -->
+        <span class="erp-sidebar-section-title">Security & Access</span>
+
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#roles-menu" aria-expanded="false" aria-controls="roles-menu">
+                <i class="fas fa-user-shield menu-icon"></i>
+                <span class="menu-title">Roles & Permissions</span>
+                <i class="fas fa-chevron-right menu-arrow"></i>
+            </a>
+            <div class="collapse" id="roles-menu" data-parent="#sidebar">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('roles.index') }}">Roles List</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('roles.create') }}">Create New Role</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('permissions.index') }}">Permissions Matrix</a></li>
+                </ul>
+            </div>
+        </li>
+
         <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.notification') }}">
                 <i class="fas fa-bell menu-icon"></i>

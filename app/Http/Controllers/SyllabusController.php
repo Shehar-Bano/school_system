@@ -11,6 +11,10 @@ class SyllabusController extends Controller
 {
     public function syllabusView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view syllabus.');
+        }
+
         $syllabuses = Syllabus::get();
 
         return view('syllabus.view', compact('syllabuses'));
@@ -18,6 +22,10 @@ class SyllabusController extends Controller
 
     public function addSyllabusView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create syllabus.');
+        }
+
         $classes = classe::get();
 
         return view('syllabus.add', compact('classes'));
@@ -25,6 +33,10 @@ class SyllabusController extends Controller
 
     public function syllabusStore(Request $request)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create syllabus.');
+        }
+
         $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -40,7 +52,7 @@ class SyllabusController extends Controller
         $file = $request->file('file');
         $filePath = $file->store('files', 'public');
         $syllabus->file = $filePath;
-        $syllabus->uploader = $uploader->name;
+        $syllabus->uploader = $uploader ? $uploader->name : 'Admin';
         $syllabus->date = now();
         $syllabus->save();
 
@@ -50,6 +62,10 @@ class SyllabusController extends Controller
 
     public function editsyllabusView($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to edit syllabus.');
+        }
+
         $classes = classe::get();
         $syllabus = Syllabus::findOrFail($id);
 
@@ -59,6 +75,9 @@ class SyllabusController extends Controller
 
     public function syllabusUpdate(Request $request, $id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to update syllabus.');
+        }
 
         $request->validate([
             'title' => 'required',
@@ -77,16 +96,20 @@ class SyllabusController extends Controller
             $syllabus->file = $filePath;
         }
 
-        $syllabus->uploader = $uploader->name;
+        $syllabus->uploader = $uploader ? $uploader->name : $syllabus->uploader;
         $syllabus->date = now();
         $syllabus->save();
 
-        return redirect()->back()->with('message', 'Syllabus added successfully');
+        return redirect()->back()->with('message', 'Syllabus updated successfully');
 
     }
 
     public function syllabusDelete($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.delete')) {
+            abort(403, 'Unauthorized: You do not have permission to delete syllabus.');
+        }
+
         $id = Syllabus::findOrFail($id);
         $id->delete();
 
@@ -96,6 +119,10 @@ class SyllabusController extends Controller
 
     public function downloadFile($file)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.download')) {
+            abort(403, 'Unauthorized: You do not have permission to download syllabus files.');
+        }
+
         $filePath = storage_path("app/public/files/{$file}");
         $fileInfo = \Illuminate\Support\Facades\Storage::getFileInfo($filePath);
 
@@ -113,6 +140,10 @@ class SyllabusController extends Controller
 
     public function syllabusDetail($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.syllabus.detail') && !auth()->user()->can('academic.syllabus.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view syllabus details.');
+        }
+
         $syllabus = Syllabus::findOrFail($id);
 
         return view('syllabus.detail', compact('syllabus'));

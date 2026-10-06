@@ -28,9 +28,11 @@
 
               <!-- Top Action: Add New Class Button -->
               <div>
+                @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.class.create')))
                 <a href="{{ route('class') }}" class="btn btn-sm btn-primary">
                   <i class="fas fa-plus mr-1"></i> Add New Class
                 </a>
+                @endif
               </div>
             </div>
 
@@ -116,11 +118,14 @@
                     </td>
                     <td class="text-center">
                       <div class="erp-action-btn-group">
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.class.edit')))
                         <!-- Edit Button -->
                         <a href="{{ route('class-edit', ['id' => $class->id]) }}" class="erp-action-btn edit" title="Edit Class">
                           <i class="fas fa-pen-to-square"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.class.delete')))
                         <!-- Delete Button -->
                         <form id="delete-class-{{ $class->id }}" action="{{ route('class_delete', ['id' => $class->id]) }}" method="POST" style="display:inline;">
                           @csrf
@@ -129,6 +134,7 @@
                             <i class="fas fa-trash-can"></i>
                           </button>
                         </form>
+                        @endif
                       </div>
                     </td>
                   </tr>

@@ -34,6 +34,7 @@ class UpdateEmployeeRequest extends FormRequest
             'image' => 'nullable|image|max:2048',
             'joining_date' => 'required|date|before_or_equal:today',
             'status' => 'nullable|string|in:active,inactive,suspended',
+            'role' => 'nullable|string|max:100',
         ];
     }
     

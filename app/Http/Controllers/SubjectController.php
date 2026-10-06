@@ -11,6 +11,10 @@ class SubjectController extends Controller
 {
     public function subjectView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view subjects.');
+        }
+
         $subjects = Subject::get();
 
         return view('subject.viewAll', compact('subjects'));
@@ -18,6 +22,10 @@ class SubjectController extends Controller
 
     public function addSubjectView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create subjects.');
+        }
+
         $employees = Employee::with('designation')->get();
         $classes = classe::get();
 
@@ -26,6 +34,10 @@ class SubjectController extends Controller
 
     public function subjectStore(Request $request)
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create subjects.');
+        }
+
         $request->validate([
             'subject_name' => 'required',
             'final_marks' => 'required|integer',
@@ -48,6 +60,10 @@ class SubjectController extends Controller
 
     public function editSubjectView($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to edit subjects.');
+        }
+
         $subject = Subject::find($id);
         $employees = Employee::with('designation')->get();
         $classes = classe::get();
@@ -57,6 +73,10 @@ class SubjectController extends Controller
 
     public function subjectUpdate(Request $request, $id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to update subjects.');
+        }
+
         $request->validate([
             'subject_name' => 'required',
 
@@ -80,6 +100,10 @@ class SubjectController extends Controller
 
     public function subjectDelete($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.subject.delete')) {
+            abort(403, 'Unauthorized: You do not have permission to delete subjects.');
+        }
+
         $id = Subject::findOrFail($id);
         $id->delete();
 

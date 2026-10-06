@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Repositories\EmployeeAttendanceRepository;
 use App\Repositories\EmployeeAttendanceRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Implicitly grant 'superadmin' role all permissions
+        Gate::before(function ($user, $ability) {
+            return ($user && method_exists($user, 'hasRole') && $user->hasRole('superadmin')) ? true : null;
+        });
+
         // Define a view composer for employee's masterpage
         View::composer('employeeDashboard.employeeView.masterpage', function ($view) {
             $employee = Auth::guard('employee')->user();

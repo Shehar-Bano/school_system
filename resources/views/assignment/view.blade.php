@@ -28,9 +28,11 @@
 
               <!-- Top Action: Add New Assignment Button -->
               <div>
+                @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.assignment.create')))
                 <a href="{{ route('add_assignment') }}" class="btn btn-sm btn-primary">
                   <i class="fas fa-plus mr-1"></i> Add New Assignment
                 </a>
+                @endif
               </div>
             </div>
 
@@ -103,16 +105,21 @@
                     </td>
                     <td class="text-center">
                       <div class="erp-action-btn-group">
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.assignment.detail') || auth()->user()->can('academic.assignment.view')))
                         <!-- View Detail Button -->
                         <a href="{{ route('assignmet_detail', ['id' => $assignment->id]) }}" class="erp-action-btn view" title="View Assignment Details">
                           <i class="fas fa-eye"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.assignment.edit')))
                         <!-- Edit Button -->
                         <a href="{{ route('edit_assinment', ['id' => $assignment->id]) }}" class="erp-action-btn edit" title="Edit Assignment">
                           <i class="fas fa-pen-to-square"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.assignment.delete')))
                         <!-- Delete Button -->
                         <form id="delete-assignment-{{ $assignment->id }}" action="{{ route('assignment_delete', ['id' => $assignment->id]) }}" method="POST" style="display:inline;">
                           @csrf
@@ -121,6 +128,7 @@
                             <i class="fas fa-trash-can"></i>
                           </button>
                         </form>
+                        @endif
                       </div>
                     </td>
                   </tr>

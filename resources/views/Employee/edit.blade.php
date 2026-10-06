@@ -73,12 +73,33 @@
                     <label for="designation">Designation</label>
                     <select class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" id="designation" name="designation" >
                       @foreach ($designations as $designation )
-                      <option value="{{ $designation->id }}" {{ $employee->designation->name == $designation->name ? 'selected' : '' }}>{{ $designation->name }}</option>
+                      <option value="{{ $designation->id }}" {{ ($employee->designation && $employee->designation->name == $designation->name) ? 'selected' : '' }}>{{ $designation->name }}</option>
                       
                       @endforeach </select>
                     @error('designation')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Assign Security Role</label>
+                    <select class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role" name="role">
+                      <option value="" disabled>Select Role (Inherits all permissions of the role)</option>
+                      @php
+                        $currentRole = $employee->roles->first() ? $employee->roles->first()->name : 'employee';
+                      @endphp
+                      @if(isset($roles))
+                        @foreach ($roles as $role)
+                        <option value="{{ $role->name }}" {{ old('role', $currentRole) == $role->name ? 'selected' : '' }}>
+                          {{ ucfirst($role->name) }} ({{ strtoupper($role->guard_name) }} Guard - {{ $role->permissions->count() }} permissions)
+                        </option>
+                        @endforeach
+                      @endif
+                    </select>
+                    @error('role')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">The assigned role automatically grants all its action permissions to this employee.</small>
                 </div>
 
                   <div class="form-group">

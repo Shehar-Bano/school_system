@@ -114,6 +114,11 @@
                       <span class="badge badge-soft-primary font-weight-medium">
                         {{ $employee->designation->name ?? 'Staff' }}
                       </span>
+                      @if($employee->roles && $employee->roles->count() > 0)
+                        <span class="badge badge-soft-purple font-weight-medium ml-1" style="font-size: 10px;" title="Assigned Security Role">
+                          <i class="fas fa-shield mr-1"></i> {{ ucfirst($employee->roles->first()->name) }}
+                        </span>
+                      @endif
                     </td>
                     <td class="text-center text-xs text-muted">
                       {{ $employee->joining_date ?? '—' }}

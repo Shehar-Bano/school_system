@@ -12,6 +12,10 @@ class SectionController extends Controller
 {
     public function index()
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create sections.');
+        }
+
         $teacher = Employee::get();
         $class = Classe::get();
 
@@ -20,6 +24,10 @@ class SectionController extends Controller
 
     public function list()
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view sections.');
+        }
+
         $sections = Section::with('employee', 'classe')->get();
 
         return view('section.sectionlist', compact('sections'));
@@ -27,6 +35,10 @@ class SectionController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create sections.');
+        }
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -59,6 +71,10 @@ class SectionController extends Controller
 
     public function del($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.delete')) {
+            abort(403, 'Unauthorized: You do not have permission to delete sections.');
+        }
+
         $section = Section::find($id);
         $section->delete();
 
@@ -67,6 +83,10 @@ class SectionController extends Controller
 
     public function edit($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to edit sections.');
+        }
+
         $teacher = Employee::get();
         $class = Classe::get();
         $section = Section::with('employee', 'classe')->findOrFail($id);
@@ -76,6 +96,10 @@ class SectionController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to update sections.');
+        }
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -111,6 +135,10 @@ class SectionController extends Controller
 
     public function generateFeeSlips($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.section.fee')) {
+            abort(403, 'Unauthorized: You do not have permission to generate section fee slips.');
+        }
+
         $section = Section::with('student', 'classe')->findOrFail($id);
         $studentData = $section->student;
         $fines = StudentTransaction::with('student')->where('transaction_type', 'fine')->get();

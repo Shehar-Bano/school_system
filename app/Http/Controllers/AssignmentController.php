@@ -14,6 +14,10 @@ class AssignmentController extends Controller
 {
     public function assignmentView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view assignments.');
+        }
+
         $assignments = Assignment::get();
 
         return view('assignment.view', compact('assignments'));
@@ -22,6 +26,10 @@ class AssignmentController extends Controller
 
     public function addAssignmentView()
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create assignments.');
+        }
+
         $classes = classe::get();
         $sections = Section::get();
         $subjects = ClassesSubject::with('class', 'subject')->get();
@@ -32,6 +40,10 @@ class AssignmentController extends Controller
 
     public function assignmentStore(Request $request)
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.create')) {
+            abort(403, 'Unauthorized: You do not have permission to create assignments.');
+        }
+
         $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -43,7 +55,7 @@ class AssignmentController extends Controller
         ]);
         $uploader = Auth::user();
         $assignment = new Assignment;
-        $assignment->uploader = $uploader->name;
+        $assignment->uploader = $uploader ? $uploader->name : 'Admin';
         $assignment->title = $request->title;
         $assignment->description = $request->description;
         $assignment->class_id = $request->class_id;
@@ -60,6 +72,10 @@ class AssignmentController extends Controller
 
     public function assignmentDelete($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.delete')) {
+            abort(403, 'Unauthorized: You do not have permission to delete assignments.');
+        }
+
         $assignment = Assignment::find($id);
         $assignment->delete();
 
@@ -68,6 +84,10 @@ class AssignmentController extends Controller
 
     public function editAssignmentView($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to edit assignments.');
+        }
+
         $assignment = Assignment::with('subject', 'section', 'class')->find($id);
         $classes = classe::get();
         $sections = Section::get();
@@ -78,6 +98,10 @@ class AssignmentController extends Controller
 
     public function assignmentUpdate(Request $request, $id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.edit')) {
+            abort(403, 'Unauthorized: You do not have permission to update assignments.');
+        }
+
         $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -106,6 +130,10 @@ class AssignmentController extends Controller
 
     public function assignmetDetail($id)
     {
+        if (auth()->check() && !auth()->user()->can('academic.assignment.detail') && !auth()->user()->can('academic.assignment.view')) {
+            abort(403, 'Unauthorized: You do not have permission to view assignment details.');
+        }
+
         $assignment = Assignment::with('subject', 'section', 'class')->find($id);
 
         return view('assignment.detail', compact('assignment'))->with('message', 'Assignment Updated Succesfully!');

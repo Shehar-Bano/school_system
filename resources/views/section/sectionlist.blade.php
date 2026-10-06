@@ -28,9 +28,11 @@
 
               <!-- Top Action: Add New Section Button -->
               <div>
+                @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.section.create')))
                 <a href="{{ route('section') }}" class="btn btn-sm btn-primary">
                   <i class="fas fa-plus mr-1"></i> Add New Section
                 </a>
+                @endif
               </div>
             </div>
 
@@ -115,16 +117,21 @@
                     </td>
                     <td class="text-center">
                       <div class="erp-action-btn-group">
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.section.fee')))
                         <!-- Fee Receipt Button -->
                         <a href="{{ route('section-fee', ['id' => $section->id]) }}" class="erp-action-btn view" title="Print Section Fee Slip">
                           <i class="fas fa-receipt"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.section.edit')))
                         <!-- Edit Button -->
                         <a href="{{ route('section-edit', ['id' => $section->id]) }}" class="erp-action-btn edit" title="Edit Section">
                           <i class="fas fa-pen-to-square"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.section.delete')))
                         <!-- Delete Button -->
                         <form id="delete-section-{{ $section->id }}" action="{{ route('section_delete', ['id' => $section->id]) }}" method="POST" style="display:inline;">
                           @csrf
@@ -133,6 +140,7 @@
                             <i class="fas fa-trash-can"></i>
                           </button>
                         </form>
+                        @endif
                       </div>
                     </td>
                   </tr>

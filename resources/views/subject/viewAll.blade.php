@@ -28,9 +28,11 @@
 
               <!-- Top Action: Add New Subject Button -->
               <div>
+                @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.subject.create')))
                 <a href="{{ route('add_subject') }}" class="btn btn-sm btn-primary">
                   <i class="fas fa-plus mr-1"></i> Add New Subject
                 </a>
+                @endif
               </div>
             </div>
 
@@ -126,11 +128,14 @@
                     </td>
                     <td class="text-center">
                       <div class="erp-action-btn-group">
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.subject.edit')))
                         <!-- Edit Button -->
                         <a href="{{ route('edit_subject', ['id' => $subject->id]) }}" class="erp-action-btn edit" title="Edit Subject">
                           <i class="fas fa-pen-to-square"></i>
                         </a>
+                        @endif
 
+                        @if(auth()->check() && (auth()->user()->hasRole('superadmin') || auth()->user()->can('academic.subject.delete')))
                         <!-- Delete Button -->
                         <form id="delete-form-{{ $subject->id }}" action="{{ route('subject_delete', ['id' => $subject->id]) }}" method="POST" style="display:inline;">
                           @csrf
@@ -139,6 +144,7 @@
                             <i class="fas fa-trash-can"></i>
                           </button>
                         </form>
+                        @endif
                       </div>
                     </td>
                   </tr>

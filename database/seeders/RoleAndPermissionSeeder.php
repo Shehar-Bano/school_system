@@ -38,6 +38,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'academic.section.create',
                 'academic.section.edit',
                 'academic.section.delete',
+                'academic.section.fee',
             ],
             'Academic - Syllabus' => [
                 'academic.syllabus.view',
@@ -45,12 +46,14 @@ class RoleAndPermissionSeeder extends Seeder
                 'academic.syllabus.edit',
                 'academic.syllabus.delete',
                 'academic.syllabus.download',
+                'academic.syllabus.detail',
             ],
             'Academic - Assignment' => [
                 'academic.assignment.view',
                 'academic.assignment.create',
                 'academic.assignment.edit',
                 'academic.assignment.delete',
+                'academic.assignment.detail',
             ],
             'User Management - Designation' => [
                 'user.designation.view',
@@ -134,6 +137,13 @@ class RoleAndPermissionSeeder extends Seeder
                 'report.admission.view',
                 'report.result.view',
             ],
+            'Roles & Permissions' => [
+                'roles.view',
+                'roles.create',
+                'roles.edit',
+                'roles.delete',
+                'roles.assign',
+            ],
             'General & Notifications' => [
                 'history.view',
                 'notification.view',
@@ -154,6 +164,23 @@ class RoleAndPermissionSeeder extends Seeder
         // Create Super Admin role for web guard and assign all web permissions
         $superadminRole = Role::updateOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
         $superadminRole->syncPermissions(Permission::where('guard_name', 'web')->get());
+
+        // Create Admin role (all permissions except deleting roles)
+        $adminRole = Role::updateOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminPermissions = Permission::where('guard_name', 'web')
+            ->where('name', '!=', 'roles.delete')
+            ->get();
+        $adminRole->syncPermissions($adminPermissions);
+
+        // Create Accountant role (Payment + Finance + Balance sheet)
+        $accountantRole = Role::updateOrCreate(['name' => 'accountant', 'guard_name' => 'web']);
+        $accountantPermissions = Permission::where('guard_name', 'web')
+            ->where(function ($query) {
+                $query->where('group_name', 'like', '%Payment%')
+                    ->orWhere('group_name', 'like', '%Finance%')
+                    ->orWhere('name', 'balance_sheet.view');
+            })->get();
+        $accountantRole->syncPermissions($accountantPermissions);
 
         // 2. Employee Guard Permissions & Role
         $employeePermissions = [
@@ -184,6 +211,9 @@ class RoleAndPermissionSeeder extends Seeder
 
         $employeeRole = Role::updateOrCreate(['name' => 'employee', 'guard_name' => 'employee']);
         $employeeRole->syncPermissions(Permission::where('guard_name', 'employee')->get());
+
+        $teacherRole = Role::updateOrCreate(['name' => 'teacher', 'guard_name' => 'employee']);
+        $teacherRole->syncPermissions(Permission::where('guard_name', 'employee')->get());
 
         // 3. Student Guard Permissions & Role
         $studentPermissions = [

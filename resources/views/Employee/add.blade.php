@@ -53,6 +53,24 @@
                         <div class="invalid-feedback ">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="form-group">
+                        <label for="role">Assign Security Role</label>
+                        <select class="form-control {{ $errors->has('role') ? 'is-invalid' : '' }}" id="role" name="role">
+                          <option value="" disabled selected>Select Role (Inherits all permissions of the role)</option>
+                          @if(isset($roles))
+                            @foreach ($roles as $role)
+                            <option value="{{ $role->name }}" {{ old('role', 'employee') == $role->name ? 'selected' : '' }}>
+                              {{ ucfirst($role->name) }} ({{ strtoupper($role->guard_name) }} Guard - {{ $role->permissions->count() }} permissions)
+                            </option>
+                            @endforeach
+                          @endif
+                        </select>
+                        @error('role')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <small class="text-muted">The assigned role automatically grants all its action permissions to this employee.</small>
+                    </div>
                 
                     <div class="form-group">
                         <label for="dob">Date of Birth</label>

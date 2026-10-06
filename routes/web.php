@@ -35,6 +35,7 @@ use App\Http\Controllers\TaxeController;
 use App\Http\Controllers\TaxeFeeController;
 use App\Http\Controllers\TimeTableController;
 use App\Http\Controllers\TransactionTypeController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -339,3 +340,10 @@ Route::prefix('history')->controller(HistoryController::class)->group(function (
 
     Route::get('/student/history', [StudentProfileController::class, 'showHistory'])->name('student.history');
 });
+
+/////////////////////////////// Roles & Permissions Management
+Route::middleware(['auth'])->group(function () {
+    Route::get('permissions/matrix', [RoleController::class, 'matrix'])->name('permissions.index');
+    Route::resource('roles', RoleController::class);
+});
+
