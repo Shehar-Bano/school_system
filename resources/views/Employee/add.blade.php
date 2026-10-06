@@ -229,13 +229,11 @@
                           <label for="password" class="erp-form-label">
                             Portal Password <span class="text-muted font-weight-normal" style="font-size: 11.5px;">(Optional, defaults to 'password')</span>
                           </label>
-                          <div class="input-group">
-                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Create login password" autocomplete="new-password">
-                            <div class="input-group-append">
-                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password', this)" style="border: 1px solid #ced4da; border-left: none;">
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </div>
+                          <div style="position: relative; width: 100%;">
+                            <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Create login password" autocomplete="new-password" style="padding-right: 42px; width: 100%;">
+                            <button type="button" onclick="toggleInputPassword('password', this)" title="Show/Hide Password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; padding: 4px 8px; cursor: pointer; z-index: 10; font-size: 14px; outline: none;">
+                              <i class="fas fa-eye"></i>
+                            </button>
                           </div>
                           @error('password')
                             <div class="text-danger small mt-1">{{ $message }}</div>
@@ -249,13 +247,11 @@
                           <label for="password_confirmation" class="erp-form-label">
                             Confirm Portal Password
                           </label>
-                          <div class="input-group">
-                            <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="Repeat portal password" autocomplete="new-password">
-                            <div class="input-group-append">
-                              <button class="btn btn-outline-secondary" type="button" onclick="toggleInputPassword('password_confirmation', this)" style="border: 1px solid #ced4da; border-left: none;">
-                                <i class="fas fa-eye"></i>
-                              </button>
-                            </div>
+                          <div style="position: relative; width: 100%;">
+                            <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="Repeat portal password" autocomplete="new-password" style="padding-right: 42px; width: 100%;">
+                            <button type="button" onclick="toggleInputPassword('password_confirmation', this)" title="Show/Hide Password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; padding: 4px 8px; cursor: pointer; z-index: 10; font-size: 14px; outline: none;">
+                              <i class="fas fa-eye"></i>
+                            </button>
                           </div>
                           @error('password_confirmation')
                             <div class="text-danger small mt-1">{{ $message }}</div>
