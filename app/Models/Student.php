@@ -18,7 +18,7 @@ class Student extends Authenticatable
         'registration', 'password', 'image', 'tution_fee', 'username',
     ];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token'];
 
     // For the student guard
     protected $guard = 'student';

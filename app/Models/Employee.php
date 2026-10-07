@@ -16,6 +16,8 @@ class Employee extends Model implements AuthenticatableContract
 
     protected $guard_name = 'employee';
 
+    protected $hidden = ['password', 'remember_token'];
+
     protected $fillable = [
         'name',
         'gender',
